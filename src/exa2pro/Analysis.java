@@ -131,7 +131,7 @@ public class Analysis {
             report.setTotalCodeSmells(Integer.parseInt(report.getMetricFromSonarQube("code_smells")));
             report.setTotalLinesOfCode(Integer.parseInt(report.getMetricFromSonarQube("ncloc")));
             report.setTotalComplexity(Integer.parseInt(report.getMetricFromSonarQube("complexity")));
-            report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", " "));
+            report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
         } catch (InterruptedException | IOException ex) {
             Logger.getLogger(Analysis.class.getName()).log(Level.SEVERE, null, ex);
         }

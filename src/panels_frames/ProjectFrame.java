@@ -10,6 +10,7 @@ import exa2pro.Exa2Pro;
 import exa2pro.Issue;
 import exa2pro.LineChart;
 import exa2pro.Project;
+import java.awt.Color;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -139,7 +140,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabelProjectName.setText(project.getCredentials().getProjectName());
         jLabelIssues.setText(project.getprojectReport().getTotalCodeSmells()+" Issues");
         jLabelTotallLines.setText(project.getprojectReport().getTotalLinesOfCode()+"");
-        jLabelAllLanguageLines.setText(project.getprojectReport().getLinesOfCodeForAllLanguages());
+        jTextArea1.setText(project.getprojectReport().getLinesOfCodeForAllLanguages());
         jLabelDateAnalysis.setText(project.getprojectReport().getDate()+"");
         jLabelCodeSmells.setText(project.getprojectReport().getTotalCodeSmells()+"");
         jLabelComplexity.setText(project.getprojectReport().getTotalComplexity()+"");
@@ -159,22 +160,27 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabelProjectName = new javax.swing.JLabel();
         jButtonNewAnalysis = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jButtonOverview = new javax.swing.JButton();
-        jButtonCodeSmells = new javax.swing.JButton();
-        jButtonProgress = new javax.swing.JButton();
-        jButtonRefactorings = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel16 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel17 = new javax.swing.JLabel();
         jPanelParent = new javax.swing.JPanel();
         jPanelOverview = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabelAllLanguageLines = new javax.swing.JLabel();
         jLabelTotallLines = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabelDateAnalysis = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -224,39 +230,58 @@ public class ProjectFrame extends javax.swing.JFrame {
         });
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jPanel3.setLayout(new java.awt.GridLayout());
 
-        jButtonOverview.setText("Overview");
-        jButtonOverview.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonOverviewActionPerformed(evt);
+        jPanel6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel6MouseClicked(evt);
             }
         });
-        jPanel3.add(jButtonOverview);
 
-        jButtonCodeSmells.setText("Issues");
-        jButtonCodeSmells.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCodeSmellsActionPerformed(evt);
+        jLabel15.setText("Overview");
+        jPanel6.add(jLabel15);
+
+        jPanel3.add(jPanel6);
+
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel5MouseClicked(evt);
             }
         });
-        jPanel3.add(jButtonCodeSmells);
 
-        jButtonProgress.setText("Progress");
-        jButtonProgress.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonProgressActionPerformed(evt);
+        jLabel14.setText("Issues");
+        jPanel5.add(jLabel14);
+
+        jPanel3.add(jPanel5);
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel7MouseClicked(evt);
             }
         });
-        jPanel3.add(jButtonProgress);
 
-        jButtonRefactorings.setText("Refactorings");
-        jButtonRefactorings.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonRefactoringsActionPerformed(evt);
+        jLabel16.setText("Progress");
+        jPanel7.add(jLabel16);
+
+        jPanel3.add(jPanel7);
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel8MouseClicked(evt);
             }
         });
-        jPanel3.add(jButtonRefactorings);
+
+        jLabel17.setText("Refactorings");
+        jPanel8.add(jLabel17);
+
+        jPanel3.add(jPanel8);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -289,9 +314,6 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel1.setText("About");
 
-        jLabelAllLanguageLines.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabelAllLanguageLines.setText("jLabel3");
-
         jLabelTotallLines.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabelTotallLines.setText("jLabel3");
 
@@ -310,6 +332,12 @@ public class ProjectFrame extends javax.swing.JFrame {
         jSeparator2.setForeground(new java.awt.Color(0, 0, 0));
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(new java.awt.Color(240, 240, 240));
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane7.setViewportView(jTextArea1);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -319,12 +347,12 @@ public class ProjectFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelTotallLines)
                     .addComponent(jLabel4)
-                    .addComponent(jLabelAllLanguageLines)
                     .addComponent(jLabel5)
                     .addComponent(jLabelDateAnalysis)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 165, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
@@ -342,12 +370,12 @@ public class ProjectFrame extends javax.swing.JFrame {
                         .addGap(22, 22, 22)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelAllLanguageLines)
-                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelDateAnalysis)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(213, Short.MAX_VALUE))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
@@ -461,7 +489,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(263, 263, 263))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanelOverviewLayout = new javax.swing.GroupLayout(jPanelOverview);
@@ -473,7 +501,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                 .addGroup(jPanelOverviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelOverviewLayout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(0, 981, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanelOverviewLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
@@ -512,7 +540,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                 .addGroup(jPanelCodeSmellsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelCodeSmellsLayout.createSequentialGroup()
                         .addComponent(jLabelIssues)
-                        .addGap(0, 1017, Short.MAX_VALUE))
+                        .addGap(0, 1081, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -522,7 +550,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabelIssues)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -537,14 +565,14 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(jPanelRefactoringsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelRefactorings)
-                .addContainerGap(1000, Short.MAX_VALUE))
+                .addContainerGap(1064, Short.MAX_VALUE))
         );
         jPanelRefactoringsLayout.setVerticalGroup(
             jPanelRefactoringsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelRefactoringsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelRefactorings)
-                .addContainerGap(527, Short.MAX_VALUE))
+                .addContainerGap(505, Short.MAX_VALUE))
         );
 
         jPanelParent.add(jPanelRefactorings, "card3");
@@ -563,11 +591,13 @@ public class ProjectFrame extends javax.swing.JFrame {
         });
         jScrollPane6.setViewportView(jListMetrics);
 
+        jPanelChart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
         jPanelChart.setLayout(jPanelChartLayout);
         jPanelChartLayout.setHorizontalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 978, Short.MAX_VALUE)
+            .addGap(0, 1048, Short.MAX_VALUE)
         );
         jPanelChartLayout.setVerticalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -585,7 +615,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(2, 2, 2))
         );
         jPanelProgressLayout.setVerticalGroup(
             jPanelProgressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -597,8 +627,8 @@ public class ProjectFrame extends javax.swing.JFrame {
                         .addComponent(jLabeProgress)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 387, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(0, 374, Short.MAX_VALUE)))
+                .addGap(2, 2, 2))
         );
 
         jPanelParent.add(jPanelProgress, "card3");
@@ -608,7 +638,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, 1135, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -620,20 +650,6 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButtonOverviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOverviewActionPerformed
-        jPanelParent.removeAll();
-        jPanelParent.add(jPanelOverview);
-        jPanelParent.repaint();
-        jPanelParent.revalidate();
-    }//GEN-LAST:event_jButtonOverviewActionPerformed
-
-    private void jButtonCodeSmellsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCodeSmellsActionPerformed
-        jPanelParent.removeAll();
-        jPanelParent.add(jPanelCodeSmells);
-        jPanelParent.repaint();
-        jPanelParent.revalidate();
-    }//GEN-LAST:event_jButtonCodeSmellsActionPerformed
 
     private void jButtonNewAnalysisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewAnalysisActionPerformed
         Project p= new Project(project.getCredentials(), project.getCredentials().getProjects().size()+1+"");
@@ -648,26 +664,12 @@ public class ProjectFrame extends javax.swing.JFrame {
         System.out.println(selectedIssue.getLinesOfCodeFromSonarQube());
     }//GEN-LAST:event_jListCodeSmellsMouseClicked
 
-    private void jButtonRefactoringsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefactoringsActionPerformed
-        jPanelParent.removeAll();
-        jPanelParent.add(jPanelRefactorings);
-        jPanelParent.repaint();
-        jPanelParent.revalidate();
-    }//GEN-LAST:event_jButtonRefactoringsActionPerformed
-
-    private void jButtonProgressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProgressActionPerformed
-        jPanelParent.removeAll();
-        jPanelParent.add(jPanelProgress);
-        jPanelParent.repaint();
-        jPanelParent.revalidate();
-    }//GEN-LAST:event_jButtonProgressActionPerformed
-
     private void jListMetricsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListMetricsMouseClicked
         jPanelChart.removeAll();
         String selectedMetric= jListMetrics.getSelectedValue();
         
         LineChart chart = new LineChart(project.getCredentials(),selectedMetric,"Chart",selectedMetric+" per Version");
-        chart.pack( );
+        //chart.pack( );
         
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
         jPanelChart.setLayout(jPanelChartLayout);
@@ -676,17 +678,74 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(jPanelChartLayout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addComponent(chart.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addGap(2, 2, 2))
         );
         jPanelChartLayout.setVerticalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelChartLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(chart.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addGap(2, 2, 2))
         );
+        
     }//GEN-LAST:event_jListMetricsMouseClicked
 
+    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+        reverseBorders();
+        jPanel6.setBackground(new Color(240, 240, 240));
+        jPanel6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        
+        jPanelParent.removeAll();
+        jPanelParent.add(jPanelOverview);
+        jPanelParent.repaint();
+        jPanelParent.revalidate();
+
+    }//GEN-LAST:event_jPanel6MouseClicked
+
+    private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
+        reverseBorders();
+        jPanel5.setBackground(new Color(240, 240, 240));
+        jPanel5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        
+        jPanelParent.removeAll();
+        jPanelParent.add(jPanelCodeSmells);
+        jPanelParent.repaint();
+        jPanelParent.revalidate();
+    }//GEN-LAST:event_jPanel5MouseClicked
+
+    private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
+        reverseBorders();
+        jPanel7.setBackground(new Color(240, 240, 240));
+        jPanel7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        
+        jPanelParent.removeAll();
+        jPanelParent.add(jPanelProgress);
+        jPanelParent.repaint();
+        jPanelParent.revalidate();
+    }//GEN-LAST:event_jPanel7MouseClicked
+
+    private void jPanel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel8MouseClicked
+        reverseBorders();
+        jPanel8.setBackground(new Color(240, 240, 240));
+        jPanel8.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        
+        jPanelParent.removeAll();
+        jPanelParent.add(jPanelRefactorings);
+        jPanelParent.repaint();
+        jPanelParent.revalidate();
+    }//GEN-LAST:event_jPanel8MouseClicked
+
+    private void reverseBorders(){
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -723,17 +782,17 @@ public class ProjectFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonCodeSmells;
     private javax.swing.JButton jButtonNewAnalysis;
-    private javax.swing.JButton jButtonOverview;
-    private javax.swing.JButton jButtonProgress;
-    private javax.swing.JButton jButtonRefactorings;
     private javax.swing.JLabel jLabeProgress;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -742,7 +801,6 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabelAllLanguageLines;
     private javax.swing.JLabel jLabelCodeSmells;
     private javax.swing.JLabel jLabelComplexity;
     private javax.swing.JLabel jLabelDateAnalysis;
@@ -761,6 +819,10 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanelChart;
     private javax.swing.JPanel jPanelCodeSmells;
     private javax.swing.JPanel jPanelOverview;
@@ -773,7 +835,9 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 
 }

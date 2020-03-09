@@ -33,7 +33,7 @@ public class LineChart extends ApplicationFrame {
                 true, true, false);
 
         chartPanel = new ChartPanel( lineChart );
-        chartPanel.setPreferredSize( new java.awt.Dimension( 600, 500) );
+        //chartPanel.setPreferredSize( new java.awt.Dimension( 600, 500) );
         setContentPane( chartPanel );
     }
 
