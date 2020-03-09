@@ -1,0 +1,2 @@
+sonar.host.url=http://localhost:9000
+sonar.icode.path=C:\Users\Nikos\Downloads\icode\icode.exe
