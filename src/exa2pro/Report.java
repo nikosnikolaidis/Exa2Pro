@@ -42,10 +42,17 @@ public class Report  implements Serializable{
      * Return the issues from Sonar Qube
      */
     public void getIssuesFromSonarQube(){
+        int page= (totalCodeSmells-1)/500 + 1;
+        for(int i=1; i<=page; i++){
+            getIssuesFromPage(i);
+        }
+    }
+    
+    private void getIssuesFromPage(int page){
         try {
             date= new Date();
             URL url = new URL("http://localhost:9000/api/issues/search?pageSize=500&componentKeys="
-                    +project.getCredentials().getProjectName());//+"&types=BUG");
+                    +project.getCredentials().getProjectName()+"&types=CODE_SMELL&p="+page);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();

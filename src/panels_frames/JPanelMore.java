@@ -94,7 +94,6 @@ public class JPanelMore extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Project p= new Project(project.getCredentials(), project.getCredentials().getProjects().size()+1+"");
-        
         p.projectVersionAnalysis();
     }//GEN-LAST:event_jButton1ActionPerformed
 
