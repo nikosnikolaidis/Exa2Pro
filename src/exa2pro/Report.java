@@ -29,6 +29,7 @@ public class Report  implements Serializable{
     private ArrayList<Issue> issuesList= new ArrayList<>();
     private Date date;
     private String totalDebt;
+    private double totalDebt_Index;
     private int totalCodeSmells;
     private int totalLinesOfCode;
     private String linesOfCodeForAllLanguages;
@@ -44,15 +45,20 @@ public class Report  implements Serializable{
     public void getIssuesFromSonarQube(){
         int page= (totalCodeSmells-1)/500 + 1;
         for(int i=1; i<=page; i++){
-            getIssuesFromPage(i);
+            getIssuesFromPage(i,"&resolved=false");
         }
+        
+        //To get the fixed issues
+        //if(Integer.parseInt(project.getProjectVersion())>1){
+        //    getIssuesFromPage(i,"resolutions=FIXED");
+        //}
     }
     
-    private void getIssuesFromPage(int page){
+    private void getIssuesFromPage(int page, String extra){
         try {
             date= new Date();
             URL url = new URL("http://localhost:9000/api/issues/search?pageSize=500&componentKeys="
-                    +project.getCredentials().getProjectName()+"&types=CODE_SMELL&p="+page);
+                    +project.getCredentials().getProjectName()+"&types=CODE_SMELL"+extra+"&p="+page);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -140,7 +146,8 @@ public class Report  implements Serializable{
                 Scanner sc = new Scanner(url.openStream());
                 while(sc.hasNext()){
                     String line=sc.nextLine();
-                    if(line.trim().contains("\"analysisId\":")){
+                    if(line.trim().contains("\"analysisId\":") &&
+                            line.trim().contains("\"queue\":[],")){
                         finished=true;
                     }
                 }
@@ -168,6 +175,9 @@ public class Report  implements Serializable{
     public String getTotalDebt() {
         return totalDebt;
     }
+    public double getTotalDebt_Index() {
+        return totalDebt_Index;
+    }
     public int getTotalCodeSmells() {
         return totalCodeSmells;
     }
@@ -184,6 +194,9 @@ public class Report  implements Serializable{
     // Setters
     public void setTotalDebt(String totalDebt) {
         this.totalDebt = totalDebt;
+    }
+    public void setTotalDebt_Index(double totalDebt) {
+        this.totalDebt_Index = totalDebt;
     }
     public void setTotalCodeSmells(int totalCodeSmells) {
         this.totalCodeSmells = totalCodeSmells;

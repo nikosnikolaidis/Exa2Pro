@@ -38,10 +38,12 @@ public class JPanelMore extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
 
         jLabelRefactorings.setText("More Options");
 
-        jPanel1.setLayout(new java.awt.GridLayout(2, 0, 10, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(0, 2, 10, 5));
 
         jLabel1.setText("New Version Ready to be Analyzed");
         jPanel1.add(jLabel1);
@@ -54,7 +56,7 @@ public class JPanelMore extends javax.swing.JPanel {
         });
         jPanel1.add(jButton1);
 
-        jLabel2.setText("Delete Project");
+        jLabel2.setText("Delete Last Analysis");
         jPanel1.add(jLabel2);
 
         jButton2.setText("Delete");
@@ -65,6 +67,12 @@ public class JPanelMore extends javax.swing.JPanel {
             }
         });
         jPanel1.add(jButton2);
+
+        jLabel3.setText("Delete Project");
+        jPanel1.add(jLabel3);
+
+        jButton3.setText("Delete");
+        jPanel1.add(jButton3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -84,7 +92,7 @@ public class JPanelMore extends javax.swing.JPanel {
                 .addComponent(jLabelRefactorings)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(436, Short.MAX_VALUE))
+                .addContainerGap(408, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -101,8 +109,10 @@ public class JPanelMore extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabelRefactorings;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

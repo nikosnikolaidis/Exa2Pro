@@ -122,11 +122,12 @@ public class Analysis {
             while (!report.isFinishedAnalyzing()) {
                 Thread.sleep(1000);
             }
-            Thread.sleep(6000);
+            Thread.sleep(500);
             
             // Can Read Reports now
             double dept = Double.parseDouble(report.getMetricFromSonarQube("sqale_index"));
             report.setTotalDebt(formatTehnicalDebt(dept));
+            report.setTotalDebt_Index(dept);
             report.setTotalCodeSmells(Integer.parseInt(report.getMetricFromSonarQube("code_smells")));
             report.setTotalLinesOfCode(Integer.parseInt(report.getMetricFromSonarQube("ncloc")));
             report.setTotalComplexity(Integer.parseInt(report.getMetricFromSonarQube("complexity")));

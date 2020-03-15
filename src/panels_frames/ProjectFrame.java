@@ -7,8 +7,12 @@ package panels_frames;
 
 import exa2pro.Exa2Pro;
 import exa2pro.Issue;
+import exa2pro.LineChart;
+import exa2pro.PieChart;
 import exa2pro.Project;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,10 +45,90 @@ public class ProjectFrame extends javax.swing.JFrame {
         initComponents();
         
         populateJLabels();
-        populateMethodsLists();
         populateIssueList();
         
+        addPieChart();
         
+        addActionListennersToCheckBoxes();
+    }
+    
+    private void addPieChart(){
+        HashMap<String, Double> temp= PieChart.calculateThresholds();
+        jPanel6.removeAll();
+        PieChart chart = new PieChart(project,"Pie","FanOut"," of Files", temp.get("FanOut"));
+        javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanelChartLayout);
+        jPanelChartLayout.setHorizontalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        jPanelChartLayout.setVerticalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        
+        jPanel7.removeAll();
+        PieChart chart1 = new PieChart(project,"Pie","LCOM2"," of Files", temp.get("LCOM2"));
+        javax.swing.GroupLayout jPanelChartLayout1 = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanelChartLayout1);
+        jPanelChartLayout1.setHorizontalGroup(
+            jPanelChartLayout1.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout1.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart1.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        jPanelChartLayout1.setVerticalGroup(
+            jPanelChartLayout1.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout1.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart1.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        
+        jPanel8.removeAll();
+        PieChart chart2 = new PieChart(project,"Pie","CC"," of Methods", temp.get("CC"));
+        javax.swing.GroupLayout jPanelChartLayout2 = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanelChartLayout2);
+        jPanelChartLayout2.setHorizontalGroup(
+            jPanelChartLayout2.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout2.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart2.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        jPanelChartLayout2.setVerticalGroup(
+            jPanelChartLayout2.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout2.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart2.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        
+        jPanel9.removeAll();
+        PieChart chart3 = new PieChart(project,"Pie","LOC"," of Methods", temp.get("LOC"));
+        javax.swing.GroupLayout jPanelChartLayout3 = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanelChartLayout3);
+        jPanelChartLayout3.setHorizontalGroup(
+            jPanelChartLayout3.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout3.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart3.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        jPanelChartLayout3.setVerticalGroup(
+            jPanelChartLayout3.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout3.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chart3.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
     }
     
     //Populate List with Projects
@@ -60,81 +144,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         }
     }
     
-    //Populate all List for Methods and Files
-    private void populateMethodsLists(){
-        //create the models
-        DefaultListModel<String> defaultListModelFanOut = new DefaultListModel<>();
-        DefaultListModel<String> defaultListModelCohesion = new DefaultListModel<>();
-        DefaultListModel<String> defaultListModelCC = new DefaultListModel<>();
-        DefaultListModel<String> defaultListModelLOC = new DefaultListModel<>();
-        //create the lists for all the methods and files
-        HashMap<String, Double> allFilesCohesion = new HashMap<>();
-        HashMap<String, Integer> allFilesFanOut = new HashMap<>();
-        HashMap<String, Integer> allMethodsCC = new HashMap<>();
-        HashMap<String, Integer> allMethodsLOC = new HashMap<>();
-        for(CodeFile cf: project.getprojectFiles()){
-            allFilesFanOut.put(cf.file.getName(), cf.fanOut);
-            allFilesCohesion.put(cf.file.getName(), Math.round(cf.cohesion * 10.0)/10.0);
-            allMethodsCC.putAll(prefixHashMap(cf.methodsCC, cf.file.getName()));
-            allMethodsLOC.putAll(prefixHashMap(cf.methodsLOC, cf.file.getName()));
-        }
-        
-        //sort the lists
-        HashMap<String, Integer> sortedCC= allMethodsCC.entrySet()
-        .stream()
-        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
-        .collect(
-            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
-                LinkedHashMap::new));
-        HashMap<String, Integer> sortedLOC= allMethodsLOC.entrySet()
-        .stream()
-        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
-        .collect(
-            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
-                LinkedHashMap::new));
-        HashMap<String, Double> sortedCohecion= allFilesCohesion.entrySet()
-        .stream()
-        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
-        .collect(
-            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
-                LinkedHashMap::new));
-        HashMap<String, Integer> sortedFanOut= allFilesFanOut.entrySet()
-        .stream()
-        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
-        .collect(
-            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
-                LinkedHashMap::new));
-        
-        //add the items to the list
-        sortedCC.entrySet().forEach((item) -> {
-            defaultListModelCC.addElement(item.getValue()+" "+item.getKey());
-        });
-        sortedLOC.entrySet().forEach((item) -> {
-            defaultListModelLOC.addElement(item.getValue()+" "+item.getKey());
-        });
-        sortedCohecion.entrySet().forEach((item) -> {
-            defaultListModelCohesion.addElement(item.getValue()+" "+item.getKey());
-        });
-        sortedFanOut.entrySet().forEach((item) -> {
-            defaultListModelFanOut.addElement(item.getValue()+" "+item.getKey());
-        });
-        
-        jListFilesFanOut.setModel(defaultListModelFanOut);
-        jListFilesIncoherent.setModel(defaultListModelCohesion);
-        jListMethodsComplex.setModel(defaultListModelCC);
-        jListMethodsLOC.setModel(defaultListModelLOC);
-    }
-    private HashMap prefixHashMap(HashMap source, String prefix) {
-      HashMap result = new HashMap();
-      Iterator iter = source.entrySet().iterator();
-      while(iter.hasNext()) {
-          HashMap.Entry entry = (HashMap.Entry) iter.next();
-          Object key = entry.getKey();
-          Object value = entry.getValue();
-          result.put(prefix + '.' + key.toString(), value);
-      }
-      return result;
-  }
+    
     
     //Populate all JLabels
     private void populateJLabels() {
@@ -168,6 +178,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jPanelButtonRefactorings = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
+        jPanelButtonMetrics = new javax.swing.JPanel();
+        jLabel22 = new javax.swing.JLabel();
         jPanelButtonMore = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jPanelParent = new javax.swing.JPanel();
@@ -188,21 +200,14 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jListFilesFanOut = new javax.swing.JList<>();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jListMethodsComplex = new javax.swing.JList<>();
         jLabelCodeSmells = new javax.swing.JLabel();
         jLabelTechnicalDebt = new javax.swing.JLabel();
         jLabelComplexity = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jListFilesIncoherent = new javax.swing.JList<>();
-        jLabel13 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jListMethodsLOC = new javax.swing.JList<>();
+        jPanel10 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
         jPanelCodeSmells = new javax.swing.JPanel();
         jLabelIssuesN = new javax.swing.JLabel();
         jLabelIssues = new javax.swing.JLabel();
@@ -214,6 +219,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         jCheckBoxCpp = new javax.swing.JCheckBox();
         jCheckBoxOther = new javax.swing.JCheckBox();
         jCheckBoxC = new javax.swing.JCheckBox();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Exa2Pro");
@@ -260,7 +267,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel16.setText("Progress");
+        jLabel16.setText("Evolution");
         jPanelButtonProgress.add(jLabel16);
 
         jPanel3.add(jPanelButtonProgress);
@@ -277,6 +284,19 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonRefactorings.add(jLabel17);
 
         jPanel3.add(jPanelButtonRefactorings);
+
+        jPanelButtonMetrics.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelButtonMetrics.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelButtonMetrics.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanelButtonMetricsMouseClicked(evt);
+            }
+        });
+
+        jLabel22.setText("Metrics");
+        jPanelButtonMetrics.add(jLabel22);
+
+        jPanel3.add(jPanelButtonMetrics);
 
         jPanelButtonMore.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonMore.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -379,7 +399,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelDateAnalysis)
-                        .addContainerGap(225, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
@@ -395,31 +415,65 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel9.setText("Complexity");
 
-        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel10.setText("Big Fan-Out Files");
-
-        jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel11.setText("Complex Methods");
-
-        jScrollPane2.setViewportView(jListFilesFanOut);
-
-        jScrollPane3.setViewportView(jListMethodsComplex);
-
         jLabelCodeSmells.setText("jLabel12");
 
         jLabelTechnicalDebt.setText("jLabel13");
 
         jLabelComplexity.setText("jLabel14");
 
-        jLabel12.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel12.setText("Incoherent Files");
+        jPanel10.setLayout(new java.awt.GridLayout(2, 2, 10, 10));
 
-        jScrollPane4.setViewportView(jListFilesIncoherent);
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 309, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
-        jLabel13.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel13.setText("Big Methods");
+        jPanel10.add(jPanel6);
 
-        jScrollPane5.setViewportView(jListMethodsLOC);
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 309, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 205, Short.MAX_VALUE)
+        );
+
+        jPanel10.add(jPanel7);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 309, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 205, Short.MAX_VALUE)
+        );
+
+        jPanel10.add(jPanel8);
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 205, Short.MAX_VALUE)
+        );
+
+        jPanel10.add(jPanel9);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -428,72 +482,48 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelCodeSmells)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel10))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addComponent(jLabel6)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabelCodeSmells, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 120, Short.MAX_VALUE)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
-                            .addComponent(jLabelTechnicalDebt)
-                            .addComponent(jLabel12)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                            .addComponent(jLabelTechnicalDebt))
+                        .addGap(100, 100, 100)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelComplexity)
-                            .addComponent(jLabel9)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(34, 34, 34))
+                            .addComponent(jLabel9))
+                        .addGap(290, 290, 290))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
+                        .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelCodeSmells)
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelTechnicalDebt)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabelCodeSmells))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelTechnicalDebt))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelComplexity)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabelComplexity)))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanelOverviewLayout = new javax.swing.GroupLayout(jPanelOverview);
@@ -503,12 +533,10 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(jPanelOverviewLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelOverviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelOverviewLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel2)
                     .addGroup(jPanelOverviewLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -538,39 +566,23 @@ public class ProjectFrame extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jListCodeSmells);
 
-        jLabel19.setText("Files");
+        jLabel19.setText("Language");
 
         jCheckBoxFortran.setSelected(true);
         jCheckBoxFortran.setText("Fortran");
-        jCheckBoxFortran.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jCheckBoxFortranMouseClicked(evt);
-            }
-        });
 
         jCheckBoxCpp.setSelected(true);
         jCheckBoxCpp.setText("C++");
-        jCheckBoxCpp.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jCheckBoxCppMouseClicked(evt);
-            }
-        });
 
         jCheckBoxOther.setSelected(true);
         jCheckBoxOther.setText("Other");
-        jCheckBoxOther.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jCheckBoxOtherMouseClicked(evt);
-            }
-        });
 
         jCheckBoxC.setSelected(true);
         jCheckBoxC.setText("C");
-        jCheckBoxC.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jCheckBoxCMouseClicked(evt);
-            }
-        });
+
+        jLabel20.setText("File");
+
+        jLabel21.setText("Rule");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -583,7 +595,9 @@ public class ProjectFrame extends javax.swing.JFrame {
                     .addComponent(jCheckBoxOther)
                     .addComponent(jCheckBoxCpp)
                     .addComponent(jCheckBoxFortran)
-                    .addComponent(jLabel19))
+                    .addComponent(jLabel19)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel21))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -591,7 +605,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel19)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxFortran)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxC)
@@ -599,7 +613,11 @@ public class ProjectFrame extends javax.swing.JFrame {
                 .addComponent(jCheckBoxCpp)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxOther)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel20)
+                .addGap(26, 26, 26)
+                .addComponent(jLabel21)
+                .addContainerGap(89, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanelCodeSmellsLayout = new javax.swing.GroupLayout(jPanelCodeSmells);
@@ -629,7 +647,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                             .addComponent(jLabelIssuesN))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(218, Short.MAX_VALUE))
+                        .addContainerGap(243, Short.MAX_VALUE))
                     .addComponent(jScrollPane1)))
         );
 
@@ -647,7 +665,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE))
         );
 
         pack();
@@ -700,7 +718,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonRefactorings.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         
         jPanelParent.removeAll();
-        jPanelParent.add(new JPanelRefactorings());
+        jPanelParent.add(new JPanelRefactorings(project));
         jPanelParent.repaint();
         jPanelParent.revalidate();
     }//GEN-LAST:event_jPanelButtonRefactoringsMouseClicked
@@ -716,89 +734,16 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelParent.revalidate();
     }//GEN-LAST:event_jPanelButtonMoreMouseClicked
 
-    private void jCheckBoxFortranMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxFortranMouseClicked
-        if(jCheckBoxFortran.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-    }//GEN-LAST:event_jCheckBoxFortranMouseClicked
-
-    private void jCheckBoxCppMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxCppMouseClicked
-        if(jCheckBoxCpp.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageCpp(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageCpp(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-    }//GEN-LAST:event_jCheckBoxCppMouseClicked
-
-    private void jCheckBoxOtherMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxOtherMouseClicked
-        if(jCheckBoxOther.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-    }//GEN-LAST:event_jCheckBoxOtherMouseClicked
-
-    private void jCheckBoxCMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxCMouseClicked
-        if(jCheckBoxCpp.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageC(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageC(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-    }//GEN-LAST:event_jCheckBoxCMouseClicked
+    private void jPanelButtonMetricsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelButtonMetricsMouseClicked
+        reverseBorders();
+        jPanelButtonMetrics.setBackground(new Color(240, 240, 240));
+        jPanelButtonMetrics.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        
+        jPanelParent.removeAll();
+        jPanelParent.add(new JPanelMetrics(project));
+        jPanelParent.repaint();
+        jPanelParent.revalidate();
+    }//GEN-LAST:event_jPanelButtonMetricsMouseClicked
 
     private void reverseBorders(){
         jPanelButtonIssues.setBackground(new java.awt.Color(255, 255, 255));
@@ -809,6 +754,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonProgress.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanelButtonRefactorings.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonRefactorings.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelButtonMetrics.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelButtonMetrics.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanelButtonMore.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonMore.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
     }
@@ -854,10 +801,6 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBoxFortran;
     private javax.swing.JCheckBox jCheckBoxOther;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -865,6 +808,9 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -881,16 +827,18 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTechnicalDebt;
     private javax.swing.JLabel jLabelTotallLines;
     private javax.swing.JList<Issue> jListCodeSmells;
-    private javax.swing.JList<String> jListFilesFanOut;
-    private javax.swing.JList<String> jListFilesIncoherent;
-    private javax.swing.JList<String> jListMethodsComplex;
-    private javax.swing.JList<String> jListMethodsLOC;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JPanel jPanelButtonIssues;
+    private javax.swing.JPanel jPanelButtonMetrics;
     private javax.swing.JPanel jPanelButtonMore;
     private javax.swing.JPanel jPanelButtonOverview;
     private javax.swing.JPanel jPanelButtonProgress;
@@ -899,10 +847,6 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelOverview;
     private javax.swing.JPanel jPanelParent;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextArea jTextArea1;
@@ -925,6 +869,101 @@ public class ProjectFrame extends javax.swing.JFrame {
     }
     private boolean isLanguageFortran90(String[] str){
          return (str[str.length-1].equalsIgnoreCase("F90"));
+    }
+
+    private void addActionListennersToCheckBoxes() {
+        jCheckBoxFortran.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jCheckBoxFortran.isSelected()){
+            Collections.sort(project.getprojectReport().getIssuesList());
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
+                    defaultListModel.addElement(i);
+                }
+            }
+        }
+        else{
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
+                    defaultListModel.removeElement(i);
+                }
+            }
+        }
+            jLabelIssuesN.setText(defaultListModel.getSize()+"");
+            }
+        });
+        jCheckBoxC.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jCheckBoxC.isSelected()){
+            Collections.sort(project.getprojectReport().getIssuesList());
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(isLanguageC(str)){
+                    defaultListModel.addElement(i);
+                }
+            }
+        }
+        else{
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(isLanguageC(str)){
+                    defaultListModel.removeElement(i);
+                }
+            }
+        }
+        jLabelIssuesN.setText(defaultListModel.getSize()+"");
+            }
+        });
+        jCheckBoxCpp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jCheckBoxCpp.isSelected()){
+            Collections.sort(project.getprojectReport().getIssuesList());
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(isLanguageCpp(str)){
+                    defaultListModel.addElement(i);
+                }
+            }
+        }
+        else{
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(isLanguageCpp(str)){
+                    defaultListModel.removeElement(i);
+                }
+            }
+        }
+        jLabelIssuesN.setText(defaultListModel.getSize()+"");
+            }
+        });
+        jCheckBoxOther.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jCheckBoxOther.isSelected()){
+            Collections.sort(project.getprojectReport().getIssuesList());
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
+                    defaultListModel.addElement(i);
+                }
+            }
+        }
+        else{
+            for(Issue i: project.getprojectReport().getIssuesList()){
+                String[] str= i.getIssueDirectory().split("\\.");
+                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
+                    defaultListModel.removeElement(i);
+                }
+            }
+        }
+        jLabelIssuesN.setText(defaultListModel.getSize()+"");
+            }
+        });
     }
     
 }

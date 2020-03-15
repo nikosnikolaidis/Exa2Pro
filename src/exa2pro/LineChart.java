@@ -1,14 +1,12 @@
 package exa2pro;
 
-import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -25,26 +23,65 @@ public class LineChart extends ApplicationFrame {
         super(applicationTitle);
         this.projectC = pC;
         this.metric=metric;
+        String value= "Hours";
+        if(daysValue())
+            value= "Days";
+            
         JFreeChart lineChart = ChartFactory.createLineChart(
                 chartTitle,
-                "Version", "Value",
+                "Version", value,
                 createDataset(),
                 PlotOrientation.VERTICAL,
                 true, true, false);
-
+        
         chartPanel = new ChartPanel( lineChart );
         //chartPanel.setPreferredSize( new java.awt.Dimension( 600, 500) );
         setContentPane( chartPanel );
     }
 
+    private boolean daysValue(){
+        ArrayList<Project> allProject = projectC.getProjects();
+        boolean days=false;
+        for (Project p : allProject) {
+            if(p.getprojectReport().getTotalDebt().contains("d")){
+                days=true;
+                break;
+            }
+        }
+        return days;
+    }
+    
     private DefaultCategoryDataset createDataset() {
         ArrayList<Project> allProject = projectC.getProjects();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         int version = 1;
+        boolean days=daysValue();
+        
         for (Project p : allProject) {
             double num=0;
             switch (metric) {
+                case "TD":
+                {
+                    String s=p.getprojectReport().getTotalDebt();
+                    double st = Double.parseDouble(s.replace("min", "").replace("h", "").replace("d", ""));
+                    if(s.contains("d")){
+                        num= st;
+                    }
+                    else if(s.contains("h") && days){
+                        num= st/8;
+                    }
+                    else if(s.contains("h") && !days){
+                        num= st;
+                    }
+                    else if(s.contains("min") && days){
+                         num= st/(8*60);
+                    }
+                    else if(s.contains("min") && !days){
+                        num= st/60;
+                    }
+                    break;
+                }
                 case "Issues":
                     num= p.getprojectReport().getTotalCodeSmells();
                     break;

@@ -164,6 +164,18 @@ public class cFile extends CodeFile{
                 }
             }
             
+            //clear wrong methods
+            HashMap<String,Integer> temp= new HashMap<>();
+            for(String str : methodsLOC.keySet()) {
+                if(methodsLOC.get(str) < 0){
+                    methodsLocDecl.remove(str);
+                    temp.put(str, methodsLOC.get(str));
+                }
+            }
+            for(String str : temp.keySet()) {
+                methodsLOC.remove(str);
+            }
+            
             /*Print methods
             System.out.println("N= " +fanOut);
             for(String str: methodsLOC.keySet()){

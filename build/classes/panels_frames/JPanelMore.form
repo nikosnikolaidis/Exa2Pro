@@ -33,7 +33,7 @@
               <Component id="jLabelRefactorings" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="436" max="32767" attributes="0"/>
+              <EmptySpace pref="408" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -47,9 +47,9 @@
     <Container class="javax.swing.JPanel" name="jPanel1">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-        <Property name="columns" type="int" value="0"/>
+        <Property name="columns" type="int" value="2"/>
         <Property name="horizontalGap" type="int" value="10"/>
-        <Property name="rows" type="int" value="2"/>
+        <Property name="rows" type="int" value="0"/>
         <Property name="verticalGap" type="int" value="5"/>
       </Layout>
       <SubComponents>
@@ -68,7 +68,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Delete Project"/>
+            <Property name="text" type="java.lang.String" value="Delete Last Analysis"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
@@ -79,6 +79,16 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel3">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Delete Project"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButton3">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Delete"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

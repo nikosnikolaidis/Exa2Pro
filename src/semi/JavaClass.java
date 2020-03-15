@@ -137,7 +137,7 @@ public class JavaClass {
                 // need to check the use of a variable in the specific line before printing (e.g. return x).  
                 for (int j = 1; j < method_data.length; j++) {
 
-					//System.out.println("line: " + method_data);
+                        //System.out.println(" --line: " + method_data[0]);
                     String[] attributes_data = method_data[j].split("#");
                     if (attributes_data[1].equals("null")) {
                         if (m.usesVariableInLine(Integer.parseInt(attributes_data[2])) == false) {
