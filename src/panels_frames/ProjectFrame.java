@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import static java.util.stream.Collectors.*;
 import javax.swing.DefaultListModel;
+import javax.swing.JPanel;
 import parsers.CodeFile;
 
 /**
@@ -28,7 +29,6 @@ import parsers.CodeFile;
 public class ProjectFrame extends javax.swing.JFrame {
     
     Project project;
-    DefaultListModel<Issue> defaultListModel;
 
     /**
      * Creates new form ProjectFrame
@@ -45,11 +45,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         initComponents();
         
         populateJLabels();
-        populateIssueList();
-        
         addPieChart();
-        
-        addActionListennersToCheckBoxes();
     }
     
     private void addPieChart(){
@@ -131,25 +127,10 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
     }
     
-    //Populate List with Projects
-    private void populateIssueList() {
-        if(!Exa2Pro.projecCredentialstList.isEmpty()){
-            defaultListModel= new DefaultListModel<>();
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                defaultListModel.addElement(i);
-            }
-            jListCodeSmells.setModel(defaultListModel);
-            jListCodeSmells.setCellRenderer(new PanelIssueList());
-        }
-    }
-    
-    
     
     //Populate all JLabels
     private void populateJLabels() {
         jLabelProjectName.setText(project.getCredentials().getProjectName());
-        jLabelIssuesN.setText(project.getprojectReport().getTotalCodeSmells()+"");
         jLabelTotallLines.setText(project.getprojectReport().getTotalLinesOfCode()+"");
         jTextArea1.setText(project.getprojectReport().getLinesOfCodeForAllLanguages());
         jLabelDateAnalysis.setText(project.getprojectReport().getDate()+"");
@@ -208,19 +189,6 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
-        jPanelCodeSmells = new javax.swing.JPanel();
-        jLabelIssuesN = new javax.swing.JLabel();
-        jLabelIssues = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jListCodeSmells = new javax.swing.JList<>();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
-        jCheckBoxFortran = new javax.swing.JCheckBox();
-        jCheckBoxCpp = new javax.swing.JCheckBox();
-        jCheckBoxOther = new javax.swing.JCheckBox();
-        jCheckBoxC = new javax.swing.JCheckBox();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Exa2Pro");
@@ -554,105 +522,6 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         jPanelParent.add(jPanelOverview, "card2");
 
-        jLabelIssuesN.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
-
-        jLabelIssues.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
-        jLabelIssues.setText(" Issues");
-
-        jListCodeSmells.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jListCodeSmellsMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jListCodeSmells);
-
-        jLabel19.setText("Language");
-
-        jCheckBoxFortran.setSelected(true);
-        jCheckBoxFortran.setText("Fortran");
-
-        jCheckBoxCpp.setSelected(true);
-        jCheckBoxCpp.setText("C++");
-
-        jCheckBoxOther.setSelected(true);
-        jCheckBoxOther.setText("Other");
-
-        jCheckBoxC.setSelected(true);
-        jCheckBoxC.setText("C");
-
-        jLabel20.setText("File");
-
-        jLabel21.setText("Rule");
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxC)
-                    .addComponent(jCheckBoxOther)
-                    .addComponent(jCheckBoxCpp)
-                    .addComponent(jCheckBoxFortran)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel20)
-                    .addComponent(jLabel21))
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel19)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxFortran)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxC)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxCpp)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxOther)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel20)
-                .addGap(26, 26, 26)
-                .addComponent(jLabel21)
-                .addContainerGap(89, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanelCodeSmellsLayout = new javax.swing.GroupLayout(jPanelCodeSmells);
-        jPanelCodeSmells.setLayout(jPanelCodeSmellsLayout);
-        jPanelCodeSmellsLayout.setHorizontalGroup(
-            jPanelCodeSmellsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelCodeSmellsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelCodeSmellsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelCodeSmellsLayout.createSequentialGroup()
-                        .addComponent(jLabelIssuesN)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelIssues)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 988, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanelCodeSmellsLayout.setVerticalGroup(
-            jPanelCodeSmellsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelCodeSmellsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelCodeSmellsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelCodeSmellsLayout.createSequentialGroup()
-                        .addGroup(jPanelCodeSmellsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelIssues)
-                            .addComponent(jLabelIssuesN))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(243, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1)))
-        );
-
-        jPanelParent.add(jPanelCodeSmells, "card3");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -665,18 +534,11 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE))
+                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jListCodeSmellsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListCodeSmellsMouseClicked
-        Issue selectedIssue= jListCodeSmells.getSelectedValue();
-        System.out.println("in "+selectedIssue.getIssueDirectory());
-        System.out.println("from "+selectedIssue.getIssueStartLine()+ " till "+selectedIssue.getIssueEndLine());
-        System.out.println(selectedIssue.getLinesOfCodeFromSonarQube());
-    }//GEN-LAST:event_jListCodeSmellsMouseClicked
 
     private void jPanelButtonOverviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelButtonOverviewMouseClicked
         reverseBorders();
@@ -696,7 +558,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonIssues.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         
         jPanelParent.removeAll();
-        jPanelParent.add(jPanelCodeSmells);
+        jPanelParent.add(new JPanelIssues(project));
         jPanelParent.repaint();
         jPanelParent.revalidate();
     }//GEN-LAST:event_jPanelButtonIssuesMouseClicked
@@ -796,20 +658,13 @@ public class ProjectFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBoxC;
-    private javax.swing.JCheckBox jCheckBoxCpp;
-    private javax.swing.JCheckBox jCheckBoxFortran;
-    private javax.swing.JCheckBox jCheckBoxOther;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -821,18 +676,14 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelCodeSmells;
     private javax.swing.JLabel jLabelComplexity;
     private javax.swing.JLabel jLabelDateAnalysis;
-    private javax.swing.JLabel jLabelIssues;
-    private javax.swing.JLabel jLabelIssuesN;
     private javax.swing.JLabel jLabelProjectName;
     private javax.swing.JLabel jLabelTechnicalDebt;
     private javax.swing.JLabel jLabelTotallLines;
-    private javax.swing.JList<Issue> jListCodeSmells;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -843,127 +694,11 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelButtonOverview;
     private javax.swing.JPanel jPanelButtonProgress;
     private javax.swing.JPanel jPanelButtonRefactorings;
-    private javax.swing.JPanel jPanelCodeSmells;
     private javax.swing.JPanel jPanelOverview;
     private javax.swing.JPanel jPanelParent;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-
-    
-    /*
-    ** Check the file name for the Language
-    */
-    private boolean isLanguageC(String[] str){
-         return (str[str.length-1].equalsIgnoreCase("c") || str[str.length-1].equalsIgnoreCase("h"));
-    }
-    private boolean isLanguageCpp(String[] str){
-         return (str[str.length-1].equalsIgnoreCase("cpp") || str[str.length-1].equalsIgnoreCase("hpp"));
-    }
-    private boolean isLanguageFortran77(String[] str){
-         return (str[str.length-1].equalsIgnoreCase("f") || str[str.length-1].equalsIgnoreCase("f77")
-                        || str[str.length-1].equalsIgnoreCase("for") || str[str.length-1].equalsIgnoreCase("fpp")
-                        || str[str.length-1].equalsIgnoreCase("ftn"));
-    }
-    private boolean isLanguageFortran90(String[] str){
-         return (str[str.length-1].equalsIgnoreCase("F90"));
-    }
-
-    private void addActionListennersToCheckBoxes() {
-        jCheckBoxFortran.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxFortran.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-            jLabelIssuesN.setText(defaultListModel.getSize()+"");
-            }
-        });
-        jCheckBoxC.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxC.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageC(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageC(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-            }
-        });
-        jCheckBoxCpp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxCpp.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageCpp(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageCpp(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-            }
-        });
-        jCheckBoxOther.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxOther.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-            }
-        });
-    }
     
 }
