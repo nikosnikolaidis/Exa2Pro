@@ -18,10 +18,14 @@ public class JPanelProgress extends javax.swing.JPanel {
     
     /**
      * Creates new form JPanelProgress
+     * @param project
      */
     public JPanelProgress(Project project) {
         this.project= project;
         initComponents();
+        
+        jListMetrics.setSelectedIndex(0);
+        addChart("TD");
     }
 
     /**
@@ -101,6 +105,11 @@ public class JPanelProgress extends javax.swing.JPanel {
         jPanelChart.removeAll();
         String selectedMetric= jListMetrics.getSelectedValue();
 
+        addChart(selectedMetric);
+    }//GEN-LAST:event_jListMetricsMouseClicked
+
+    //add Chart
+    private void addChart(String selectedMetric){
         LineChart chart = new LineChart(project.getCredentials(),selectedMetric,"Chart",selectedMetric+" per Version");
         //chart.pack( );
 
@@ -120,9 +129,7 @@ public class JPanelProgress extends javax.swing.JPanel {
                 .addComponent(chart.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                 .addGap(2, 2, 2))
         );
-
-    }//GEN-LAST:event_jListMetricsMouseClicked
-
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabeProgress;

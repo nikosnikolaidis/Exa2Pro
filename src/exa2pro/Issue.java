@@ -13,16 +13,13 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  *
  * @author Nikos
  */
 public class Issue implements Serializable, Comparable<Issue>{
+    private String issueRule;
     private String issueName;
     private String issueSeverity;
     private String issueDebt;
@@ -31,8 +28,9 @@ public class Issue implements Serializable, Comparable<Issue>{
     private String issueStartLine;
     private String issueEndLine;
 
-    public Issue(String issueName, String issueSeverity, String issueDebt, String issueType, 
+    public Issue(String issueRule, String issueName, String issueSeverity, String issueDebt, String issueType, 
             String issueDirectory, String issueStartLine, String issueEndLine) {
+        this.issueRule= issueRule;
         this.issueName = issueName;
         this.issueSeverity = issueSeverity;
         this.issueDebt = issueDebt;
@@ -105,6 +103,9 @@ public class Issue implements Serializable, Comparable<Issue>{
     }
     
     // Getters
+    public String getIssueRule(){
+        return issueRule;
+    }
     public String getIssueName() {
         return issueName;
     }

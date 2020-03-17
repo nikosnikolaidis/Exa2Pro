@@ -13,16 +13,15 @@
             <url>src/exa2pro/Issue.java</url>
             <bookmark id="1">
                 <name/>
-                <line>33</line>
+                <line>30</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/panels_frames/ProjectFrame.java</file>
-            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Analysis.java</file>
-            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Issue.java</file>
+            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/panels_frames/JPanelIssues.java</file>
+            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/panels_frames/JPanelRefactorings.java</file>
             <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Project.java</file>
             <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/ProjectCredentials.java</file>
             <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Report.java</file>

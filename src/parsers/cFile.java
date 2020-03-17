@@ -172,9 +172,9 @@ public class cFile extends CodeFile{
                     temp.put(str, methodsLOC.get(str));
                 }
             }
-            for(String str : temp.keySet()) {
+            temp.keySet().forEach((str) -> {
                 methodsLOC.remove(str);
-            }
+            });
             
             /*Print methods
             System.out.println("N= " +fanOut);

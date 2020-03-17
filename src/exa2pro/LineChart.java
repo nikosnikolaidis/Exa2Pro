@@ -23,10 +23,13 @@ public class LineChart extends ApplicationFrame {
         super(applicationTitle);
         this.projectC = pC;
         this.metric=metric;
+        
         String value= "Hours";
-        if(daysValue())
+        if(daysValue() && metric.equals("TD"))
             value= "Days";
-            
+        else
+            value= "Metric";
+        
         JFreeChart lineChart = ChartFactory.createLineChart(
                 chartTitle,
                 "Version", value,

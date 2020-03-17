@@ -34,6 +34,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
 
     //Populate all List for Methods and Files
     private void populateMethodsLists(){
+        HashMap<String, Double> thresholds= exa2pro.PieChart.calculateThresholds();
         //create the models
         DefaultListModel<String> defaultListModelFanOut = new DefaultListModel<>();
         DefaultListModel<String> defaultListModelCohesion = new DefaultListModel<>();
@@ -45,10 +46,12 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         HashMap<String, Integer> allMethodsCC = new HashMap<>();
         HashMap<String, Integer> allMethodsLOC = new HashMap<>();
         for(CodeFile cf: project.getprojectFiles()){
-            allFilesFanOut.put(cf.file.getName(), cf.fanOut);
-            allFilesCohesion.put(cf.file.getName(), Math.round(cf.cohesion * 10.0)/10.0);
-            allMethodsCC.putAll(prefixHashMap(cf.methodsCC, cf.file.getName()));
-            allMethodsLOC.putAll(prefixHashMap(cf.methodsLOC, cf.file.getName()));
+            if(cf.fanOut > thresholds.get("FanOut"))
+                allFilesFanOut.put(cf.file.getName(), cf.fanOut);
+            if(Math.round(cf.cohesion * 10.0)/10.0 > thresholds.get("LCOM2"))
+                allFilesCohesion.put(cf.file.getName(), Math.round(cf.cohesion * 10.0)/10.0);
+            allMethodsCC.putAll(prefixHashMap(cf.methodsCC, cf.file.getName(), thresholds, "CC"));
+            allMethodsLOC.putAll(prefixHashMap(cf.methodsLOC, cf.file.getName(), thresholds, "LOC"));
         }
         
         //sort the lists
@@ -96,14 +99,15 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jListMethodsComplex.setModel(defaultListModelCC);
         jListMethodsLOC.setModel(defaultListModelLOC);
     }
-    private HashMap prefixHashMap(HashMap source, String prefix) {
+    private HashMap prefixHashMap(HashMap source, String prefix, HashMap<String, Double> thresholds, String metric) {
         HashMap result = new HashMap();
         Iterator iter = source.entrySet().iterator();
         while(iter.hasNext()) {
             HashMap.Entry entry = (HashMap.Entry) iter.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
-            result.put(prefix + '.' + key.toString(), value);
+            if((Integer)value > thresholds.get(metric))
+                result.put(prefix + '.' + key.toString(), value);
         }
         return result;
     }
@@ -162,43 +166,49 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelRefactorings)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(jLabel10)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel12)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(40, 40, 40)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel11)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
-                .addContainerGap(605, Short.MAX_VALUE))
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabelRefactorings)
+                .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabelRefactorings)
-                        .addGap(43, 43, 43)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel13))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane4)
-                    .addComponent(jScrollPane5))
-                .addContainerGap(144, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2)
+                            .addComponent(jScrollPane4))))
+                .addGap(192, 192, 192))
         );
     }// </editor-fold>//GEN-END:initComponents
 

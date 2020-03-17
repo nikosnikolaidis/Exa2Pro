@@ -7,18 +7,24 @@ package panels_frames;
 
 import exa2pro.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import static java.util.stream.Collectors.toMap;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
+import javax.swing.JRadioButton;
 
 /**
  *
  * @author Nikos
  */
 public class JPanelIssues extends javax.swing.JPanel {
-
     Project project;
     DefaultListModel<Issue> defaultListModel;
+    ButtonGroup groupRadioFiles;
+    ArrayList<javax.swing.JCheckBox> group;
     
     /**
      * Creates new form JPanelIssues
@@ -28,8 +34,16 @@ public class JPanelIssues extends javax.swing.JPanel {
         initComponents();
         jLabelIssuesN.setText(project.getprojectReport().getTotalCodeSmells()+"");
         
+        group = new ArrayList<>();
+        group.add(jCheckBoxFortran);
+        group.add(jCheckBoxC);
+        group.add(jCheckBoxCpp);
+        group.add(jCheckBoxOther);
+        
         populateIssueList();
-        addActionListennersToCheckBoxes();
+        addActionToCheckLanguage();
+        addCheckBoxesFile();
+        addCheckBoxesRules();
     }
 
     //Populate List with Projects
@@ -37,9 +51,9 @@ public class JPanelIssues extends javax.swing.JPanel {
         if(!Exa2Pro.projecCredentialstList.isEmpty()){
             defaultListModel= new DefaultListModel<>();
             Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
+            project.getprojectReport().getIssuesList().forEach((i) -> {
                 defaultListModel.addElement(i);
-            }
+            });
             jListCodeSmells.setModel(defaultListModel);
             jListCodeSmells.setCellRenderer(new PanelIssueList());
         }
@@ -60,14 +74,20 @@ public class JPanelIssues extends javax.swing.JPanel {
         jListCodeSmells = new javax.swing.JList<>();
         jPanel5 = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
-        jCheckBoxFortran = new javax.swing.JCheckBox();
-        jCheckBoxCpp = new javax.swing.JCheckBox();
-        jCheckBoxOther = new javax.swing.JCheckBox();
-        jCheckBoxC = new javax.swing.JCheckBox();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        jPanelLanguages = new javax.swing.JPanel();
+        jCheckBoxFortran = new javax.swing.JCheckBox();
+        jCheckBoxC = new javax.swing.JCheckBox();
+        jCheckBoxCpp = new javax.swing.JCheckBox();
+        jCheckBoxOther = new javax.swing.JCheckBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jPanelFiles = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jPanelRules = new javax.swing.JPanel();
 
         jLabelIssuesN.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
+        jLabelIssuesN.setText("s");
 
         jLabelIssues.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
         jLabelIssues.setText(" Issues");
@@ -81,21 +101,37 @@ public class JPanelIssues extends javax.swing.JPanel {
 
         jLabel19.setText("Language");
 
-        jCheckBoxFortran.setSelected(true);
-        jCheckBoxFortran.setText("Fortran");
-
-        jCheckBoxCpp.setSelected(true);
-        jCheckBoxCpp.setText("C++");
-
-        jCheckBoxOther.setSelected(true);
-        jCheckBoxOther.setText("Other");
-
-        jCheckBoxC.setSelected(true);
-        jCheckBoxC.setText("C");
-
         jLabel20.setText("File");
 
         jLabel21.setText("Rule");
+
+        jPanelLanguages.setLayout(new java.awt.GridLayout(0, 1));
+
+        jCheckBoxFortran.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jCheckBoxFortran.setSelected(true);
+        jCheckBoxFortran.setText("Fortran");
+        jPanelLanguages.add(jCheckBoxFortran);
+
+        jCheckBoxC.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jCheckBoxC.setSelected(true);
+        jCheckBoxC.setText("C");
+        jPanelLanguages.add(jCheckBoxC);
+
+        jCheckBoxCpp.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jCheckBoxCpp.setSelected(true);
+        jCheckBoxCpp.setText("C++");
+        jPanelLanguages.add(jCheckBoxCpp);
+
+        jCheckBoxOther.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jCheckBoxOther.setSelected(true);
+        jCheckBoxOther.setText("Other");
+        jPanelLanguages.add(jCheckBoxOther);
+
+        jPanelFiles.setLayout(new java.awt.GridLayout(0, 1));
+        jScrollPane2.setViewportView(jPanelFiles);
+
+        jPanelRules.setLayout(new java.awt.GridLayout(0, 1));
+        jScrollPane3.setViewportView(jPanelRules);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -104,14 +140,16 @@ public class JPanelIssues extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxC)
-                    .addComponent(jCheckBoxOther)
-                    .addComponent(jCheckBoxCpp)
-                    .addComponent(jCheckBoxFortran)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel20)
-                    .addComponent(jLabel21))
-                .addContainerGap(43, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanelLanguages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel19)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel21))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,54 +157,49 @@ public class JPanelIssues extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel19)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxFortran)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxC)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxCpp)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxOther)
+                .addComponent(jPanelLanguages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel20)
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel21)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1147, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabelIssuesN)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabelIssues)))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 988, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabelIssuesN)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelIssues)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 968, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 567, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(5, 5, 5)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabelIssues)
-                                .addComponent(jLabelIssuesN))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 243, Short.MAX_VALUE))
-                        .addComponent(jScrollPane1))
-                    .addGap(6, 6, 6)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelIssues)
+                            .addComponent(jLabelIssuesN))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -190,7 +223,12 @@ public class JPanelIssues extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelIssuesN;
     private javax.swing.JList<Issue> jListCodeSmells;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanelFiles;
+    private javax.swing.JPanel jPanelLanguages;
+    private javax.swing.JPanel jPanelRules;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 
     
@@ -212,101 +250,151 @@ public class JPanelIssues extends javax.swing.JPanel {
          return (str[str.length-1].equalsIgnoreCase("F90"));
     }
 
+    
     /*
     * Action Listener for the boxes
     */
-    private void addActionListennersToCheckBoxes() {
-        jCheckBoxFortran.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxFortran.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
+    private void addActionToCheckLanguage(){
+        for(javax.swing.JCheckBox box: group){
+            box.addActionListener((ActionEvent e) -> {
+                defaultListModel.removeAllElements();
+                Collections.sort(project.getprojectReport().getIssuesList());
+                for(Issue i: project.getprojectReport().getIssuesList()){
+                    String[] str= i.getIssueDirectory().split("\\.");
+                    if(jCheckBoxFortran.isSelected() && (isLanguageFortran77(str) || isLanguageFortran90(str)) ){
+                        defaultListModel.addElement(i);
+                    }
+                    if(jCheckBoxC.isSelected() && (isLanguageC(str)) ){
+                        defaultListModel.addElement(i);
+                    }
+                    if(jCheckBoxCpp.isSelected() && (isLanguageCpp(str)) ){
+                        defaultListModel.addElement(i);
+                    }
+                    if(jCheckBoxOther.isSelected() &&
+                            (!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)) ){
+                        defaultListModel.addElement(i);
+                    }
+                }
+                jLabelIssuesN.setText(defaultListModel.getSize()+"");
+            });
+        }
+    }
+
+    
+    //Populate Panel with filter of Files
+    private void addCheckBoxesFile(){
+        //get instances in Hash Map and sort
+        HashMap<String,Integer> instances=new HashMap<>();
+        for(Issue issue: project.getprojectReport().getIssuesList()){
+            if(instances.containsKey(issue.getIssueDirectory()))
+                instances.replace(issue.getIssueDirectory(), instances.get(issue.getIssueDirectory())+1);
+            else
+                instances.put(issue.getIssueDirectory(), 1);
+        }
+        HashMap<String, Integer> sortedInstances= instances.entrySet()
+        .stream()
+        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
+        .collect(
+            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
+                LinkedHashMap::new));
+        
+        //add All radio button
+        groupRadioFiles = new ButtonGroup();
+        JRadioButton rb1= new JRadioButton("All", true);
+        rb1.setFont(jCheckBoxCpp.getFont());
+        rb1.addActionListener((ActionEvent e) -> {
+            if(rb1.isSelected()){
+                defaultListModel.removeAllElements();
+                project.getprojectReport().getIssuesList().forEach((i) -> {
                     defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageFortran77(str) || isLanguageFortran90(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-            jLabelIssuesN.setText(defaultListModel.getSize()+"");
+                });
+                jLabelIssuesN.setText(defaultListModel.getSize()+"");
             }
         });
-        jCheckBoxC.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxC.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageC(str)){
+        groupRadioFiles.add(rb1);
+        jPanelFiles.add(rb1);
+        
+        //add Files radio button
+        for(String str: sortedInstances.keySet()){
+            if(sortedInstances.get(str)<10)
+                break;
+            JRadioButton rb= new JRadioButton(sortedInstances.get(str)+"  "+str.split(":")[1]);
+            rb.setFont(jCheckBoxCpp.getFont());
+            rb.addActionListener((ActionEvent e) -> {
+                if(rb.isSelected()){
+                    String file = rb.getText().split("  ")[1];
+                    defaultListModel.removeAllElements();
+                    int k=0;
+                    for(Issue i: project.getprojectReport().getIssuesList()){
+                        if(i.getIssueDirectory().split(":")[1].equals(file)){
+                            defaultListModel.addElement(i);
+                            k++;
+                        }
+                    }
+                    jLabelIssuesN.setText(k+"");
+                }
+            });
+            groupRadioFiles.add(rb);
+            jPanelFiles.add(rb);
+        }
+    }
+    
+    
+    //Populate Panel with filter of Files
+    private void addCheckBoxesRules() {
+        //get instances in Hash Map and sort
+        HashMap<String,Integer> instances=new HashMap<>();
+        for(Issue issue: project.getprojectReport().getIssuesList()){
+            if(instances.containsKey(issue.getIssueRule()))
+                instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
+            else
+                instances.put(issue.getIssueRule(), 1);
+        }
+        HashMap<String, Integer> sortedInstances= instances.entrySet()
+        .stream()
+        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
+        .collect(
+            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
+                LinkedHashMap::new));
+        
+        //add All radio button
+        ButtonGroup groupRadioRules = new ButtonGroup();
+        JRadioButton rb1= new JRadioButton("All", true);
+        rb1.setFont(jCheckBoxCpp.getFont());
+        rb1.addActionListener((ActionEvent e) -> {
+            if(rb1.isSelected()){
+                defaultListModel.removeAllElements();
+                project.getprojectReport().getIssuesList().forEach((i) -> {
                     defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageC(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
+                });
+                jLabelIssuesN.setText(defaultListModel.getSize()+"");
             }
         });
-        jCheckBoxCpp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxCpp.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageCpp(str)){
-                    defaultListModel.addElement(i);
+        groupRadioRules.add(rb1);
+        jPanelRules.add(rb1);
+        
+        //add Files radio button
+        for(String str: sortedInstances.keySet()){
+            if(sortedInstances.get(str)<10)
+                break;
+            JRadioButton rb= new JRadioButton(sortedInstances.get(str)+"  "+str);
+            rb.setFont(jCheckBoxCpp.getFont());
+            rb.addActionListener((ActionEvent e) -> {
+                if(rb.isSelected()){
+                    String rule = rb.getText().split("  ")[1];
+                    defaultListModel.removeAllElements();
+                    int k=0;
+                    for(Issue i: project.getprojectReport().getIssuesList()){
+                        if(i.getIssueRule().equals(rule)){
+                            defaultListModel.addElement(i);
+                            k++;
+                        }
+                    }
+                    jLabelIssuesN.setText(defaultListModel.size()+"");
                 }
-            }
+            });
+            groupRadioRules.add(rb);
+            jPanelRules.add(rb);
         }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(isLanguageCpp(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-            }
-        });
-        jCheckBoxOther.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jCheckBoxOther.isSelected()){
-            Collections.sort(project.getprojectReport().getIssuesList());
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
-                    defaultListModel.addElement(i);
-                }
-            }
-        }
-        else{
-            for(Issue i: project.getprojectReport().getIssuesList()){
-                String[] str= i.getIssueDirectory().split("\\.");
-                if(!isLanguageC(str) && !isLanguageCpp(str) && !isLanguageFortran90(str) && !isLanguageFortran77(str)){
-                    defaultListModel.removeElement(i);
-                }
-            }
-        }
-        jLabelIssuesN.setText(defaultListModel.getSize()+"");
-            }
-        });
     }
 }
