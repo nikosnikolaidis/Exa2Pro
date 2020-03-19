@@ -236,10 +236,15 @@ public class JPanelIssues extends javax.swing.JPanel {
     ** Check the file name for the Language
     */
     private boolean isLanguageC(String[] str){
-         return (str[str.length-1].equalsIgnoreCase("c") || str[str.length-1].equalsIgnoreCase("h"));
+         return (str[str.length-1].equalsIgnoreCase("c") || str[str.length-1].equalsIgnoreCase("h") ||
+                 str[str.length-1].equalsIgnoreCase("cu") || str[str.length-1].equalsIgnoreCase("hcu") );
     }
     private boolean isLanguageCpp(String[] str){
-         return (str[str.length-1].equalsIgnoreCase("cpp") || str[str.length-1].equalsIgnoreCase("hpp"));
+         return (str[str.length-1].equalsIgnoreCase("cpp") || str[str.length-1].equalsIgnoreCase("hpp") ||
+                    str[str.length-1].equalsIgnoreCase("cc") || str[str.length-1].equalsIgnoreCase("cp") ||
+                    str[str.length-1].equalsIgnoreCase("cxx") || str[str.length-1].equalsIgnoreCase("c++") ||
+                    str[str.length-1].equalsIgnoreCase("hh") || str[str.length-1].equalsIgnoreCase("h++") ||
+                    str[str.length-1].equalsIgnoreCase("hp") || str[str.length-1].equalsIgnoreCase("hxx") );
     }
     private boolean isLanguageFortran77(String[] str){
          return (str[str.length-1].equalsIgnoreCase("f") || str[str.length-1].equalsIgnoreCase("f77")

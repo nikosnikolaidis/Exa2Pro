@@ -72,6 +72,8 @@ public class HomeFrame extends javax.swing.JFrame {
         jTextFieldSonarURL = new javax.swing.JTextField();
         jTextFieldICodePath = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jButtonChangeRuleEffort = new javax.swing.JButton();
         jPanelAddNew = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -164,6 +166,15 @@ public class HomeFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel9.setText("Change rule effort time:");
+
+        jButtonChangeRuleEffort.setText("Change");
+        jButtonChangeRuleEffort.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonChangeRuleEffortActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -180,11 +191,13 @@ public class HomeFrame extends javax.swing.JFrame {
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
-                                    .addComponent(jLabel8))
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel9))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jTextFieldICodePath, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
-                                    .addComponent(jTextFieldSonarURL))))))
+                                    .addComponent(jTextFieldSonarURL)
+                                    .addComponent(jButtonChangeRuleEffort))))))
                 .addContainerGap(72, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
@@ -200,9 +213,13 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextFieldICodePath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addGap(43, 43, 43)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jButtonChangeRuleEffort))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addComponent(jButton1)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addGap(35, 35, 35))
         );
 
         jPanelSettings.add(jPanel7);
@@ -425,6 +442,10 @@ public class HomeFrame extends javax.swing.JFrame {
         Exa2Pro.getSettingFromFile();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButtonChangeRuleEffortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChangeRuleEffortActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonChangeRuleEffortActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -464,6 +485,7 @@ public class HomeFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonAddNew;
+    private javax.swing.JButton jButtonChangeRuleEffort;
     private javax.swing.JButton jButtonDirectory;
     private javax.swing.JButton jButtonProjects;
     private javax.swing.JButton jButtonSaveProject;
@@ -476,6 +498,7 @@ public class HomeFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JList<ProjectCredentials> jListProjects;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

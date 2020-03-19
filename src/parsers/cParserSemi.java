@@ -71,6 +71,7 @@ public class cParserSemi {
                             replaceWithSpaces();
                             String[] lineTable = line.trim().split(" ");
                             for (String str : lineTable) {
+                                str= str.replaceAll("#", "");
                                 if (!str.trim().equals("")) {
                                     if (!isNumeric(str)) {
                                         //System.out.println("Usage#" + str + "#" + countLOC + ";");
@@ -120,9 +121,13 @@ public class cParserSemi {
                                     if (str.contains(")")) {
                                         str = str.replace(")", "");
                                     }
-                                    //System.out.println("parameter#" + str + ";");
-                                    writer.append("parameter#"+str+";"
-                                            +System.lineSeparator());
+                                    if(!str.equals("")){
+                                        if (str.charAt(str.length()-1)==';')
+                                            str= str.substring(0, str.length() - 1);
+                                        //System.out.println("parameter#" + str + ";");
+                                        writer.append("parameter#"+str+";"
+                                                +System.lineSeparator());
+                                    }
                                 }
                                 methodToPrint = "";
                                 methodParam.clear();
@@ -203,8 +208,8 @@ public class cParserSemi {
                     commentBlock = true;
                     return true;
                 } else if (word.contains("*/")) {
-                    String[] newLine = word.split("\\*/");
-                    this.line = newLine[1];
+                    this.line= word.replaceAll("\\/\\*.*?\\*\\/", "");
+                    line = line.trim().replace(" +", " ");
                     return false;
                 }
                 commentBlock = true;

@@ -22,8 +22,13 @@ public class SplitLongMethod {
             fileLanguage = "f77";
         }else if( str[str.length - 1].equalsIgnoreCase("F90") ) {
             fileLanguage = "f90";
-        } else if (str[str.length - 1].equalsIgnoreCase("c") || str[str.length - 1].equalsIgnoreCase("cpp") 
-                || str[str.length - 1].equalsIgnoreCase("h") || str[str.length - 1].equalsIgnoreCase("hpp")) {
+        } else if (str[str.length-1].equalsIgnoreCase("c") || str[str.length-1].equalsIgnoreCase("h") ||
+                            str[str.length-1].equalsIgnoreCase("cpp") || str[str.length-1].equalsIgnoreCase("hpp") ||
+                            str[str.length-1].equalsIgnoreCase("cc") || str[str.length-1].equalsIgnoreCase("cp") ||
+                            str[str.length-1].equalsIgnoreCase("cxx") || str[str.length-1].equalsIgnoreCase("c++") ||
+                            str[str.length-1].equalsIgnoreCase("cu") || str[str.length-1].equalsIgnoreCase("hh") ||
+                            str[str.length-1].equalsIgnoreCase("hp") || str[str.length-1].equalsIgnoreCase("hxx") ||
+                            str[str.length-1].equalsIgnoreCase("h++") || str[str.length-1].equalsIgnoreCase("hcu") ) {
             fileLanguage = "c";
         }
     }

@@ -32,6 +32,9 @@ public class ProjectCredentials implements Serializable{
     public void addProject(Project p){
         projects.add(p);
     }
+    public void removeProject(Project p){
+        projects.remove(p);
+    }
 
     //Getters
     public String getProjectKey() {

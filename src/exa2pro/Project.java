@@ -69,9 +69,13 @@ public class Project implements Serializable {
                             || str[str.length-1].equalsIgnoreCase("for") || str[str.length-1].equalsIgnoreCase("fpp")
                             || str[str.length-1].equalsIgnoreCase("ftn"))
                         projectFiles.add(new fortranFile(file,false));
-                    else if(str[str.length-1].equalsIgnoreCase("c") || str[str.length-1].equalsIgnoreCase("h"))
-                        projectFiles.add(new cFile(file));
-                    else if(str[str.length-1].equalsIgnoreCase("cpp") || str[str.length-1].equalsIgnoreCase("hpp"))
+                    else if(str[str.length-1].equalsIgnoreCase("c") || str[str.length-1].equalsIgnoreCase("h") ||
+                            str[str.length-1].equalsIgnoreCase("cpp") || str[str.length-1].equalsIgnoreCase("hpp") ||
+                            str[str.length-1].equalsIgnoreCase("cc") || str[str.length-1].equalsIgnoreCase("cp") ||
+                            str[str.length-1].equalsIgnoreCase("cxx") || str[str.length-1].equalsIgnoreCase("c++") ||
+                            str[str.length-1].equalsIgnoreCase("hh") || str[str.length-1].equalsIgnoreCase("h++") ||
+                            str[str.length-1].equalsIgnoreCase("hp") || str[str.length-1].equalsIgnoreCase("hxx") ||
+                            str[str.length-1].equalsIgnoreCase("cu") || str[str.length-1].equalsIgnoreCase("hcu") )
                         projectFiles.add(new cFile(file));
                 } else if (file.isDirectory()) {
                     getFilesForAnalysis(file.getAbsolutePath());

@@ -5,7 +5,9 @@
  */
 package panels_frames;
 
+import exa2pro.Exa2Pro;
 import exa2pro.Project;
+import exa2pro.ProjectCredentials;
 
 /**
  *
@@ -21,6 +23,12 @@ public class JPanelMore extends javax.swing.JPanel {
     public JPanelMore(Project project) {
         this.project= project;
         initComponents();
+        
+        //if there are more than 1 version enable delete last analysis
+        if(project.getCredentials().getProjects().size()==1)
+            jButtonLastAnalysisDelete.setEnabled(false);
+        else
+            jButtonLastAnalysisDelete.setEnabled(true);
     }
 
     /**
@@ -37,9 +45,9 @@ public class JPanelMore extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        jButtonLastAnalysisDelete = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        jButtonDeleteProject = new javax.swing.JButton();
 
         jLabelRefactorings.setText("More Options");
 
@@ -59,20 +67,25 @@ public class JPanelMore extends javax.swing.JPanel {
         jLabel2.setText("Delete Last Analysis");
         jPanel1.add(jLabel2);
 
-        jButton2.setText("Delete");
-        jButton2.setToolTipText("");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonLastAnalysisDelete.setText("Delete");
+        jButtonLastAnalysisDelete.setToolTipText("");
+        jButtonLastAnalysisDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButtonLastAnalysisDeleteActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2);
+        jPanel1.add(jButtonLastAnalysisDelete);
 
         jLabel3.setText("Delete Project");
         jPanel1.add(jLabel3);
 
-        jButton3.setText("Delete");
-        jPanel1.add(jButton3);
+        jButtonDeleteProject.setText("Delete");
+        jButtonDeleteProject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteProjectActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonDeleteProject);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -96,20 +109,26 @@ public class JPanelMore extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void jButtonLastAnalysisDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLastAnalysisDeleteActionPerformed
+        project.getCredentials().removeProject(project);
+        project.saveToFile();
+    }//GEN-LAST:event_jButtonLastAnalysisDeleteActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Project p= new Project(project.getCredentials(), project.getCredentials().getProjects().size()+1+"");
         p.projectVersionAnalysis();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButtonDeleteProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteProjectActionPerformed
+        Exa2Pro.projecCredentialstList.remove(project.getCredentials());
+        project.saveToFile();
+    }//GEN-LAST:event_jButtonDeleteProjectActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButtonDeleteProject;
+    private javax.swing.JButton jButtonLastAnalysisDelete;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
