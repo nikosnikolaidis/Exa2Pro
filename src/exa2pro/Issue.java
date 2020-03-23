@@ -45,7 +45,7 @@ public class Issue implements Serializable, Comparable<Issue>{
      */
     public String getLinesOfCodeFromSonarQube(){
         try {
-            URL url = new URL("http://localhost:9000/api/sources/raw?key="
+            URL url = new URL(Exa2Pro.sonarURL+"/api/sources/raw?key="
                     +issueDirectory);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");

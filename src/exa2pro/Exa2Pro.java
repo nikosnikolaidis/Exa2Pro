@@ -31,6 +31,7 @@ public class Exa2Pro {
     private static String OS = System.getProperty("os.name").toLowerCase();
     public static ArrayList<ProjectCredentials> projecCredentialstList = new ArrayList<>();
     public static String iCodePath;
+    public static String sonarPath;
     public static String sonarURL;
 
     /**
@@ -78,6 +79,8 @@ public class Exa2Pro {
                     urlFound=true;
                 } else if (line.contains("sonar.icode.path=")) {
                     iCodePath = line.replace("sonar.icode.path=", "");
+                } else if (line.contains("sonar.path=")){
+                    sonarPath = line.replace("sonar.path=", "");
                 }
             }
             if(!urlFound)
@@ -93,11 +96,12 @@ public class Exa2Pro {
      * @param url the SonarQube url
      * @param icode the icode path
      */
-    public static void saveSettingsToFile(String url, String icode) {
+    public static void saveSettingsToFile(String url, String icode, String sonarP) {
         try {
-            //save sonarqube url and icode path to my setting file
+            //save sonarqube url/path and icode path to my setting file
             BufferedWriter writer = new BufferedWriter(new FileWriter("mySettings.txt"));
             writer.write("sonar.host.url=" + url + System.lineSeparator());
+            writer.append("sonar.path=" + sonarP + System.lineSeparator());
             writer.append("sonar.icode.path=" + icode + System.lineSeparator());
             writer.close();
 

@@ -84,8 +84,10 @@ public class Project implements Serializable {
         }
     }
     
-    // Copies all fortran files to home directory of project
-    // in order for icode to analyze them
+    /**
+     * Copies all Fortran files to home directory of project
+     * in order for icode to analyze them
+     */
     public void copyFortranFilesToSiglePlace() throws IOException {
         for(CodeFile cf: projectFiles){
             String[] str=cf.file.getName().split("\\.");

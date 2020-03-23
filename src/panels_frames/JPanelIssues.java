@@ -256,7 +256,7 @@ public class JPanelIssues extends javax.swing.JPanel {
     }
 
     
-    /*
+    /**
     * Action Listener for the boxes
     */
     private void addActionToCheckLanguage(){
@@ -286,7 +286,9 @@ public class JPanelIssues extends javax.swing.JPanel {
     }
 
     
-    //Populate Panel with filter of Files
+    /**
+     * Populate Panel with filter of Files
+    */
     private void addCheckBoxesFile(){
         //get instances in Hash Map and sort
         HashMap<String,Integer> instances=new HashMap<>();
@@ -345,7 +347,9 @@ public class JPanelIssues extends javax.swing.JPanel {
     }
     
     
-    //Populate Panel with filter of Files
+    /**
+     * Populate Panel with filter of Files
+    */
     private void addCheckBoxesRules() {
         //get instances in Hash Map and sort
         HashMap<String,Integer> instances=new HashMap<>();

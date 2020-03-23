@@ -1,2 +1,3 @@
 sonar.host.url=http://localhost:9000
+sonar.path=C:\Users\Nikos\Downloads\sonarqube-7.3
 sonar.icode.path=C:\Users\Nikos\Downloads\icode\icode.exe

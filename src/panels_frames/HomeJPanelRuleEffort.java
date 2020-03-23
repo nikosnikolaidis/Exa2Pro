@@ -5,17 +5,89 @@
  */
 package panels_frames;
 
+import exa2pro.Exa2Pro;
+import exa2pro.xml_rules.XmlReadANDWrite;
+import exa2pro.xml_rules.IcodelintRrules;
+import exa2pro.xml_rules.Rule;
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Nikos
  */
 public class HomeJPanelRuleEffort extends javax.swing.JPanel {
 
+    private List<HomeJPanelRule> allPanelRules= new ArrayList<>();
+    private IcodelintRrules que;
+    private HomeFrame homeFrame;
+    
     /**
      * Creates new form HomeJPanelRuleEffort
      */
-    public HomeJPanelRuleEffort() {
+    public HomeJPanelRuleEffort(HomeFrame homeFrame) {
+        this.homeFrame=homeFrame;
         initComponents();
+        
+        ButtonGroup groupRadio= new ButtonGroup();
+        groupRadio.add(jRadioButtonF90);
+        groupRadio.add(jRadioButtonF77);
+        addActionListenersRadio();
+        
+        addAllRules("f90");
+    }
+    
+    /**
+    * Reads Xml and add all rules to Panel
+    * @param version the version of Fortran f90 or f77
+    */
+    private void addAllRules(String version){
+        try {
+            que = XmlReadANDWrite.readRules(version);
+            
+            allPanelRules.clear();
+            jPanelAllRules.removeAll();
+            que.getRule().forEach((r) -> {
+                HomeJPanelRule temp= new HomeJPanelRule(r);
+                allPanelRules.add(temp);
+                jPanelAllRules.add(temp);
+            });
+            jPanelAllRules.repaint();
+            jPanelAllRules.revalidate();
+        } catch (JAXBException ex) {
+            Logger.getLogger(HomeJPanelRuleEffort.class.getName()).log(Level.SEVERE, null, ex);
+            homeFrame.changeParentPanelSettings();
+        }
+    }
+    
+    /**
+     * Adds Listeners to change the appeared Rules
+     */
+    private void addActionListenersRadio(){
+        jRadioButtonF90.addActionListener((ActionEvent e) ->{
+            addAllRules("f90");
+        });
+        jRadioButtonF77.addActionListener((ActionEvent e) ->{
+            addAllRules("f77");
+        });
     }
 
     /**
@@ -28,347 +100,33 @@ public class HomeJPanelRuleEffort extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane8 = new javax.swing.JScrollPane();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jTextFieldMinutes6 = new javax.swing.JTextField();
-        jScrollPane9 = new javax.swing.JScrollPane();
-        jTextArea7 = new javax.swing.JTextArea();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jTextFieldMinutes7 = new javax.swing.JTextField();
-        jScrollPane10 = new javax.swing.JScrollPane();
-        jTextArea8 = new javax.swing.JTextArea();
-        jPanel11 = new javax.swing.JPanel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jTextFieldMinutes8 = new javax.swing.JTextField();
-        jScrollPane11 = new javax.swing.JScrollPane();
-        jTextArea9 = new javax.swing.JTextArea();
-        jPanel8 = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jTextFieldMinutes5 = new javax.swing.JTextField();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        jTextArea6 = new javax.swing.JTextArea();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jTextFieldMinutes4 = new javax.swing.JTextField();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTextArea5 = new javax.swing.JTextArea();
-        jPanel12 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        jTextFieldMinutes9 = new javax.swing.JTextField();
-        jScrollPane12 = new javax.swing.JScrollPane();
-        jTextArea10 = new javax.swing.JTextArea();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jTextFieldMinutes3 = new javax.swing.JTextField();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea4 = new javax.swing.JTextArea();
+        jPanelAllRules = new javax.swing.JPanel();
+        jButtonSave = new javax.swing.JButton();
+        jButtonCancel = new javax.swing.JButton();
+        jRadioButtonF90 = new javax.swing.JRadioButton();
+        jRadioButtonF77 = new javax.swing.JRadioButton();
 
-        jPanel6.setLayout(new java.awt.GridLayout(0, 2));
+        jPanelAllRules.setLayout(new java.awt.GridLayout(0, 2));
+        jScrollPane8.setViewportView(jPanelAllRules);
 
-        jLabel13.setText("Description");
+        jButtonSave.setText("Save");
+        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveActionPerformed(evt);
+            }
+        });
 
-        jLabel14.setText("Time required (in minutes)");
+        jButtonCancel.setText("Cancel");
+        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelActionPerformed(evt);
+            }
+        });
 
-        jTextArea7.setBackground(new java.awt.Color(240, 240, 240));
-        jTextArea7.setColumns(20);
-        jTextArea7.setRows(2);
-        jScrollPane9.setViewportView(jTextArea7);
+        jRadioButtonF90.setSelected(true);
+        jRadioButtonF90.setText("Fortran 90");
 
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane9)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldMinutes6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
-                    .addComponent(jTextFieldMinutes6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel6.add(jPanel9);
-
-        jLabel15.setText("Description");
-
-        jLabel16.setText("Time required (in minutes)");
-
-        jTextArea8.setBackground(new java.awt.Color(240, 240, 240));
-        jTextArea8.setColumns(20);
-        jTextArea8.setRows(2);
-        jScrollPane10.setViewportView(jTextArea8);
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane10)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel15)
-                            .addGroup(jPanel10Layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldMinutes7, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel16)
-                    .addComponent(jTextFieldMinutes7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel6.add(jPanel10);
-
-        jLabel17.setText("Description");
-
-        jLabel18.setText("Time required (in minutes)");
-
-        jTextArea9.setBackground(new java.awt.Color(240, 240, 240));
-        jTextArea9.setColumns(20);
-        jTextArea9.setRows(2);
-        jScrollPane11.setViewportView(jTextArea9);
-
-        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
-        jPanel11.setLayout(jPanel11Layout);
-        jPanel11Layout.setHorizontalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane11)
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel17)
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldMinutes8, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel11Layout.setVerticalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel17)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel18)
-                    .addComponent(jTextFieldMinutes8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel6.add(jPanel11);
-
-        jLabel11.setText("Description");
-
-        jLabel12.setText("Time required (in minutes)");
-
-        jTextArea6.setBackground(new java.awt.Color(240, 240, 240));
-        jTextArea6.setColumns(20);
-        jTextArea6.setRows(2);
-        jScrollPane7.setViewportView(jTextArea6);
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane7)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldMinutes5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addComponent(jTextFieldMinutes5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel6.add(jPanel8);
-
-        jLabel9.setText("Description");
-
-        jLabel10.setText("Time required (in minutes)");
-
-        jTextArea5.setBackground(new java.awt.Color(240, 240, 240));
-        jTextArea5.setColumns(20);
-        jTextArea5.setRows(2);
-        jScrollPane6.setViewportView(jTextArea5);
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldMinutes4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addComponent(jTextFieldMinutes4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel6.add(jPanel7);
-
-        jLabel19.setText("Description");
-
-        jLabel20.setText("Time required (in minutes)");
-
-        jTextArea10.setBackground(new java.awt.Color(240, 240, 240));
-        jTextArea10.setColumns(20);
-        jTextArea10.setRows(2);
-        jScrollPane12.setViewportView(jTextArea10);
-
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane12)
-                    .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel19)
-                            .addGroup(jPanel12Layout.createSequentialGroup()
-                                .addComponent(jLabel20)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldMinutes9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel19)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel20)
-                    .addComponent(jTextFieldMinutes9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel6.add(jPanel12);
-
-        jLabel7.setText("Description");
-
-        jLabel8.setText("Time required (in minutes)");
-
-        jTextArea4.setBackground(new java.awt.Color(240, 240, 240));
-        jTextArea4.setColumns(20);
-        jTextArea4.setRows(2);
-        jScrollPane5.setViewportView(jTextArea4);
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldMinutes3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addComponent(jTextFieldMinutes3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel6.add(jPanel5);
-
-        jScrollPane8.setViewportView(jPanel6);
+        jRadioButtonF77.setText("Fortran 77");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -376,75 +134,92 @@ public class HomeJPanelRuleEffort extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jRadioButtonF90)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButtonF77)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane8)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 263, Short.MAX_VALUE)
+                        .addComponent(jButtonCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonSave)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButtonF90)
+                    .addComponent(jRadioButtonF77))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonSave)
+                    .addComponent(jButtonCancel))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
+        for(HomeJPanelRule temp: allPanelRules){
+            for(int i=0; i<que.getRule().size(); i++){
+                if(temp.getDescription().equals(que.getRule().get(i).getDescription())){
+                    que.getRule().get(i).setRemediationFunctionBaseEffort(temp.getMinutes());
+                    break;
+                }
+            }
+        }
+        try {
+            //write file with new rule times
+            File file;
+            if(jRadioButtonF90.isSelected())
+                file = new File("sonar-icode-cnes-plugin-1.3.0/src/main/resources/rules/icode-f90-rules.xml");
+            else
+                file = new File("sonar-icode-cnes-plugin-1.3.0/src/main/resources/rules/icode-f77-rules.xml");
+            XmlReadANDWrite.writeRules(que, file);
+            
+            //build with maven the jar file
+            String folder =(new File("sonar-icode-cnes-plugin-1.3.0/").getAbsolutePath());
+            if(Exa2Pro.isWindows()){
+                Process proc = Runtime.getRuntime().exec("cmd /c \"cd " + folder + " && "
+                        + "mvn -Dmaven.test.skip=true package" + "\"");
+                proc.waitFor();
+            }
+            else{
+                
+            }
+            
+            //copy new plugin to SonarQube
+            Files.copy((new File("sonar-icode-cnes-plugin-1.3.0/target/sonaricode-1.3.0.jar")).toPath(),
+                        (new File(Exa2Pro.sonarPath.replace("\\","/")+"/extensions/plugins/sonaricode-1.3.0.jar")).toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
+            
+            //toDo
+            //restart sonarQube
+            
+            homeFrame.changeParentPanelSettings();
+        } catch (JAXBException | IOException | InterruptedException ex) {
+            Logger.getLogger(HomeJPanelRuleEffort.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonSaveActionPerformed
+
+    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+        homeFrame.changeParentPanelSettings();
+    }//GEN-LAST:event_jButtonCancelActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane10;
-    private javax.swing.JScrollPane jScrollPane11;
-    private javax.swing.JScrollPane jScrollPane12;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JButton jButtonCancel;
+    private javax.swing.JButton jButtonSave;
+    private javax.swing.JPanel jPanelAllRules;
+    private javax.swing.JRadioButton jRadioButtonF77;
+    private javax.swing.JRadioButton jRadioButtonF90;
     private javax.swing.JScrollPane jScrollPane8;
-    private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTextArea jTextArea10;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextArea jTextArea4;
-    private javax.swing.JTextArea jTextArea5;
-    private javax.swing.JTextArea jTextArea6;
-    private javax.swing.JTextArea jTextArea7;
-    private javax.swing.JTextArea jTextArea8;
-    private javax.swing.JTextArea jTextArea9;
-    private javax.swing.JTextField jTextFieldMinutes1;
-    private javax.swing.JTextField jTextFieldMinutes2;
-    private javax.swing.JTextField jTextFieldMinutes3;
-    private javax.swing.JTextField jTextFieldMinutes4;
-    private javax.swing.JTextField jTextFieldMinutes5;
-    private javax.swing.JTextField jTextFieldMinutes6;
-    private javax.swing.JTextField jTextFieldMinutes7;
-    private javax.swing.JTextField jTextFieldMinutes8;
-    private javax.swing.JTextField jTextFieldMinutes9;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -54,10 +54,15 @@ public class Report  implements Serializable{
         //}
     }
     
+    /**
+     * Get Issues From Sonar API
+     * @param page the results
+     * @param extra extra filtering
+     */
     private void getIssuesFromPage(int page, String extra){
         try {
             date= new Date();
-            URL url = new URL("http://localhost:9000/api/issues/search?pageSize=500&componentKeys="
+            URL url = new URL(Exa2Pro.sonarURL+"/api/issues/search?pageSize=500&componentKeys="
                     +project.getCredentials().getProjectName()+"&types=CODE_SMELL"+extra+"&p="+page);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
@@ -99,7 +104,7 @@ public class Report  implements Serializable{
      */
     public String getMetricFromSonarQube(String metric){
         try {
-            URL url = new URL("http://localhost:9000/api/measures/component?component="
+            URL url = new URL(Exa2Pro.sonarURL+"/api/measures/component?component="
                     +project.getCredentials().getProjectName()+"&metricKeys="+metric);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
@@ -131,11 +136,13 @@ public class Report  implements Serializable{
         return "";
     }
     
-    // Return if the project is finished being analyzed
+    /*
+    * Returns if the project is finished being analyzed
+    */
     public boolean isFinishedAnalyzing(){
         boolean finished=false;
         try {
-            URL url = new URL("http://localhost:9000/api/ce/component?component="+project.getCredentials().getProjectName());
+            URL url = new URL(Exa2Pro.sonarURL+"/api/ce/component?component="+project.getCredentials().getProjectName());
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();

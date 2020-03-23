@@ -74,6 +74,8 @@ public class HomeFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jButtonChangeRuleEffort = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        jTextFieldSonarPath = new javax.swing.JTextField();
         jPanelAddNew = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -85,7 +87,7 @@ public class HomeFrame extends javax.swing.JFrame {
         jButtonSaveProject = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(660, 635));
+        setMinimumSize(new java.awt.Dimension(950, 635));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/exa2pro/exa2pro.trans.png"))); // NOI18N
         jPanel2.add(jLabel1);
@@ -175,6 +177,8 @@ public class HomeFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel10.setText("Sonar Qube Path:");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -183,22 +187,32 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel4))
+                        .addComponent(jLabel4)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addContainerGap())
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(53, 53, 53)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton1)
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel9))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextFieldICodePath, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
-                                    .addComponent(jTextFieldSonarURL)
-                                    .addComponent(jButtonChangeRuleEffort))))))
-                .addContainerGap(72, Short.MAX_VALUE))
+                                    .addComponent(jLabel8))
+                                .addGap(46, 46, 46))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addGap(43, 43, 43)))
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButtonChangeRuleEffort)
+                            .addComponent(jTextFieldSonarPath)
+                            .addComponent(jTextFieldICodePath)
+                            .addComponent(jTextFieldSonarURL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel9))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,11 +229,15 @@ public class HomeFrame extends javax.swing.JFrame {
                     .addComponent(jLabel8))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(jTextFieldSonarPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jButtonChangeRuleEffort))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addGap(34, 34, 34)
                 .addComponent(jButton1)
-                .addGap(35, 35, 35))
+                .addContainerGap())
         );
 
         jPanelSettings.add(jPanel7);
@@ -365,6 +383,7 @@ public class HomeFrame extends javax.swing.JFrame {
         parentPanel.revalidate();
         jTextFieldSonarURL.setText(Exa2Pro.sonarURL);
         jTextFieldICodePath.setText(Exa2Pro.iCodePath);
+        jTextFieldSonarPath.setText(Exa2Pro.sonarPath);
     }//GEN-LAST:event_jButtonSettingsActionPerformed
 
     private void jButtonAddNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddNewActionPerformed
@@ -438,12 +457,15 @@ public class HomeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jListProjectsMousePressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Exa2Pro.saveSettingsToFile(jTextFieldSonarURL.getText(),jTextFieldICodePath.getText());
+        Exa2Pro.saveSettingsToFile(jTextFieldSonarURL.getText(),jTextFieldICodePath.getText(),jTextFieldSonarPath.getText());
         Exa2Pro.getSettingFromFile();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButtonChangeRuleEffortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChangeRuleEffortActionPerformed
-        // TODO add your handling code here:
+        parentPanel.removeAll();
+        parentPanel.add(new HomeJPanelRuleEffort(this));
+        parentPanel.repaint();
+        parentPanel.revalidate();
     }//GEN-LAST:event_jButtonChangeRuleEffortActionPerformed
 
     /**
@@ -491,6 +513,7 @@ public class HomeFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButtonSaveProject;
     private javax.swing.JButton jButtonSettings;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -514,7 +537,18 @@ public class HomeFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldICodePath;
     private javax.swing.JTextField jTextFieldProjectDirectory;
     private javax.swing.JTextField jTextFieldProjectName;
+    private javax.swing.JTextField jTextFieldSonarPath;
     private javax.swing.JTextField jTextFieldSonarURL;
     private javax.swing.JPanel parentPanel;
     // End of variables declaration//GEN-END:variables
+
+    public void changeParentPanelSettings(){
+        parentPanel.removeAll();
+        parentPanel.add(jPanelSettings);
+        parentPanel.repaint();
+        parentPanel.revalidate();
+        jTextFieldSonarURL.setText(Exa2Pro.sonarURL);
+        jTextFieldICodePath.setText(Exa2Pro.iCodePath);
+        jTextFieldSonarPath.setText(Exa2Pro.sonarPath);
+    }
 }
