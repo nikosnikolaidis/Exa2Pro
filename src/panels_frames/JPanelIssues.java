@@ -5,12 +5,18 @@
  */
 package panels_frames;
 
+import csvControlers.Artifacts;
 import exa2pro.*;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static java.util.stream.Collectors.toMap;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -353,12 +359,29 @@ public class JPanelIssues extends javax.swing.JPanel {
     private void addCheckBoxesRules() {
         //get instances in Hash Map and sort
         HashMap<String,Integer> instances=new HashMap<>();
+        
+        ArrayList<String> newFiles= parseNewFiles();
+        ArrayList<String> changedFiles= parseChangedFiles();
+        
         for(Issue issue: project.getprojectReport().getIssuesList()){
-            if(instances.containsKey(issue.getIssueRule()))
-                instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
-            else
-                instances.put(issue.getIssueRule(), 1);
+            if(newFiles.contains(issue.getIssueDirectory().split(":")[1].replace("temp_fortran_", ""))){
+                if(instances.containsKey(issue.getIssueRule()))
+                    instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
+                else
+                    instances.put(issue.getIssueRule(), 1);
+            }
         }
+        for(Issue issue: project.getprojectReport().getIssuesList()){
+            if(changedFiles.contains(issue.getIssueDirectory().split(":")[1].replace("temp_fortran_", ""))){
+                if(project.getCredentials().getProjects().get(project.getCredentials().getProjects().size()-2).getprojectReport().containsIssue(issue)){
+                    if(instances.containsKey(issue.getIssueRule()))
+                        instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
+                    else
+                        instances.put(issue.getIssueRule(), 1);
+                }
+            }
+        }
+        
         HashMap<String, Integer> sortedInstances= instances.entrySet()
         .stream()
         .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
@@ -384,7 +407,7 @@ public class JPanelIssues extends javax.swing.JPanel {
         
         //add Files radio button
         for(String str: sortedInstances.keySet()){
-            if(sortedInstances.get(str)<10)
+            if(sortedInstances.get(str)<20)
                 break;
             JRadioButton rb= new JRadioButton(sortedInstances.get(str)+"  "+str);
             rb.setFont(jCheckBoxCpp.getFont());
@@ -405,5 +428,39 @@ public class JPanelIssues extends javax.swing.JPanel {
             groupRadioRules.add(rb);
             jPanelRules.add(rb);
         }
+    }
+
+    
+    private ArrayList<String> parseNewFiles() {
+        ArrayList<String> newFiles=new ArrayList<>();
+        try {
+            BufferedReader br=new BufferedReader(new FileReader("filesChangAdd-qr.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if(line.contains("Add> ")){
+                    newFiles.add(line.split(":")[1].replace(",", "."));
+                }
+            }
+            br.close();
+        } catch (IOException ex) {
+            Logger.getLogger(JPanelIssues.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return newFiles;
+    }
+    private ArrayList<String> parseChangedFiles() {
+        ArrayList<String> changedFiles=new ArrayList<>();
+        try {
+            BufferedReader br=new BufferedReader(new FileReader("filesChangAdd-qr.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if(line.contains("Change> ")){
+                    changedFiles.add(line.split(":")[1].replace(",", "."));
+                }
+            }
+            br.close();
+        } catch (IOException ex) {
+            Logger.getLogger(JPanelIssues.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return changedFiles;
     }
 }

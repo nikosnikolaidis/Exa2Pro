@@ -39,6 +39,16 @@ public class Report  implements Serializable{
         this.project=project;
     }
     
+    public boolean containsIssue(Issue i){
+        for(Issue issue: issuesList){
+            if(issue.getIssueName().equals(i.getIssueName()) && issue.getIssueDirectory().equals(i.getIssueDirectory())
+                    && issue.getIssueStartLine().equals(i.getIssueStartLine())){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Return the issues from Sonar Qube
      */

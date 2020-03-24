@@ -68,7 +68,7 @@ public class Analysis {
                 writer.append("sonar.icode.launch=true" +System.lineSeparator());
                 writer.append("sonar.icode.path="+ Exa2Pro.iCodePath.replace("\\", "\\\\") +System.lineSeparator());
             }
-            writer.append("sonar.sourceEncoding=UTF-8");
+            //writer.append("sonar.sourceEncoding=UTF-8");
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
