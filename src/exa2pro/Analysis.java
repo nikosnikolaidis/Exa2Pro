@@ -125,13 +125,13 @@ public class Analysis {
             Thread.sleep(500);
             
             // Can Read Reports now
-            double dept = Double.parseDouble(report.getMetricFromSonarQube("sqale_index"));
-            report.setTotalDebt(formatTehnicalDebt(dept));
-            report.setTotalDebt_Index(dept);
-            report.setTotalCodeSmells(Integer.parseInt(report.getMetricFromSonarQube("code_smells")));
-            report.setTotalLinesOfCode(Integer.parseInt(report.getMetricFromSonarQube("ncloc")));
-            report.setTotalComplexity(Integer.parseInt(report.getMetricFromSonarQube("complexity")));
-            report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
+            //double dept = Double.parseDouble(report.getMetricFromSonarQube("sqale_index"));
+            //report.setTotalDebt(formatTehnicalDebt(dept));
+            //report.setTotalDebt_Index(dept);
+            //report.setTotalCodeSmells(Integer.parseInt(report.getMetricFromSonarQube("code_smells")));
+            //report.setTotalLinesOfCode(Integer.parseInt(report.getMetricFromSonarQube("ncloc")));
+            //report.setTotalComplexity(Integer.parseInt(report.getMetricFromSonarQube("complexity")));
+            //report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
             
             report.getIssuesFromSonarQube();
         } catch (InterruptedException | IOException ex) {
@@ -143,7 +143,7 @@ public class Analysis {
      * Formats the Technical Debt from number to string with days, hours or minutes
      * @param dept the total debt in minutes
      */
-    private String formatTehnicalDebt(double dept) {
+    public static String formatTehnicalDebt(double dept) {
         String str = "";
         DecimalFormat df = new DecimalFormat("#.#");
         if (dept > 59) {

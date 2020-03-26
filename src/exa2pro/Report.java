@@ -5,6 +5,8 @@
  */
 package exa2pro;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
@@ -41,8 +43,8 @@ public class Report  implements Serializable{
     
     public boolean containsIssue(Issue i){
         for(Issue issue: issuesList){
-            if(issue.getIssueName().equals(i.getIssueName()) && issue.getIssueDirectory().equals(i.getIssueDirectory())
-                    && issue.getIssueStartLine().equals(i.getIssueStartLine())){
+            if(issue.getIssueName().equals(i.getIssueName()) && issue.getIssueDirectory().split(":")[1].equals(i.getIssueDirectory().split(":")[1]) ){
+                if(i.sameLines(project, issue))
                 return true;
             }
         }
@@ -53,10 +55,15 @@ public class Report  implements Serializable{
      * Return the issues from Sonar Qube
      */
     public void getIssuesFromSonarQube(){
-        int page= (totalCodeSmells-1)/500 + 1;
-        for(int i=1; i<=page; i++){
-            getIssuesFromPage(i,"&resolved=false");
-        }
+        //int page= (getIssuesNumbers("&resolved=false&severities=INFO")-1)/500 + 1;
+        //for(int i=1; i<=page; i++){
+            getIssuesFromPage(1,"&resolved=false&severities=INFO");
+        //}
+        
+        //page= (getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER")-1)/500 + 1;
+        //for(int i=1; i<=page; i++){
+        //    getIssuesFromPage(i,"&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER");
+        //}
         
         //To get the fixed issues
         //if(Integer.parseInt(project.getProjectVersion())>1){
@@ -64,16 +71,11 @@ public class Report  implements Serializable{
         //}
     }
     
-    /**
-     * Get Issues From Sonar API
-     * @param page the results
-     * @param extra extra filtering
-     */
-    private void getIssuesFromPage(int page, String extra){
+    private int getIssuesNumbers(String extra){
         try {
             date= new Date();
             URL url = new URL(Exa2Pro.sonarURL+"/api/issues/search?pageSize=500&componentKeys="
-                    +project.getCredentials().getProjectName()+"&types=CODE_SMELL"+extra+"&p="+page);
+                    +project.getCredentials().getProjectName()+"&types=CODE_SMELL"+extra+"&p=1");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -86,6 +88,40 @@ public class Report  implements Serializable{
                 while(sc.hasNext()){
                     inline+=sc.nextLine();
                 }
+                String number =inline.split(",",2)[0].replace("{\"total\":", "");
+                sc.close();
+                return Integer.parseInt(number);
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    /**
+     * Get Issues From Sonar API
+     * @param page the results
+     * @param extra extra filtering
+     */
+    private void getIssuesFromPage(int page, String extra){
+        try {
+            date= new Date();
+            /*URL url = new URL(Exa2Pro.sonarURL+"/api/issues/search?pageSize=500&componentKeys="
+                    +project.getCredentials().getProjectName()+"&types=CODE_SMELL"+extra+"&p="+page);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responsecode = conn.getResponseCode();
+            if(responsecode != 200)
+                throw new RuntimeException("HttpResponseCode: "+responsecode);
+            else{*/
+                Scanner sc = new Scanner(new File(System.getProperty("user.dir")+"/"+project.getCredentials().getProjectName()+".json"));//url.openStream());
+                String inline="";
+                while(sc.hasNext()){
+                    inline+=sc.nextLine();
+                }
                 sc.close();
                 
                 JSONParser parse = new JSONParser();
@@ -94,20 +130,29 @@ public class Report  implements Serializable{
                 for(int i=0;i<jsonarr_1.size();i++){
                     JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
                     JSONObject jsonobj_2=(JSONObject)jsonobj_1.get("textRange");
+                    String start="1";
+                    if(jsonobj_2!=null){
+                        start=jsonobj_2.get("startLine").toString();
+                    }
                     Issue issue=new Issue(jsonobj_1.get("rule").toString(), jsonobj_1.get("message").toString()
-                            , jsonobj_1.get("severity").toString(), jsonobj_1.get("debt").toString()
+                            , jsonobj_1.get("severity").toString()//, jsonobj_1.get("debt").toString()
                             , jsonobj_1.get("type").toString(), jsonobj_1.get("component").toString()
-                            , jsonobj_2.get("startLine").toString(), jsonobj_2.get("endLine").toString());
+                            , start
+                            //, jsonobj_2.get("endLine").toString()
+                    );
                     issuesList.add(issue);
                 }
-            }
-        } catch (MalformedURLException ex) {
+            //}
+        //} catch (MalformedURLException ex) {
+        //    Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        //}
+        }catch (FileNotFoundException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException | ParseException ex) {
+        } catch (ParseException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+        
     /**
      * Return the metric from Sonar Qube
      * @param metric the metric we want

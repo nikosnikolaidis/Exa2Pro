@@ -1,98 +1,100 @@
-Add> qrmumps_after:qrm_assemble_block,F90
-Add> qrmumps_after:qrm_clean_front,F90
-Add> qrmumps_after:qrm_dscr_mod,F90
-Add> qrmumps_after:qrm_factorization_tasks,F90
-Add> qrmumps_after:qrm_front,F90
-Add> qrmumps_after:qrm_gemqrt,F90
-Add> qrmumps_after:qrm_geqrt,F90
-Add> qrmumps_after:qrm_get_r,F90
-Add> qrmumps_after:qrm_mem_mod_template,F90
-Add> qrmumps_after:qrm_memhandling_mod,F90
-Add> qrmumps_after:qrm_pthread_mod,F90
-Add> qrmumps_after:qrm_solve_kernels,F90
-Add> qrmumps_after:qrm_solve_tasks,F90
-Add> qrmumps_after:qrm_starpu_codelets_mod,F90
-Add> qrmumps_after:qrm_starpu_cpu_funcs,F90
-Add> qrmumps_after:qrm_test,F90
-Add> qrmumps_after:qrm_test_c,F90
-Add> qrmumps_after:qrm_test_err,F90
-Add> qrmumps_after:qrm_test_facto,F90
-Add> qrmumps_after:qrm_test_methods,F90
-Add> qrmumps_after:qrm_test_multiples,F90
-Add> qrmumps_after:qrm_test_ord,F90
-Add> qrmumps_after:qrm_test_pipe,F90
-Add> qrmumps_after:qrm_test_sing,F90
-Add> qrmumps_after:qrm_testing,F90
-Add> qrmumps_after:qrm_testing_mod,F90
-Add> qrmumps_after:qrm_tpmqrt,F90
-Add> qrmumps_after:qrm_tpqrt,F90
-Add> qrmumps_after:starpu_f_mod,F90
-Add> qr_mumps_After:C/qrm_atomic,c
-Add> qr_mumps_After:include/qrm_c,h
-Add> qr_mumps_After:include/qrm_common_c,h
-Add> qr_mumps_After:C/qrm_pthread_wrap,c
-Add> qr_mumps_After:include/qrm_starpu,h
-Add> qr_mumps_After:qrm_starpu_codelets,c
-Add> qr_mumps_After:include/qrm_starpu_prof,h
-Add> qr_mumps_After:qrm_test_aux_c,c
-Add> qr_mumps_After:starpu_f_wrappers,c
-Change> qrmumps_before:qrm_activate_front,F90
-Change> qrmumps_before:qrm_adata_mod,F90
-Change> qrmumps_before:qrm_amalg_tree,F90
-Change> qrmumps_before:qrm_analyse,F90
-Change> qrmumps_before:qrm_analysis_mod,F90
-Change> qrmumps_before:qrm_apply,F90
-Change> qrmumps_before:qrm_ata_graph,F90
-Change> qrmumps_before:qrm_attach_singletons,F90
-Change> qrmumps_before:qrm_c_comm_interface,F90
-Change> qrmumps_before:qrm_c_interface,F90
-Change> qrmumps_before:qrm_check_cperm,F90
-Change> qrmumps_before:qrm_common_mod,F90
-Change> qrmumps_before:qrm_compress_data,F90
-Change> qrmumps_before:qrm_compute_graph,F90
-Change> qrmumps_before:qrm_const_mod,F90
-Change> qrmumps_before:qrm_detect_singletons,F90
-Change> qrmumps_before:qrm_do_colamd,F90
-Change> qrmumps_before:qrm_do_metis,F90
-Change> qrmumps_before:qrm_do_ordering,F90
-Change> qrmumps_before:qrm_do_scotch,F90
-Change> qrmumps_before:qrm_do_subtree,F90
-Change> qrmumps_before:qrm_elim_tree,F90
-Change> qrmumps_before:qrm_error_mod,F90
-Change> qrmumps_before:qrm_factorization_core,F90
-Change> qrmumps_before:qrm_factorization_init,F90
-Change> qrmumps_before:qrm_factorization_mod,F90
-Change> qrmumps_before:qrm_factorize,F90
-Change> qrmumps_before:qrm_fdata_mod,F90
-Change> qrmumps_before:qrm_init_front,F90
-Change> qrmumps_before:qrm_least_squares,F90
-Change> qrmumps_before:qrm_matmul,F90
-Change> qrmumps_before:qrm_matnrm,F90
-Change> qrmumps_before:qrm_methods_mod,F90
-Change> qrmumps_before:qrm_min_norm,F90
-Change> qrmumps_before:qrm_mod,F90
-Change> qrmumps_before:qrm_postorder,F90
-Change> qrmumps_before:qrm_print_tree,F90
-Change> qrmumps_before:qrm_prnt_array,F90
-Change> qrmumps_before:qrm_readmat,F90
-Change> qrmumps_before:qrm_remap_pnt,F90
-Change> qrmumps_before:qrm_reorder_tree,F90
-Change> qrmumps_before:qrm_residual_norm,F90
-Change> qrmumps_before:qrm_residual_orth,F90
-Change> qrmumps_before:qrm_rowcount,F90
-Change> qrmumps_before:qrm_rowperm,F90
-Change> qrmumps_before:qrm_sdata_mod,F90
-Change> qrmumps_before:qrm_solve,F90
-Change> qrmumps_before:qrm_solve_mod,F90
-Change> qrmumps_before:qrm_solve_sing_front,F90
-Change> qrmumps_before:qrm_sort_mod,F90
-Change> qrmumps_before:qrm_spmat_mod,F90
-Change> qrmumps_before:qrm_string_mod,F90
-Change> qrmumps_before:qrm_symbolic,F90
-Change> qrmumps_before:qrm_utils_mod,F90
-Change> qrmumps_before:qrm_vecnrm,F90
-Change> qrmumps_before:src/C/qrm_colamd_wrap,c
-Change> qrmumps_before:include/qrm_common,h
-Change> qrmumps_before:src/C/qrm_get_wtime,c
-Change> qrmumps_before:src/C/qrm_metis_wrap,c
-Change> qrmumps_before:test/qrm_test_solve_c,c
+Add>
+qrmumps_after:qrm_assemble_block,F90
+qrmumps_after:qrm_clean_front,F90
+qrmumps_after:qrm_dscr_mod,F90
+qrmumps_after:qrm_factorization_tasks,F90
+qrmumps_after:qrm_front,F90
+qrmumps_after:qrm_gemqrt,F90
+qrmumps_after:qrm_geqrt,F90
+qrmumps_after:qrm_get_r,F90
+qrmumps_after:qrm_mem_mod_template,F90
+qrmumps_after:qrm_memhandling_mod,F90
+qrmumps_after:qrm_pthread_mod,F90
+qrmumps_after:qrm_solve_kernels,F90
+qrmumps_after:qrm_solve_tasks,F90
+qrmumps_after:qrm_starpu_codelets_mod,F90
+qrmumps_after:qrm_starpu_cpu_funcs,F90
+qrmumps_after:qrm_test,F90
+qrmumps_after:qrm_test_c,F90
+qrmumps_after:qrm_test_err,F90
+qrmumps_after:qrm_test_facto,F90
+qrmumps_after:qrm_test_methods,F90
+qrmumps_after:qrm_test_multiples,F90
+qrmumps_after:qrm_test_ord,F90
+qrmumps_after:qrm_test_pipe,F90
+qrmumps_after:qrm_test_sing,F90
+qrmumps_after:qrm_testing,F90
+qrmumps_after:qrm_testing_mod,F90
+qrmumps_after:qrm_tpmqrt,F90
+qrmumps_after:qrm_tpqrt,F90
+qrmumps_after:starpu_f_mod,F90
+qr_mumps_After:C/qrm_atomic,c
+qr_mumps_After:include/qrm_c,h
+qr_mumps_After:include/qrm_common_c,h
+qr_mumps_After:C/qrm_pthread_wrap,c
+qr_mumps_After:include/qrm_starpu,h
+qr_mumps_After:qrm_starpu_codelets,c
+qr_mumps_After:include/qrm_starpu_prof,h
+qr_mumps_After:qrm_test_aux_c,c
+qr_mumps_After:starpu_f_wrappers,c
+Change>
+qrmumps_before:qrm_activate_front,F90
+qrmumps_before:qrm_adata_mod,F90
+qrmumps_before:qrm_amalg_tree,F90
+qrmumps_before:qrm_analyse,F90
+qrmumps_before:qrm_analysis_mod,F90
+qrmumps_before:qrm_apply,F90
+qrmumps_before:qrm_ata_graph,F90
+qrmumps_before:qrm_attach_singletons,F90
+qrmumps_before:qrm_c_comm_interface,F90
+qrmumps_before:qrm_c_interface,F90
+qrmumps_before:qrm_check_cperm,F90
+qrmumps_before:qrm_common_mod,F90
+qrmumps_before:qrm_compress_data,F90
+qrmumps_before:qrm_compute_graph,F90
+qrmumps_before:qrm_const_mod,F90
+qrmumps_before:qrm_detect_singletons,F90
+qrmumps_before:qrm_do_colamd,F90
+qrmumps_before:qrm_do_metis,F90
+qrmumps_before:qrm_do_ordering,F90
+qrmumps_before:qrm_do_scotch,F90
+qrmumps_before:qrm_do_subtree,F90
+qrmumps_before:qrm_elim_tree,F90
+qrmumps_before:qrm_error_mod,F90
+qrmumps_before:qrm_factorization_core,F90
+qrmumps_before:qrm_factorization_init,F90
+qrmumps_before:qrm_factorization_mod,F90
+qrmumps_before:qrm_factorize,F90
+qrmumps_before:qrm_fdata_mod,F90
+qrmumps_before:qrm_init_front,F90
+qrmumps_before:qrm_least_squares,F90
+qrmumps_before:qrm_matmul,F90
+qrmumps_before:qrm_matnrm,F90
+qrmumps_before:qrm_methods_mod,F90
+qrmumps_before:qrm_min_norm,F90
+qrmumps_before:qrm_mod,F90
+qrmumps_before:qrm_postorder,F90
+qrmumps_before:qrm_print_tree,F90
+qrmumps_before:qrm_prnt_array,F90
+qrmumps_before:qrm_readmat,F90
+qrmumps_before:qrm_remap_pnt,F90
+qrmumps_before:qrm_reorder_tree,F90
+qrmumps_before:qrm_residual_norm,F90
+qrmumps_before:qrm_residual_orth,F90
+qrmumps_before:qrm_rowcount,F90
+qrmumps_before:qrm_rowperm,F90
+qrmumps_before:qrm_sdata_mod,F90
+qrmumps_before:qrm_solve,F90
+qrmumps_before:qrm_solve_mod,F90
+qrmumps_before:qrm_solve_sing_front,F90
+qrmumps_before:qrm_sort_mod,F90
+qrmumps_before:qrm_spmat_mod,F90
+qrmumps_before:qrm_string_mod,F90
+qrmumps_before:qrm_symbolic,F90
+qrmumps_before:qrm_utils_mod,F90
+qrmumps_before:qrm_vecnrm,F90
+qrmumps_before:src/C/qrm_colamd_wrap,c
+qrmumps_before:include/qrm_common,h
+qrmumps_before:src/C/qrm_get_wtime,c
+qrmumps_before:src/C/qrm_metis_wrap,c
+qrmumps_before:test/qrm_test_solve_c,c

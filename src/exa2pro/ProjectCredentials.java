@@ -49,4 +49,12 @@ public class ProjectCredentials implements Serializable{
     public ArrayList<Project> getProjects() {
         return projects;
     }
+    
+    public void setName(String s){
+        this.projectName=s;
+        this.projectKey=s;
+    }
+    public void setDir(String s){
+        this.projectDirectory=s;
+    }
 }

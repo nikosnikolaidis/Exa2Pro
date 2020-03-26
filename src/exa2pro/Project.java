@@ -43,7 +43,7 @@ public class Project implements Serializable {
      */
     public void projectVersionAnalysis(){
         Analysis a= new Analysis(this);
-        a.runCustomCreatedMetrics();
+        //a.runCustomCreatedMetrics();
         a.createPropertiesFile();
         a.executeAnalysis();
         
@@ -95,7 +95,10 @@ public class Project implements Serializable {
                             || str[str.length-1].equalsIgnoreCase("for") || str[str.length-1].equalsIgnoreCase("fpp")
                             || str[str.length-1].equalsIgnoreCase("ftn") || str[str.length-1].equalsIgnoreCase("F90")){
                 fortranDeletedFiles.add(cf);
-                Files.copy(cf.file.toPath(), Paths.get(credentials.getProjectDirectory()+"\\temp_fortran_" + cf.file.getName()));
+                
+                String parent= cf.file.getParent().split("\\\\")[cf.file.getParent().split("\\\\").length-1];
+                Files.copy(cf.file.toPath(), Paths.get(credentials.getProjectDirectory()+"\\temp_fortran_" +parent+"_"+ cf.file.getName()));
+                
                 cf.file.delete();
             }
         }
@@ -107,10 +110,12 @@ public class Project implements Serializable {
         if (files != null) { //some JVMs return null for empty dirs
             for (File f : files) {
                 String fName=f.getName();
-                if (fName.startsWith("temp_fortran_")) {
-                    fName= fName.replace("temp_fortran_", "");
+                if (fName.startsWith("temp_fortran_") ) {
                     for(CodeFile cf: fortranDeletedFiles){
-                        if(cf.file.getName().equals(fName)){
+                        String parent= cf.file.getParent().split("\\\\")[cf.file.getParent().split("\\\\").length-1];
+                        if(("temp_fortran_"+parent+"_"+cf.file.getName()).equals(fName)){
+                            fName= fName.replace("temp_fortran_", "");
+                            fName= fName.split("_",2)[1];
                             Files.copy(f.toPath(), Paths.get(cf.file.getParent()+"\\"+fName) );
                             f.delete();
                         }

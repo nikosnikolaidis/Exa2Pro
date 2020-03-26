@@ -38,11 +38,51 @@ public class Exa2Pro {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        sonarURL="http://195.251.210.147:9906";
+        ProjectCredentials pc= new ProjectCredentials("metalwalls_starpu_tasks", "metalwalls_starpu_tasks",
+                "C:\\Users\\Nikos\\Documents\\NetBeansProjects\\examp\\1.metalwalls\\2.ompfor\\t6.4-metalwalls-ompfor");
+        projecCredentialstList.add(pc);
+        Project p=new Project(pc, "1");
+        
+        Report report = new Report(p);
+        p.setProjectReport(report);
+            //double dept = Double.parseDouble(report.getMetricFromSonarQube("sqale_index"));
+            //report.setTotalDebt(Analysis.formatTehnicalDebt(dept));
+            //report.setTotalDebt_Index(dept);
+            //report.setTotalCodeSmells(Integer.parseInt(report.getMetricFromSonarQube("code_smells")));
+            //report.setTotalLinesOfCode(Integer.parseInt(report.getMetricFromSonarQube("ncloc")));
+            //report.setTotalComplexity(Integer.parseInt(report.getMetricFromSonarQube("complexity")));
+            //report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
+            
+            report.getIssuesFromSonarQube();
+        System.out.println(pc.getProjects().size());
+        
+        Project p1=new Project(pc, "2");
+        pc.setName("metalwalls_ master_skepu");
+        pc.setDir("C:\\Users\\Nikos\\Documents\\NetBeansProjects\\examp\\1.metalwalls\\3.omp-tasks\\t6.4-metalwalls-omp-tasks");
+        
+        Report report1 = new Report(p1);
+        p1.setProjectReport(report1);
+//            double dept1 = Double.parseDouble(report1.getMetricFromSonarQube("sqale_index"));
+//            report1.setTotalDebt(Analysis.formatTehnicalDebt(dept1));
+//            report1.setTotalDebt_Index(dept1);
+//            report1.setTotalCodeSmells(Integer.parseInt(report1.getMetricFromSonarQube("code_smells")));
+//            report1.setTotalLinesOfCode(Integer.parseInt(report1.getMetricFromSonarQube("ncloc")));
+//            report1.setTotalComplexity(Integer.parseInt(report1.getMetricFromSonarQube("complexity")));
+//            report1.setLinesOfCodeForAllLanguages(report1.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
+            
+            report1.getIssuesFromSonarQube();
+            
+        System.out.println(pc.getProjects().size());
+        p1.saveToFile();
+        
+        
         getProjetsFromFile();
         getSettingFromFile();
 
         HomeFrame homeFrame = new HomeFrame();
         homeFrame.setVisible(true);
+        
     }
 
     //find the OS of the machine

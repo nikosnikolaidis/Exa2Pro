@@ -158,7 +158,7 @@ public class PanelIssueList extends javax.swing.JPanel implements ListCellRender
     public Component getListCellRendererComponent(JList<? extends Issue> list, Issue value, int index, boolean isSelected, boolean cellHasFocus) {
         this.jLabelIssueName.setText(value.getIssueName());
         this.jLabelSeverity.setText(value.getIssueSeverity());
-        this.jLabelDebt.setText(value.getIssueDebt());
+        //this.jLabelDebt.setText(value.getIssueDebt());
         this.jLabelType.setText(value.getIssueType());
         this.jLabelFile.setText(value.getIssueDirectory().split(":")[1]);
         

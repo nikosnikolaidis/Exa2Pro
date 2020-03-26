@@ -1,0 +1,16 @@
+Add>
+cdf_rodinia_2_2starpu:debug,c
+cdf_rodinia_2_2starpu:debug,h
+cdf_rodinia_2_2starpu:euler3d,h
+cdf_rodinia_2_2starpu:euler3d_kernels,c
+cdf_rodinia_2_2starpu:euler3d_parameters,h
+cdf_rodinia_2_2starpu:euler3dCuda,c
+cdf_rodinia_2_2starpu:input,c
+cdf_rodinia_2_2starpu:input,h
+cdf_rodinia_2_2starpu:options,h
+cdf_rodinia_2_2starpu:output,c
+cdf_rodinia_2_2starpu:output,h
+cdf_rodinia_2_2starpu:partition,c
+cdf_rodinia_2_2starpu:partition,h
+Change>
+cdf_rodinia_2_2starpu:euler3d,c

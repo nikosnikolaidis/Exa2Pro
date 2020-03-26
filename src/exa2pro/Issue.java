@@ -5,6 +5,8 @@
  */
 package exa2pro;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
@@ -13,38 +15,75 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import panels_frames.JPanelIssues;
 
 /**
  *
  * @author Nikos
  */
-public class Issue implements Serializable, Comparable<Issue>{
+public class Issue implements Serializable{//, Comparable<Issue>{
     private String issueRule;
     private String issueName;
     private String issueSeverity;
-    private String issueDebt;
+    //private String issueDebt;
     private String issueType;
     private String issueDirectory;
     private String issueStartLine;
-    private String issueEndLine;
+    //private String issueEndLine;
 
-    public Issue(String issueRule, String issueName, String issueSeverity, String issueDebt, String issueType, 
-            String issueDirectory, String issueStartLine, String issueEndLine) {
+    public Issue(String issueRule, String issueName, String issueSeverity//, String issueDebt
+            , String issueType, 
+            String issueDirectory, String issueStartLine//, String issueEndLine
+        ) {
         this.issueRule= issueRule;
         this.issueName = issueName;
         this.issueSeverity = issueSeverity;
-        this.issueDebt = issueDebt;
+        //this.issueDebt = issueDebt;
         this.issueType = issueType;
         this.issueDirectory = issueDirectory;
         this.issueStartLine = issueStartLine;
-        this.issueEndLine = issueEndLine;
+        //this.issueEndLine = issueEndLine;
+    }
+    
+    public boolean sameLines(Project p, Issue o){
+        String lineThis="";
+        try {
+            String name= p.getCredentials().getProjectDirectory();
+            BufferedReader br=new BufferedReader(new FileReader(name+"\\"+issueDirectory.split(":")[1]));
+            String line;
+            int i=1;
+            while ((line = br.readLine()) != null) {
+                if(i==Integer.parseInt(issueStartLine))
+                    lineThis=line;
+                i++;
+            }
+            br.close();
+        } catch (IOException ex) {
+            Logger.getLogger(JPanelIssues.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String lineO="";
+        try {
+            String name= "C:\\Users\\Nikos\\Documents\\NetBeansProjects\\examp\\5.pastix\\pastix_release_3184";
+            BufferedReader br=new BufferedReader(new FileReader(name+"\\"+issueDirectory.split(":")[1]));
+            String line;
+            int i=1;
+            while ((line = br.readLine()) != null) {
+                if(i==Integer.parseInt(o.issueStartLine))
+                    lineO=line;
+                i++;
+            }
+            br.close();
+        } catch (IOException ex) {
+            Logger.getLogger(JPanelIssues.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return lineThis.equals(lineO);
     }
     
     /**
      * Return the raw Lines of Code for this issue from Sonar Qube
      */
     public String getLinesOfCodeFromSonarQube(){
-        try {
+        /*try {
             URL url = new URL(Exa2Pro.sonarURL+"/api/sources/raw?key="
                     +issueDirectory);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -74,12 +113,12 @@ public class Issue implements Serializable, Comparable<Issue>{
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
         return "";
     }
     
     
-    @Override
+    /*@Override
     public int compareTo(Issue o) {
         String str=issueDebt;
         str = str.replaceAll("[^-?0-9]+", " ");
@@ -100,7 +139,7 @@ public class Issue implements Serializable, Comparable<Issue>{
             }
         }
         return 0;
-    }
+    }*/
     
     // Getters
     public String getIssueRule(){
@@ -112,9 +151,9 @@ public class Issue implements Serializable, Comparable<Issue>{
     public String getIssueSeverity() {
         return issueSeverity;
     }
-    public String getIssueDebt() {
-        return issueDebt;
-    }
+    //public String getIssueDebt() {
+    //    return issueDebt;
+    //}
     public String getIssueType() {
         return issueType;
     }
@@ -124,7 +163,7 @@ public class Issue implements Serializable, Comparable<Issue>{
     public String getIssueStartLine() {
         return issueStartLine;
     }
-    public String getIssueEndLine() {
-        return issueEndLine;
-    }
+    //public String getIssueEndLine() {
+    //    return issueEndLine;
+    //}
 }

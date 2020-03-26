@@ -56,8 +56,9 @@ public class JPanelIssues extends javax.swing.JPanel {
     private void populateIssueList() {
         if(!Exa2Pro.projecCredentialstList.isEmpty()){
             defaultListModel= new DefaultListModel<>();
-            Collections.sort(project.getprojectReport().getIssuesList());
+            //Collections.sort(project.getprojectReport().getIssuesList());
             project.getprojectReport().getIssuesList().forEach((i) -> {
+                //System.out.println(i.getIssueName());
                 defaultListModel.addElement(i);
             });
             jListCodeSmells.setModel(defaultListModel);
@@ -212,7 +213,7 @@ public class JPanelIssues extends javax.swing.JPanel {
     private void jListCodeSmellsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListCodeSmellsMouseClicked
         Issue selectedIssue= jListCodeSmells.getSelectedValue();
         System.out.println("in "+selectedIssue.getIssueDirectory());
-        System.out.println("from "+selectedIssue.getIssueStartLine()+ " till "+selectedIssue.getIssueEndLine());
+        //System.out.println("from "+selectedIssue.getIssueStartLine()+ " till "+selectedIssue.getIssueEndLine());
         System.out.println(selectedIssue.getLinesOfCodeFromSonarQube());
     }//GEN-LAST:event_jListCodeSmellsMouseClicked
 
@@ -269,7 +270,7 @@ public class JPanelIssues extends javax.swing.JPanel {
         for(javax.swing.JCheckBox box: group){
             box.addActionListener((ActionEvent e) -> {
                 defaultListModel.removeAllElements();
-                Collections.sort(project.getprojectReport().getIssuesList());
+                //Collections.sort(project.getprojectReport().getIssuesList());
                 for(Issue i: project.getprojectReport().getIssuesList()){
                     String[] str= i.getIssueDirectory().split("\\.");
                     if(jCheckBoxFortran.isSelected() && (isLanguageFortran77(str) || isLanguageFortran90(str)) ){
@@ -360,6 +361,8 @@ public class JPanelIssues extends javax.swing.JPanel {
         //get instances in Hash Map and sort
         HashMap<String,Integer> instances=new HashMap<>();
         
+        //Changed for geting rules of new and chanded files
+        /////***/////
         ArrayList<String> newFiles= parseNewFiles();
         ArrayList<String> changedFiles= parseChangedFiles();
         
@@ -371,16 +374,48 @@ public class JPanelIssues extends javax.swing.JPanel {
                     instances.put(issue.getIssueRule(), 1);
             }
         }
-        for(Issue issue: project.getprojectReport().getIssuesList()){
-            if(changedFiles.contains(issue.getIssueDirectory().split(":")[1].replace("temp_fortran_", ""))){
-                if(project.getCredentials().getProjects().get(project.getCredentials().getProjects().size()-2).getprojectReport().containsIssue(issue)){
-                    if(instances.containsKey(issue.getIssueRule()))
-                        instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
+        for(String str: instances.keySet()){
+            System.out.println(str+" "+instances.get(str));
+        }
+        instances.clear();
+        
+        int sum=0;
+        for(Issue issue2: project.getCredentials().getProjects().get(0).getprojectReport().getIssuesList()){
+            boolean found=false;
+            for(Issue issue1: project.getprojectReport().getIssuesList()){
+                if(issue1.getIssueName().equals(issue2.getIssueName()) && issue1.getIssueDirectory().split(":")[1].equals(issue2.getIssueDirectory().split(":")[1])){
+                    found=true;
+                    break;
+                }
+            }
+            if(!found){
+                if(changedFiles.contains(issue2.getIssueDirectory().split(":")[1].replace("temp_fortran_", ""))){
+                    if(instances.containsKey(issue2.getIssueRule()))
+                        instances.replace(issue2.getIssueRule(), instances.get(issue2.getIssueRule())+1);
                     else
-                        instances.put(issue.getIssueRule(), 1);
+                        instances.put(issue2.getIssueRule(), 1);
+                    sum++;
                 }
             }
         }
+        System.out.println(sum);
+//        instances.clear();
+//        sum=0;
+//        
+//        for(Issue issue: project.getprojectReport().getIssuesList()){
+//            if(changedFiles.contains(issue.getIssueDirectory().split(":")[1].replace("temp_fortran_", ""))){
+//                if(project.getCredentials().getProjects().get(project.getCredentials().getProjects().size()-2).getprojectReport().containsIssue(issue)){
+//                    if(instances.containsKey(issue.getIssueRule()))
+//                        instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
+//                    else
+//                        instances.put(issue.getIssueRule(), 1);
+//                    sum++;
+//                }
+//            }
+//        }
+//        System.out.println(sum);
+//        System.out.println("panels_frames.JPanelIssues.addCheckBoxesRules()");
+        /////***/////
         
         HashMap<String, Integer> sortedInstances= instances.entrySet()
         .stream()
@@ -407,8 +442,9 @@ public class JPanelIssues extends javax.swing.JPanel {
         
         //add Files radio button
         for(String str: sortedInstances.keySet()){
-            if(sortedInstances.get(str)<20)
+            if(sortedInstances.get(str)<1)
                 break;
+            System.out.println(sortedInstances.get(str)+"  "+str);
             JRadioButton rb= new JRadioButton(sortedInstances.get(str)+"  "+str);
             rb.setFont(jCheckBoxCpp.getFont());
             rb.addActionListener((ActionEvent e) -> {
@@ -431,14 +467,25 @@ public class JPanelIssues extends javax.swing.JPanel {
     }
 
     
+    //For Changed and New files rules
+    // read the files
     private ArrayList<String> parseNewFiles() {
         ArrayList<String> newFiles=new ArrayList<>();
         try {
-            BufferedReader br=new BufferedReader(new FileReader("filesChangAdd-qr.txt"));
+            String name=project.getCredentials().getProjectName().split("_")[0];
+            BufferedReader br=new BufferedReader(new FileReader("filesChangAdd-"+name+".txt"));
             String line;
+            boolean add=true;
             while ((line = br.readLine()) != null) {
-                if(line.contains("Add> ")){
-                    newFiles.add(line.split(":")[1].replace(",", "."));
+                if(line.contains("Add>")){
+                    add=true;
+                }
+                else if(line.contains("Change>")){
+                    add=false;
+                }
+                else{
+                    if(add)
+                        newFiles.add(line.split(":")[1].replace(",", "."));
                 }
             }
             br.close();
@@ -450,11 +497,20 @@ public class JPanelIssues extends javax.swing.JPanel {
     private ArrayList<String> parseChangedFiles() {
         ArrayList<String> changedFiles=new ArrayList<>();
         try {
-            BufferedReader br=new BufferedReader(new FileReader("filesChangAdd-qr.txt"));
+            String name=project.getCredentials().getProjectName().split("_")[0];
+            BufferedReader br=new BufferedReader(new FileReader("filesChangAdd-"+name+".txt"));
             String line;
+            boolean add=true;
             while ((line = br.readLine()) != null) {
-                if(line.contains("Change> ")){
-                    changedFiles.add(line.split(":")[1].replace(",", "."));
+                if(line.contains("Add>")){
+                    add=true;
+                }
+                else if(line.contains("Change>")){
+                    add=false;
+                }
+                else{
+                    if(!add)
+                        changedFiles.add(line.split(":")[1].replace(",", "."));
                 }
             }
             br.close();
