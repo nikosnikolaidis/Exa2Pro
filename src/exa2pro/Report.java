@@ -54,14 +54,77 @@ public class Report  implements Serializable{
      */
     public void getIssuesFromSonarQube(){
         int page= (totalCodeSmells-1)/500 + 1;
-        for(int i=1; i<=page; i++){
-            getIssuesFromPage(i,"&resolved=false");
+        
+        //if there are more than limit of API 10,000 split 
+        if(page>10000){
+            page= (getIssuesNumbers("&resolved=false&severities=INFO")-1)/500 + 1;
+            if(page>0){
+                for(int i=1; i<=page; i++){
+                    getIssuesFromPage(1,"&resolved=false&severities=INFO");
+                }
+            }
+            
+            page= (getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER")-1)/500 + 1;
+            if(page>0 && page<10000){
+                for(int i=1; i<=page; i++){
+                    getIssuesFromPage(i,"&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER");
+                }
+            }
+            // if again more than 10,000, then split again
+            else if(page>1000){
+                page= (getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR")-1)/500 + 1;
+                for(int i=1; i<=page; i++){
+                    getIssuesFromPage(1,"&resolved=false&severities=MINOR,MAJOR");
+                }
+                
+                page= (getIssuesNumbers("&resolved=false&severities=CRITICAL,BLOCKER")-1)/500 + 1;
+                for(int i=1; i<=page; i++){
+                    getIssuesFromPage(i,"&resolved=false&severities=CRITICAL,BLOCKER");
+                }
+            }
+        }
+        else{   //if rules less than 10,000 then all together
+            for(int i=1; i<=page; i++){
+                getIssuesFromPage(i,"&resolved=false");
+            }
         }
         
         //To get the fixed issues
         //if(Integer.parseInt(project.getProjectVersion())>1){
         //    getIssuesFromPage(i,"resolutions=FIXED");
         //}
+    }
+    
+    /**
+     * Get number of issus for a specific api call
+     * @param extra the severities we want each time
+     */
+    private int getIssuesNumbers(String extra){
+        try {
+            URL url = new URL(Exa2Pro.sonarURL+"/api/issues/search?pageSize=500&componentKeys="
+                    +project.getCredentials().getProjectName()+"&types=CODE_SMELL"+extra+"&p=1");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responsecode = conn.getResponseCode();
+            if(responsecode != 200)
+                throw new RuntimeException("HttpResponseCode: "+responsecode);
+            else{
+                Scanner sc = new Scanner(url.openStream());
+                String inline="";
+                while(sc.hasNext()){
+                    inline+=sc.nextLine();
+                }
+                String number =inline.split(",",2)[0].replace("{\"total\":", "");
+                sc.close();
+                return Integer.parseInt(number);
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
     
     /**
