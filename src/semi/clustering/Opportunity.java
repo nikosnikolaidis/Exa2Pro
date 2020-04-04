@@ -1,6 +1,5 @@
 package semi.clustering;
 
-import semi.LongMethodDetector;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -297,23 +296,17 @@ public class Opportunity  implements Comparable<Opportunity> {
                 || (this.start_line_cluster >= comparable.start_line_cluster
                 && this.end_line_cluster <= comparable.end_line_cluster)) {
             overlap = Math.min(this.size_cluster, comparable.size_cluster);
-            if (LongMethodDetector.DebugMode) {
-                System.out.println("@overlaping: A contains B or B contains A | overlapping lines=" + overlap);
-            }
+            
         } else if (this.start_line_cluster <= comparable.start_line_cluster
                 && this.start_line_cluster <= comparable.end_line_cluster
                 && this.end_line_cluster >= comparable.start_line_cluster) {
             overlap = this.end_line_cluster - comparable.start_line_cluster;
-            if (LongMethodDetector.DebugMode) {
-                System.out.println("@overlaping: A is on the left | overlapping lines=" + overlap);
-            }
+            
         } else if (comparable.start_line_cluster <= this.start_line_cluster
                 && comparable.start_line_cluster <= this.end_line_cluster
                 && comparable.end_line_cluster >= this.start_line_cluster) {
             overlap = comparable.end_line_cluster - this.start_line_cluster;
-            if (LongMethodDetector.DebugMode) {
-                System.out.println("@overlaping: B is on the left | overlapping lines=" + overlap);
-            }
+            
         } else {
             return 0;
         }
@@ -325,12 +318,7 @@ public class Opportunity  implements Comparable<Opportunity> {
         ArrayList<Double> this_metrics = this.metricsBenefits;
         ArrayList<Double> comparable_metrics = comparable.metricsBenefits;
         double dif = (double) (Math.abs(this_metrics.get(comparison_metric_index) - comparable_metrics.get(comparison_metric_index))) / (double) Math.max(this_metrics.get(comparison_metric_index),comparable_metrics.get(comparison_metric_index));
-        if (LongMethodDetector.DebugMode) {
-            System.out.println("\t@BEATS: Comparing [metric index:" + comparison_metric_index + "] "
-                    + this.lines_cluster + "[" + this_metrics.get(comparison_metric_index) + "] with "
-                    + comparable.lines_cluster + "[" + comparable_metrics.get(comparison_metric_index) + "]"
-                    + " dif:sig_dif = " + dif + ":" + sig_dif);
-        }
+        
 
         if (comparison_metric_index >= 1 && comparison_metric_index <= 5) { //when param is of an LCOM type
             if (dif > sig_dif
@@ -338,9 +326,7 @@ public class Opportunity  implements Comparable<Opportunity> {
                     && comparable_metrics.get(comparison_metric_index) != -Double.MAX_VALUE) {
                 return this_metrics.get(comparison_metric_index) > comparable_metrics.get(comparison_metric_index);
             } else {
-                if (LongMethodDetector.DebugMode) {
-                    System.out.println("\t checking the sizes " + this.getSizeCluster() + ":" + comparable.getSizeCluster());
-                }
+                
                 return this.getSizeCluster() > comparable.getSizeCluster();
             }
         } else //when param is NOT of an LCOM type
@@ -349,9 +335,7 @@ public class Opportunity  implements Comparable<Opportunity> {
                     && comparable_metrics.get(comparison_metric_index) != -Double.MAX_VALUE) {
                 return this_metrics.get(comparison_metric_index) < comparable_metrics.get(comparison_metric_index);
             } else {
-                if (LongMethodDetector.DebugMode) {
-                    System.out.println("\t checking the sizes " + this.getSizeCluster() + ":" + comparable.getSizeCluster());
-                }
+                
             return this.getSizeCluster() > comparable.getSizeCluster();
         }
     }

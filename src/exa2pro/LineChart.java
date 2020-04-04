@@ -43,9 +43,9 @@ public class LineChart extends ApplicationFrame {
     }
 
     private boolean daysValue(){
-        ArrayList<Project> allProject = projectC.getProjects();
+        ArrayList<ProjectVersion> allProject = projectC.getProjects();
         boolean days=false;
-        for (Project p : allProject) {
+        for (ProjectVersion p : allProject) {
             if(p.getprojectReport().getTotalDebt().contains("d")){
                 days=true;
                 break;
@@ -55,13 +55,13 @@ public class LineChart extends ApplicationFrame {
     }
     
     private DefaultCategoryDataset createDataset() {
-        ArrayList<Project> allProject = projectC.getProjects();
+        ArrayList<ProjectVersion> allProject = projectC.getProjects();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         int version = 1;
         boolean days=daysValue();
         
-        for (Project p : allProject) {
+        for (ProjectVersion p : allProject) {
             double num=0;
             switch (metric) {
                 case "TD":

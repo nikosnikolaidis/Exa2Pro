@@ -9,7 +9,7 @@ import exa2pro.Exa2Pro;
 import exa2pro.Issue;
 import exa2pro.LineChart;
 import exa2pro.PieChart;
-import exa2pro.Project;
+import exa2pro.ProjectVersion;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +28,7 @@ import parsers.CodeFile;
  */
 public class ProjectFrame extends javax.swing.JFrame {
     
-    Project project;
+    ProjectVersion project;
 
     /**
      * Creates new form ProjectFrame
@@ -40,7 +40,7 @@ public class ProjectFrame extends javax.swing.JFrame {
      * Creates new form Home
      * @param p the project that was selected to view
      */
-    public ProjectFrame(Project p){
+    public ProjectFrame(ProjectVersion p){
         this.project=p;
         initComponents();
         

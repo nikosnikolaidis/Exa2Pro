@@ -5,7 +5,7 @@
  */
 package panels_frames;
 
-import exa2pro.Project;
+import exa2pro.ProjectVersion;
 import javax.swing.table.DefaultTableModel;
 import parsers.CodeFile;
 
@@ -15,12 +15,12 @@ import parsers.CodeFile;
  */
 public class JPanelMetrics extends javax.swing.JPanel {
 
-    Project project;
+    ProjectVersion project;
     
     /**
      * Creates new form JPanelMetrics
      */
-    public JPanelMetrics(Project project) {
+    public JPanelMetrics(ProjectVersion project) {
         this.project= project;
         initComponents();
         

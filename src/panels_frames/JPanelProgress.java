@@ -6,7 +6,7 @@
 package panels_frames;
 
 import exa2pro.LineChart;
-import exa2pro.Project;
+import exa2pro.ProjectVersion;
 
 /**
  *
@@ -14,13 +14,13 @@ import exa2pro.Project;
  */
 public class JPanelProgress extends javax.swing.JPanel {
 
-    private Project project;
+    private ProjectVersion project;
     
     /**
      * Creates new form JPanelProgress
      * @param project
      */
-    public JPanelProgress(Project project) {
+    public JPanelProgress(ProjectVersion project) {
         this.project= project;
         initComponents();
         

@@ -18,12 +18,12 @@ import parsers.CodeFile;
 
 public class PieChart extends ApplicationFrame {
 
-    Project project;
+    ProjectVersion project;
     String metric;
     Double threshold;
     public ChartPanel chartPanel;
 
-    public PieChart(Project p, String applicationTitle, String metric, String chartTitle, Double threshold) {
+    public PieChart(ProjectVersion p, String applicationTitle, String metric, String chartTitle, Double threshold) {
         super(applicationTitle);
         this.project = p;
         this.metric= metric;
@@ -110,7 +110,7 @@ public class PieChart extends ApplicationFrame {
         int totalfiles=0;
         int totalmethods=0;
         for(ProjectCredentials pC: Exa2Pro.projecCredentialstList){
-            Project p= pC.getProjects().get(pC.getProjects().size()-1);
+            ProjectVersion p= pC.getProjects().get(pC.getProjects().size()-1);
             for(CodeFile cf: p.getprojectFiles()){
                 sumFO += cf.fanOut;
                 sumCo += cf.cohesion;

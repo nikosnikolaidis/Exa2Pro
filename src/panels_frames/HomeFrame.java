@@ -7,7 +7,7 @@ package panels_frames;
 
 import exa2pro.Analysis;
 import exa2pro.Exa2Pro;
-import exa2pro.Project;
+import exa2pro.ProjectVersion;
 import exa2pro.ProjectCredentials;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -429,7 +429,7 @@ public class HomeFrame extends javax.swing.JFrame {
             if(!found){
                 ProjectCredentials pC=new ProjectCredentials(jTextFieldProjectName.getText(), jTextFieldProjectName.getText(),
                         jTextFieldProjectDirectory.getText());
-                Project p= new Project(pC, pC.getProjects().size()+1+"");
+                ProjectVersion p= new ProjectVersion(pC, pC.getProjects().size()+1+"");
                 Exa2Pro.projecCredentialstList.add(pC);
                 
                 populateProjectList();

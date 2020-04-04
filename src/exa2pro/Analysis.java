@@ -22,9 +22,9 @@ import parsers.CodeFile;
  */
 public class Analysis {
 
-    private Project project;
+    private ProjectVersion project;
 
-    public Analysis(Project project) {
+    public Analysis(ProjectVersion project) {
         this.project = project;
     }
     
@@ -71,7 +71,7 @@ public class Analysis {
             //writer.append("sonar.sourceEncoding=UTF-8");
             writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProjectVersion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

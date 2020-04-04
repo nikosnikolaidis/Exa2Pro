@@ -327,9 +327,6 @@ System.out.println("***POINT 1");
         this.method.getOpportunityList().printOptimals();
 
 System.out.println("***POINT 2");
-        if (LongMethodDetector.DebugMode) {
-            System.out.println("Total optimal opps: " + this.method.getOpportunityList().getNumberOfOpportunitySuggestions());
-        }
     }
 
     private void presentResults() {
@@ -516,9 +513,6 @@ System.out.println("***POINT 2");
     }
 
     private void loadPremadeOpportunities(File inputFile) throws IOException {
-        if (LongMethodDetector.DebugMode) {
-            System.out.println("## LOADING PREMADE OPPS ##");
-        }
         OpportunityList opplist = new OpportunityList();
 
         String line = "";

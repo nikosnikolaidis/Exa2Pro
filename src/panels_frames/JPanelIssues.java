@@ -27,7 +27,7 @@ import javax.swing.JRadioButton;
  * @author Nikos
  */
 public class JPanelIssues extends javax.swing.JPanel {
-    Project project;
+    ProjectVersion project;
     DefaultListModel<Issue> defaultListModel;
     ButtonGroup groupRadioFiles;
     ArrayList<javax.swing.JCheckBox> group;
@@ -35,7 +35,7 @@ public class JPanelIssues extends javax.swing.JPanel {
     /**
      * Creates new form JPanelIssues
      */
-    public JPanelIssues(Project p) {
+    public JPanelIssues(ProjectVersion p) {
         project= p;
         initComponents();
         jLabelIssuesN.setText(project.getprojectReport().getTotalCodeSmells()+"");
@@ -395,6 +395,7 @@ public class JPanelIssues extends javax.swing.JPanel {
                     else
                         instances.put(issue2.getIssueRule(), 1);
                     sum++;
+                    System.out.println("Issue: "+issue2.getIssueRule()+"  "+issue2.getIssueDirectory()+" "+issue2.getIssueStartLine());
                 }
             }
         }

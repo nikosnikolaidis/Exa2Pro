@@ -23,14 +23,14 @@ import parsers.fortranFile;
  *
  * @author Nikos
  */
-public class Project implements Serializable {
+public class ProjectVersion implements Serializable {
     private ProjectCredentials credentials;
     private String projectVersion;
     private ArrayList<CodeFile> projectFiles=new ArrayList<>();
     private Report projectReport;
     private ArrayList<CodeFile> fortranDeletedFiles=new ArrayList<>();
     
-    public Project(ProjectCredentials c, String version){
+    public ProjectVersion(ProjectCredentials c, String version){
         credentials=c;
         credentials.addProject(this);
         projectVersion=version;
@@ -43,9 +43,9 @@ public class Project implements Serializable {
      */
     public void projectVersionAnalysis(){
         Analysis a= new Analysis(this);
-        //a.runCustomCreatedMetrics();
-        a.createPropertiesFile();
-        a.executeAnalysis();
+        a.runCustomCreatedMetrics();
+        //a.createPropertiesFile();
+        //a.executeAnalysis();
         
         saveToFile();
     }
@@ -148,7 +148,7 @@ public class Project implements Serializable {
             o.close();
             f.close();
         } catch (IOException ex) {
-            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProjectVersion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

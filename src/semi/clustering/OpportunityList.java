@@ -1,6 +1,5 @@
 package semi.clustering;
 
-import semi.LongMethodDetector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,14 +37,7 @@ public class OpportunityList {
 
     public void start_clustering(double max_size_difference_percentage, double min_overlap, int lines_max_difference, double signifficant_difference, String cohesion_metric_name, int cohesion_metric_index, boolean deltaRun) {
         resetOpportunities();
-        if (LongMethodDetector.DebugMode) {
-            System.out.print("Clustering with max_dif_percentage: " + max_size_difference_percentage
-                    + " and min_overlap: " + min_overlap
-                    //                + " and max_lines_dif: " + lines_max_difference
-                    + " and sig_diff: " + signifficant_difference
-                    + " with metrics: " + cohesion_metric_name
-                    + "\n");
-        }
+        
 
         Opportunity current_opp = null;
         Opportunity comparable_opp = null;
@@ -65,18 +57,12 @@ public class OpportunityList {
                 double current_max_size_difference = (int) Math.ceil(Math.min(comparable_opp.getSizeCluster(), current_opp.getSizeCluster()) * max_size_difference_percentage);
                 double current_overlap = current_opp.overlap(comparable_opp); //FIXME
                 //Checking the max_dif && the min_overlap between A & B && the "beaten" flag of B
-                if (LongMethodDetector.DebugMode) {
-                    System.out.println("Current overlap percentage: " + current_overlap + ", current_size_difference: " + current_size_difference + " [max_size_dif_percentage: " + current_max_size_difference + "]");
-                }
+                
                 if (current_size_difference <= current_max_size_difference && current_overlap >= min_overlap && !comparable_opp.isBeaten()) {
-                    if (LongMethodDetector.DebugMode) {
-                        System.out.println("@CLUSTERING: current [" + (i + 1) + "]" + current_opp.getLinesCluster() + " and [" + (j + 1) + "]" + comparable_opp.getLinesCluster() + " can make a cluster.");//DEBUG
-                    }
+                    
                     //checking if A beats B (check method beats() for comments)
                     if (current_opp.beats(comparable_opp, cohesion_metric_index, signifficant_difference, deltaRun)) {
-                        if (LongMethodDetector.DebugMode) {
-                            System.out.println("\t\tCurrent " + current_opp.getLinesCluster() + " wins!");
-                        }
+                        
                         //add B to As cluster
                         current_opp.getCluster().add(comparable_opp);
                         //and A steals Bs' cluster!
@@ -84,13 +70,9 @@ public class OpportunityList {
                         comparable_opp.setCluster(new OpportunityList());
                         //flag B as beaten!
                         comparable_opp.setBeaten(true);
-                        if (LongMethodDetector.DebugMode) {
-                            current_opp.printCluster();
-                        }
+                        
                     } else {
-                        if (LongMethodDetector.DebugMode) {
-                            System.out.println("\t\tComparable " + comparable_opp.getLinesCluster() + " wins!");
-                        }
+                        
                         //add A to Bs cluster
                         comparable_opp.getCluster().add(current_opp);
                         //and B steals As' cluster!
@@ -99,18 +81,11 @@ public class OpportunityList {
                         //flag A as beaten!
                         current_opp.setBeaten(true);
 
-                        if (LongMethodDetector.DebugMode) {
-                            comparable_opp.printCluster(); //DEBUG
-                        }
                     }
-                } else if (LongMethodDetector.DebugMode) {
-                    System.out.println("@CLUSTERING: [" + (i + 1) + "]" + current_opp.getLinesCluster() + " and [" + (j + 1) + "]" + comparable_opp.getLinesCluster() + " cannot make a cluster.");//DEBUG
-                }
+                } 
             }
         }
-        if (LongMethodDetector.DebugMode) {
-            System.out.print("\t..finished!\n");
-        }
+        
     }
 
     public void sortOpportunitiesOnMetricAndSigDif(final int metric_index, final double signifficant_difference, final boolean deltaRun) {

@@ -16,7 +16,7 @@ public class ProjectCredentials implements Serializable{
     private String projectKey;
     private String projectName;
     private String projectDirectory;
-    private ArrayList<Project> projects;
+    private ArrayList<ProjectVersion> projects;
     
     public ProjectCredentials(String projectKey, String projectName, String projectDirectory){
         this.projectKey=projectKey;
@@ -29,10 +29,10 @@ public class ProjectCredentials implements Serializable{
             this.projectDirectory=projectDirectory+"\\";
     }
     
-    public void addProject(Project p){
+    public void addProject(ProjectVersion p){
         projects.add(p);
     }
-    public void removeProject(Project p){
+    public void removeProject(ProjectVersion p){
         projects.remove(p);
     }
 
@@ -46,7 +46,7 @@ public class ProjectCredentials implements Serializable{
     public String getProjectDirectory() {
         return projectDirectory;
     }
-    public ArrayList<Project> getProjects() {
+    public ArrayList<ProjectVersion> getProjects() {
         return projects;
     }
     

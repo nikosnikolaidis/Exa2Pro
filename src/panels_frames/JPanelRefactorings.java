@@ -5,7 +5,7 @@
  */
 package panels_frames;
 
-import exa2pro.Project;
+import exa2pro.ProjectVersion;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,12 +20,12 @@ import parsers.CodeFile;
  */
 public class JPanelRefactorings extends javax.swing.JPanel {
 
-    Project project;
+    ProjectVersion project;
     
     /**
      * Creates new form JPanelRefactorings
      */
-    public JPanelRefactorings(Project project) {
+    public JPanelRefactorings(ProjectVersion project) {
         this.project=project;
         initComponents();
         

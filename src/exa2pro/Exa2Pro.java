@@ -39,10 +39,10 @@ public class Exa2Pro {
      */
     public static void main(String[] args) {
         sonarURL="http://195.251.210.147:9906";
-        ProjectCredentials pc= new ProjectCredentials("metalwalls_starpu_tasks", "metalwalls_starpu_tasks",
+        ProjectCredentials pc= new ProjectCredentials("qr_mumps-Before", "qr_mumps-Before",
                 "C:\\Users\\Nikos\\Documents\\NetBeansProjects\\examp\\1.metalwalls\\2.ompfor\\t6.4-metalwalls-ompfor");
         projecCredentialstList.add(pc);
-        Project p=new Project(pc, "1");
+        ProjectVersion p=new ProjectVersion(pc, "1");
         
         Report report = new Report(p);
         p.setProjectReport(report);
@@ -57,8 +57,8 @@ public class Exa2Pro {
             report.getIssuesFromSonarQube();
         System.out.println(pc.getProjects().size());
         
-        Project p1=new Project(pc, "2");
-        pc.setName("metalwalls_ master_skepu");
+        ProjectVersion p1=new ProjectVersion(pc, "2");
+        pc.setName("qr_mumps_After");
         pc.setDir("C:\\Users\\Nikos\\Documents\\NetBeansProjects\\examp\\1.metalwalls\\3.omp-tasks\\t6.4-metalwalls-omp-tasks");
         
         Report report1 = new Report(p1);

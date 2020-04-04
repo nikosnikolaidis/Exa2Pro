@@ -27,7 +27,7 @@ import org.json.simple.parser.ParseException;
  * @author Nikos
  */
 public class Report  implements Serializable{
-    private Project project;
+    private ProjectVersion project;
     private ArrayList<Issue> issuesList= new ArrayList<>();
     private Date date;
     private String totalDebt;
@@ -37,7 +37,7 @@ public class Report  implements Serializable{
     private String linesOfCodeForAllLanguages;
     private int totalComplexity;
     
-    public Report(Project project){
+    public Report(ProjectVersion project){
         this.project=project;
     }
     
@@ -55,15 +55,15 @@ public class Report  implements Serializable{
      * Return the issues from Sonar Qube
      */
     public void getIssuesFromSonarQube(){
-        //int page= (getIssuesNumbers("&resolved=false&severities=INFO")-1)/500 + 1;
-        //for(int i=1; i<=page; i++){
+        int page= (getIssuesNumbers("&resolved=false&severities=INFO")-1)/500 + 1;
+        for(int i=1; i<=page; i++){
             getIssuesFromPage(1,"&resolved=false&severities=INFO");
-        //}
+        }
         
-        //page= (getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER")-1)/500 + 1;
-        //for(int i=1; i<=page; i++){
-        //    getIssuesFromPage(i,"&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER");
-        //}
+        page= (getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER")-1)/500 + 1;
+        for(int i=1; i<=page; i++){
+            getIssuesFromPage(i,"&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER");
+        }
         
         //To get the fixed issues
         //if(Integer.parseInt(project.getProjectVersion())>1){
@@ -105,10 +105,10 @@ public class Report  implements Serializable{
      * @param page the results
      * @param extra extra filtering
      */
-    private void getIssuesFromPage(int page, String extra){
+    private void getIssuesFromPage(int page, String extra) {
         try {
             date= new Date();
-            /*URL url = new URL(Exa2Pro.sonarURL+"/api/issues/search?pageSize=500&componentKeys="
+            URL url = new URL(Exa2Pro.sonarURL+"/api/issues/search?pageSize=500&componentKeys="
                     +project.getCredentials().getProjectName()+"&types=CODE_SMELL"+extra+"&p="+page);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
@@ -116,8 +116,9 @@ public class Report  implements Serializable{
             int responsecode = conn.getResponseCode();
             if(responsecode != 200)
                 throw new RuntimeException("HttpResponseCode: "+responsecode);
-            else{*/
-                Scanner sc = new Scanner(new File(System.getProperty("user.dir")+"/"+project.getCredentials().getProjectName()+".json"));//url.openStream());
+            else{
+                //Scanner sc = new Scanner(new File(System.getProperty("user.dir")+"/"+project.getCredentials().getProjectName()+".json"));//url.openStream());
+                Scanner sc = new Scanner(url.openStream());//url.openStream());
                 String inline="";
                 while(sc.hasNext()){
                     inline+=sc.nextLine();
@@ -142,13 +143,15 @@ public class Report  implements Serializable{
                     );
                     issuesList.add(issue);
                 }
-            //}
-        //} catch (MalformedURLException ex) {
-        //    Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-        //}
+            }
+        
         }catch (FileNotFoundException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -225,7 +228,7 @@ public class Report  implements Serializable{
 
     
     // Getters
-    public Project getProject() {
+    public ProjectVersion getProject() {
         return project;
     }
     public ArrayList<Issue> getIssuesList() {

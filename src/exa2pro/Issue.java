@@ -45,7 +45,7 @@ public class Issue implements Serializable{//, Comparable<Issue>{
         //this.issueEndLine = issueEndLine;
     }
     
-    public boolean sameLines(Project p, Issue o){
+    public boolean sameLines(ProjectVersion p, Issue o){
         String lineThis="";
         try {
             String name= p.getCredentials().getProjectDirectory();

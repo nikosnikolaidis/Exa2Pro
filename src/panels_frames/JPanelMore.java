@@ -6,7 +6,7 @@
 package panels_frames;
 
 import exa2pro.Exa2Pro;
-import exa2pro.Project;
+import exa2pro.ProjectVersion;
 import exa2pro.ProjectCredentials;
 
 /**
@@ -15,12 +15,12 @@ import exa2pro.ProjectCredentials;
  */
 public class JPanelMore extends javax.swing.JPanel {
 
-    Project project;
+    ProjectVersion project;
     
     /**
      * Creates new form JPanelMore
      */
-    public JPanelMore(Project project) {
+    public JPanelMore(ProjectVersion project) {
         this.project= project;
         initComponents();
         
@@ -115,7 +115,7 @@ public class JPanelMore extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonLastAnalysisDeleteActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Project p= new Project(project.getCredentials(), project.getCredentials().getProjects().size()+1+"");
+        ProjectVersion p= new ProjectVersion(project.getCredentials(), project.getCredentials().getProjects().size()+1+"");
         p.projectVersionAnalysis();
     }//GEN-LAST:event_jButton1ActionPerformed
 
