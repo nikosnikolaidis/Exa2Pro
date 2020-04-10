@@ -95,7 +95,14 @@ public class Project implements Serializable {
                             || str[str.length-1].equalsIgnoreCase("for") || str[str.length-1].equalsIgnoreCase("fpp")
                             || str[str.length-1].equalsIgnoreCase("ftn") || str[str.length-1].equalsIgnoreCase("F90")){
                 fortranDeletedFiles.add(cf);
-                Files.copy(cf.file.toPath(), Paths.get(credentials.getProjectDirectory()+"\\temp_fortran_" + cf.file.getName()));
+                
+                //get parent
+                String parent= cf.file.getParent().split("\\\\")[cf.file.getParent().split("\\\\").length-1];
+                if(!Exa2Pro.isWindows()){
+                    parent= cf.file.getParent().split("/")[cf.file.getParent().split("/").length-1];
+                }
+                //copy
+                Files.copy(cf.file.toPath(), Paths.get(credentials.getProjectDirectory()+"/temp_fortran_" +parent+"_"+cf.file.getName()));
                 cf.file.delete();
             }
         }
@@ -110,8 +117,12 @@ public class Project implements Serializable {
                 if (fName.startsWith("temp_fortran_")) {
                     fName= fName.replace("temp_fortran_", "");
                     for(CodeFile cf: fortranDeletedFiles){
-                        if(cf.file.getName().equals(fName)){
-                            Files.copy(f.toPath(), Paths.get(cf.file.getParent()+"\\"+fName) );
+                        String parent= cf.file.getParent().split("\\\\")[cf.file.getParent().split("\\\\").length-1];
+                        if(!Exa2Pro.isWindows()){
+                            parent= cf.file.getParent().split("/")[cf.file.getParent().split("/").length-1];
+                        }
+                        if((parent+"_"+cf.file.getName()).equals(fName)){
+                            Files.copy(f.toPath(), Paths.get(cf.file.getParent()+"/"+fName.split("_",2)[1]) );
                             f.delete();
                         }
                     }

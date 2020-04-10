@@ -26,7 +26,7 @@ public class ProjectCredentials implements Serializable{
         if(Exa2Pro.isWindows())
             this.projectDirectory=projectDirectory+"//";
         else
-            this.projectDirectory=projectDirectory+"\\";
+            this.projectDirectory=projectDirectory;
     }
     
     public void addProject(Project p){

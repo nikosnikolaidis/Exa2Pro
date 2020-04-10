@@ -56,8 +56,11 @@ public class Analysis {
     // required to run sonar-scanner
     public void createPropertiesFile() {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(project.getCredentials().getProjectDirectory()
-                    + "sonar-project.properties"));
+            String propertiesFile= project.getCredentials().getProjectDirectory()+ "sonar-project.properties";
+            if(!Exa2Pro.isWindows())
+                propertiesFile= project.getCredentials().getProjectDirectory()+ "/sonar-project.properties";
+            
+            BufferedWriter writer = new BufferedWriter(new FileWriter(propertiesFile));
             writer.write("sonar.projectKey=" + project.getCredentials().getProjectKey() + System.lineSeparator());
             writer.append("sonar.projectName=" + project.getCredentials().getProjectName() + System.lineSeparator());
             writer.append("sonar.projectVersion=" + project.getProjectVersion() + System.lineSeparator());
@@ -162,11 +165,12 @@ public class Analysis {
 
     // Linux
     // runs in terminal sonar-scanner
-    private void runAnalysisLinux() {
-        ProcessBuilder pbuilder = new ProcessBuilder("bash", "-c",
-                "sonar-scanner-4.2-linux/bin/sonar-scanner");
-        File err = new File("err.txt");
+    private void runAnalysisLinux() {                     
         try {
+            ProcessBuilder pbuilder = new ProcessBuilder("bash", "-c", 
+                    "cd '"+project.getCredentials().getProjectDirectory()+"' ; '"+
+                    System.getProperty("user.dir")+ "/sonar-scanner-4.2-linux/bin/sonar-scanner'");
+            File err = new File("err.txt");
             pbuilder.redirectError(err);
             Process p = pbuilder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -175,7 +179,28 @@ public class Analysis {
             System.out.println("Sonar Scanner in project folder");
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
+                if (line.contains("INFO: Final Memory")) {
+                    break;
+                }
             }
+            //create a report and wait till sonarqube finishes analysing
+            Report report = new Report(project);
+            project.setProjectReport(report);
+            while (!report.isFinishedAnalyzing()) {
+                Thread.sleep(1000);
+            }
+            Thread.sleep(500);
+            
+            // Can Read Reports now
+            double dept = Double.parseDouble(report.getMetricFromSonarQube("sqale_index"));
+            report.setTotalDebt(formatTehnicalDebt(dept));
+            report.setTotalDebt_Index(dept);
+            report.setTotalCodeSmells(Integer.parseInt(report.getMetricFromSonarQube("code_smells")));
+            report.setTotalLinesOfCode(Integer.parseInt(report.getMetricFromSonarQube("ncloc")));
+            report.setTotalComplexity(Integer.parseInt(report.getMetricFromSonarQube("complexity")));
+            report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
+            
+            report.getIssuesFromSonarQube();
         } catch (Exception e) {
             e.printStackTrace();
         }

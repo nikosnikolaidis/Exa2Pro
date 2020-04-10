@@ -360,26 +360,11 @@ public class JPanelIssues extends javax.swing.JPanel {
         //get instances in Hash Map and sort
         HashMap<String,Integer> instances=new HashMap<>();
         
-        ArrayList<String> newFiles= parseNewFiles();
-        ArrayList<String> changedFiles= parseChangedFiles();
-        
         for(Issue issue: project.getprojectReport().getIssuesList()){
-            if(newFiles.contains(issue.getIssueDirectory().split(":")[1].replace("temp_fortran_", ""))){
-                if(instances.containsKey(issue.getIssueRule()))
-                    instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
-                else
-                    instances.put(issue.getIssueRule(), 1);
-            }
-        }
-        for(Issue issue: project.getprojectReport().getIssuesList()){
-            if(changedFiles.contains(issue.getIssueDirectory().split(":")[1].replace("temp_fortran_", ""))){
-                if(project.getCredentials().getProjects().get(project.getCredentials().getProjects().size()-2).getprojectReport().containsIssue(issue)){
-                    if(instances.containsKey(issue.getIssueRule()))
-                        instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
-                    else
-                        instances.put(issue.getIssueRule(), 1);
-                }
-            }
+            if(instances.containsKey(issue.getIssueRule()))
+                instances.replace(issue.getIssueRule(), instances.get(issue.getIssueRule())+1);
+            else
+                instances.put(issue.getIssueRule(), 1);
         }
         
         HashMap<String, Integer> sortedInstances= instances.entrySet()

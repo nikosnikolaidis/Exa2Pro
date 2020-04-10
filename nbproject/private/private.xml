@@ -5,7 +5,7 @@
             <url>src/exa2pro/Analysis.java</url>
             <bookmark id="2">
                 <name/>
-                <line>63</line>
+                <line>66</line>
                 <key/>
             </bookmark>
         </file>
@@ -13,15 +13,16 @@
             <url>src/exa2pro/Issue.java</url>
             <bookmark id="1">
                 <name/>
-                <line>30</line>
+                <line>33</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/panels_frames/HomeJPanelRuleEffort.java</file>
+            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Analysis.java</file>
             <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/panels_frames/JPanelIssues.java</file>
+            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Issue.java</file>
             <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Project.java</file>
             <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/exa2pro/Report.java</file>
         </group>

@@ -105,23 +105,27 @@ public class LineChart extends ApplicationFrame {
                 case "CC":
                     {
                         int sum=0;
+                        int i=0;
                         for(CodeFile cf: p.getprojectFiles()){
                             for (HashMap.Entry pair : cf.methodsCC.entrySet()) {
                                 sum+= (Integer)pair.getValue();
+                                i++;
                             }
                         }
-                        num= sum/p.getprojectFiles().size();
+                        num= sum/i;
                         break;
                     }
                 case "LOC":
                     {
                         int sum=0;
+                        int i=0;
                         for(CodeFile cf: p.getprojectFiles()){
                             for (HashMap.Entry pair : cf.methodsLOC.entrySet()) {
                                 sum+= (Integer)pair.getValue();
+                                i++;
                             }
                         }
-                        num= sum/p.getprojectFiles().size();
+                        num= sum/i;
                         break;
                     }
                 default:
