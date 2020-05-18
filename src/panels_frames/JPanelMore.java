@@ -49,7 +49,7 @@ public class JPanelMore extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jButtonDeleteProject = new javax.swing.JButton();
 
-        jLabelRefactorings.setText("More Options");
+        jLabelRefactorings.setText("Options");
 
         jPanel1.setLayout(new java.awt.GridLayout(0, 2, 10, 5));
 

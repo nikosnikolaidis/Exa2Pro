@@ -5,22 +5,10 @@
  */
 package panels_frames;
 
-import exa2pro.Exa2Pro;
-import exa2pro.Issue;
-import exa2pro.LineChart;
 import exa2pro.PieChart;
 import exa2pro.Project;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import static java.util.stream.Collectors.*;
-import javax.swing.DefaultListModel;
-import javax.swing.JPanel;
-import parsers.CodeFile;
 
 /**
  *
@@ -274,7 +262,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel18.setText("More");
+        jLabel18.setText("Manage Project");
         jPanelButtonMore.add(jLabel18);
 
         jPanel3.add(jPanelButtonMore);

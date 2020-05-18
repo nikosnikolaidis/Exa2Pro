@@ -10,7 +10,7 @@
 		<status>READY</status>
 		<type>BUG</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>COM.DATA.FloatCompare</key>
@@ -82,7 +82,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>COM.DESIGN.ActiveWait</key>
@@ -94,7 +94,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>COM.FLOW.Abort</key>
@@ -142,7 +142,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>COM.FLOW.Exit</key>
@@ -166,7 +166,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>COM.FLOW.FileExistence</key>
@@ -204,7 +204,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>COM.INST.Brace</key>
@@ -252,7 +252,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>COM.NAME.Homonymy</key>
@@ -332,7 +332,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.BLOC.Else</key>
@@ -344,7 +344,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.BLOC.Function</key>
@@ -356,7 +356,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.BLOC.Loop</key>
@@ -368,7 +368,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.DATA.Array</key>
@@ -380,7 +380,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.DATA.Common</key>
@@ -392,7 +392,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.DATA.Double</key>
@@ -404,7 +404,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.DATA.Initialisation</key>
@@ -440,7 +440,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.DATA.Parameter</key>
@@ -464,7 +464,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.Assign</key>
@@ -476,7 +476,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.Dimension</key>
@@ -488,7 +488,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.Equivalence</key>
@@ -500,7 +500,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.Function</key>
@@ -512,7 +512,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.If</key>
@@ -524,7 +524,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.Include</key>
@@ -536,7 +536,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.Pause</key>
@@ -548,7 +548,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.INST.Return</key>
@@ -572,7 +572,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.MET.Line</key>
@@ -584,7 +584,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.NAME.GenericIntrinsic</key>
@@ -596,7 +596,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.NAME.Intrinsic</key>
@@ -608,7 +608,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.NAME.KeyWords</key>
@@ -620,7 +620,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.NAME.Label</key>
@@ -632,7 +632,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.PROTO.Declaration</key>
@@ -668,7 +668,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.REF.Parameter</key>
@@ -680,7 +680,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.TYPE.Basic</key>
@@ -692,7 +692,7 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 	<rule>
 		<key>F77.TYPE.Hollerith</key>
@@ -704,6 +704,6 @@
 		<status>READY</status>
 		<type>CODE_SMELL</type>
 		<remediationFunction>CONSTANT_ISSUE</remediationFunction>
-		<remediationFunctionBaseEffort>10min</remediationFunctionBaseEffort>
+		<remediationFunctionBaseEffort>30min</remediationFunctionBaseEffort>
 	</rule>
 </icodelint-rules>

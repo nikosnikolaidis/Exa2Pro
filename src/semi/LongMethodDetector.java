@@ -1,10 +1,6 @@
 package semi;
 
 
-import com.macrofocus.treemap.AlgorithmFactory;
-import com.macrofocus.treemap.LabelingFactory;
-import com.macrofocus.treemap.RenderingFactory;
-import com.macrofocus.treemap.TreeMap;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -37,7 +33,6 @@ public class LongMethodDetector extends javax.swing.JFrame {
     private File java_source_file;
     private Analyser analyser;
     JavaClass clazz;
-    TreeMap treeMap;
     public static boolean DebugMode = true;
     private String selected_method;
     public MethodOppExtractorSettings extractor_settings;
@@ -514,54 +509,15 @@ public class LongMethodDetector extends javax.swing.JFrame {
         return treemodel;
     }
 
-    void createTreeMap(DefaultTableModel dtm) {
-        String selected_metric = (String) this.rankingMetricComboBox.getSelectedItem();
-        // Creating the TreeMap
-        treeMap = new TreeMap(dtm);
-
-        // Tuning the appearance of the TreeMap
-        treeMap.setAlgorithm(AlgorithmFactory.SQUARIFIED);
-        treeMap.setSizeByName(selected_metric);
-        treeMap.setColor(2);
-        treeMap.setBackgroundByName("Method name");
-        treeMap.setLabels();
-
-        treeMap.getModel().getSettings().setShowPopup(treeMap.getModel().getTreeMapField(0), true);
-        treeMap.getModel().getSettings().setRendering(RenderingFactory.CUSHION);
-        treeMap.getModel().getSettings().getDefaultFieldSettings().setLabeling(LabelingFactory.SURROUND);
-
-        treeMap.getModel().addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                try {
-                    String method_name = treeMap.getModel().getSelection().get(0).toString();
-                    int index = clazz.getMethodIndex(method_name);
-                    jTable1.setRowSelectionInterval(index, index);
-                    focusOnSelectedCell(index);
-                } catch (Exception ex) {
-                    //FIXME: very often generated exception. Investigate different listeners for this event
-                }
-            }
-
-            private void focusOnSelectedCell(int index) {
-                //scroll table to the selected coordinates
-                jTable1.scrollRectToVisible(new Rectangle(jTable1.getCellRect(index, 0, true)));
-            }
-        });
-
-        this.jTabbedPane1.add("Heatmap [" + selected_metric + "]", treeMap);
-        if (this.jTabbedPane1.getComponentCount() > 1) {
-            this.jTabbedPane1.remove(0);
-        }
-
-    }
 
     void performRanking() {		//***POINT *DIAVASMA
         String selected_metric = (String) this.rankingMetricComboBox.getSelectedItem();
         if (LongMethodDetector.DebugMode) {
             System.out.println("Ranking methods on " + selected_metric);
         }
-        createTreeMap(populateTable());
+        System.out.println("No ranking made...");
+        //deleted method
+        //createTreeMap(populateTable());
     }
 
     private void cleanFiles() {
