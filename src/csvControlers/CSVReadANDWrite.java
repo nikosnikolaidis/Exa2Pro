@@ -153,7 +153,9 @@ public class CSVReadANDWrite {
         for(Artifacts ar: artifacts){
             boolean found=false;
             for(CodeFile cf: files){
-                if(cf.file.getAbsolutePath().endsWith(ar.getPath().split(":")[1].replace("/", "\\"))){
+                if(cf.file.getAbsolutePath().endsWith(ar.getPath().split(":")[1].replace("/", "\\")) ||
+                        cf.file.getAbsolutePath().endsWith(ar.getPath().split(":")[1].replace("/", "\\")
+                                .replace("temp_fortran_", "").replaceFirst("\\_", "\\\\"))){
                     dataLines.add(new String[]{ar.getPath(),""+ar.getFunctions(),""+ar.getComplexity(),
                         ""+ar.getNcloc(),""+ar.getCommentsDensity(),""+ar.getCodeSmells(),
                         ""+ar.getTechnicalDebt(),""+cf.fanOut,""+cf.cohesion});
