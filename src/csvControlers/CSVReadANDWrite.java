@@ -5,18 +5,28 @@
  */
 package csvControlers;
 
+import exa2pro.Exa2Pro;
+import exa2pro.Report;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import parsers.CodeFile;
 
 /**
@@ -34,10 +44,85 @@ public class CSVReadANDWrite {
     public CSVReadANDWrite(ArrayList<CodeFile> files,String projectName) {
         this.projectName = projectName;
         this.files=files;
-        read();
+        File tempFile= new File(projectName+".csv");
+        if(tempFile.exists())
+            read();
+        else
+            getFromSonarQube();
         write();
     }
 
+    //gets all the metrics from SonarQube for each file
+    private void getFromSonarQube() {
+        try {
+            URL url = new URL(Exa2Pro.sonarURL+"/api/measures/component_tree?pageSize=500&component="
+                            +projectName+"&metricKeys=functions,complexity,ncloc,comment_lines_density,"
+                            + "code_smells,sqale_index");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responsecode = conn.getResponseCode();
+            if(responsecode != 200)
+                throw new RuntimeException("HttpResponseCode: "+responsecode);
+            else{
+                Scanner sc = new Scanner(url.openStream());
+                String inline="";
+                while(sc.hasNext()){
+                    inline+=sc.nextLine();
+                }
+                sc.close();
+                
+                JSONParser parse = new JSONParser();
+                JSONObject jobj = (JSONObject)parse.parse(inline);
+                JSONArray jsonarr_1 = (JSONArray) jobj.get("components");
+                for(int i=0;i<jsonarr_1.size();i++){
+                    JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
+                    JSONArray jsonarr_2 = (JSONArray) jsonobj_1.get("measures");
+                    
+                    if(jsonobj_1.get("key").toString().contains(".")){
+                        String[] data= new String[7];
+                        data[0] = jsonobj_1.get("key").toString();
+                        for(int k=0;k<jsonarr_2.size();k++){
+                            JSONObject jsonobj_2 = (JSONObject)jsonarr_2.get(k);
+                            switch(jsonobj_2.get("metric").toString()){
+                                case "functions":
+                                    data[1]=jsonobj_2.get("value").toString();
+                                    break;
+                                case "complexity":
+                                    data[2]=jsonobj_2.get("value").toString();
+                                    break;
+                                case "ncloc":
+                                    data[3]=jsonobj_2.get("value").toString();
+                                    break;
+                                case "comment_lines_density":
+                                    data[4]=jsonobj_2.get("value").toString();
+                                    break;
+                                case "code_smells":
+                                    data[5]=jsonobj_2.get("value").toString();
+                                    break;
+                                case "sqale_index":
+                                    data[6]=jsonobj_2.get("value").toString();
+                                    break;
+                            }
+                        }
+                        for(int k=0; k<data.length; k++){
+                            if(data[k]==null)
+                                data[k]="0";
+                        }
+                        Artifacts art= new Artifacts(data);
+                        artifacts.add(art);
+                    }
+                    
+                }
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | ParseException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
     private void read() {
         BufferedReader csvReader;
         try {
@@ -64,6 +149,7 @@ public class CSVReadANDWrite {
         dataLines = new ArrayList<>();
         dataLines.add(new String[]{"Artifacts","Functions","Complexity","Ncloc","Comments Density (%)",
                 "Code Smells","Technical Debt (min)","Fan-Out","LCOM2"});
+        ArrayList<String> codeFilesAdded= new ArrayList<>();
         for(Artifacts ar: artifacts){
             boolean found=false;
             for(CodeFile cf: files){
@@ -72,6 +158,7 @@ public class CSVReadANDWrite {
                         ""+ar.getNcloc(),""+ar.getCommentsDensity(),""+ar.getCodeSmells(),
                         ""+ar.getTechnicalDebt(),""+cf.fanOut,""+cf.cohesion});
                     found=true;
+                    codeFilesAdded.add(cf.file.getAbsolutePath());
                     break;
                 }
             }
@@ -80,6 +167,13 @@ public class CSVReadANDWrite {
                         ""+ar.getNcloc(),""+ar.getCommentsDensity(),""+ar.getCodeSmells(),
                         ""+ar.getTechnicalDebt() });
             }
+        }
+        
+        //for fortran files that are temp
+        for(CodeFile cf: files){
+            if(!codeFilesAdded.contains(cf.file.getAbsolutePath()))
+                dataLines.add(new String[]{cf.file.getAbsolutePath(),"","","","","","",
+                    ""+cf.fanOut,""+cf.cohesion});
         }
         
         givenDataArray_whenConvertToCSV_thenOutputCreated(projectName);

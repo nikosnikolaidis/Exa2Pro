@@ -44,6 +44,13 @@ public class Analysis {
         else
             runAnalysisLinux();
         
+        
+        //export csv file 
+        File tempFile= new File(project.getCredentials().getProjectName()+".csv");
+        new csvControlers.CSVReadANDWrite(project.getprojectFiles(),project.getCredentials().getProjectName());
+        
+        
+        //restor Temp Fortran Files
         try {
             project.restoreTempFortranFiles();
         } catch (IOException ex) {
@@ -89,14 +96,6 @@ public class Analysis {
             System.out.println("File: "+file.file.getPath()+" ---> "+"fan-out:"+file.fanOut
                     + "  cohesion:"+file.cohesion);
         }
-        
-        //export csv file 
-        File tempFile= new File(project.getCredentials().getProjectName()+".csv");
-        if(tempFile.exists())
-            new csvControlers.CSVReadANDWrite(project.getprojectFiles(),project.getCredentials().getProjectName());
-        else
-            new csvControlers.CSVoutput(project.getprojectFiles(),project.getCredentials().getProjectName());
-        
     }
 
     // Windows

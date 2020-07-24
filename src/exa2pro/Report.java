@@ -157,10 +157,22 @@ public class Report  implements Serializable{
                 for(int i=0;i<jsonarr_1.size();i++){
                     JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
                     JSONObject jsonobj_2=(JSONObject)jsonobj_1.get("textRange");
-                    Issue issue=new Issue(jsonobj_1.get("rule").toString(), jsonobj_1.get("message").toString()
-                            , jsonobj_1.get("severity").toString(), jsonobj_1.get("debt").toString()
+                    Issue issue;
+                    String debt;
+                    if(jsonobj_1.get("debt") == null)
+                    	debt = "0min";
+                    else
+                    	debt = jsonobj_1.get("debt").toString();
+                    if(jsonobj_2 != null)
+                    	issue=new Issue(jsonobj_1.get("rule").toString(), jsonobj_1.get("message").toString()
+                            , jsonobj_1.get("severity").toString(), debt
                             , jsonobj_1.get("type").toString(), jsonobj_1.get("component").toString()
                             , jsonobj_2.get("startLine").toString(), jsonobj_2.get("endLine").toString());
+                    else
+                    	issue=new Issue(jsonobj_1.get("rule").toString(), jsonobj_1.get("message").toString()
+                                , jsonobj_1.get("severity").toString(), jsonobj_1.get("debt").toString()
+                                , jsonobj_1.get("type").toString(), jsonobj_1.get("component").toString()
+                                , "0", "1");
                     issuesList.add(issue);
                 }
             }
