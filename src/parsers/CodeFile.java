@@ -7,6 +7,7 @@ package parsers;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -19,6 +20,7 @@ public abstract class CodeFile implements Serializable{
     public HashMap<String, Integer> methodsLOC;
     public HashMap<String, Integer> methodsCC;
     public double cohesion;                     //TODO maybe change to hashmap for cohesion for each method
+    public ArrayList<String> opportunities;
     
     public CodeFile(File file){
         this.file=file;
@@ -28,5 +30,6 @@ public abstract class CodeFile implements Serializable{
     
     public abstract void parse();
     public abstract void calculateCohesion();
+    public abstract void calculateOpportunities(boolean fast);
     
 }

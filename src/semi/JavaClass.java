@@ -207,12 +207,12 @@ public class JavaClass {
             System.out.println("Error on retrieving " + method_name + " method.");
         }
 
-        //OpportunityList opportunities = selected_method.calculateAllClusters(selected_method.getMethodStart(invalid_lines), invalid_lines, possible_invalid_bracket_close, lines_for_else);
+        OpportunityList opportunities = selected_method.calculateAllClusters(selected_method.getMethodStart(invalid_lines), invalid_lines, possible_invalid_bracket_close, lines_for_else);
 //			System.out.println("-----------------------------------------------");
         
-        //opportunities.calculateBenefits();
-        //opportunities.addBenefitsToList();
-        //selected_method.setOppList(opportunities);
+        opportunities.calculateBenefits();
+        opportunities.addBenefitsToList();
+        selected_method.setOppList(opportunities);
         selected_method.been_analysed = true; //set been_analysed to TRUE in order to avoid re run in the future.
         
         //System.out.println("Opportunities:\n" + selected_method.getOpportunityList().getCsvOutput());

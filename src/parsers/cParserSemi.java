@@ -142,7 +142,7 @@ public class cParserSemi {
             writer.close();
             
             ParsedFilesController paFC=new ParsedFilesController();
-            double cohision = paFC.doAnalysis(file);
+            double cohision=0;// = paFC.doAnalysisLcom(file);
             
             return cohision;
         } catch (IOException ex) {

@@ -3,10 +3,13 @@ package parsers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +22,7 @@ public class cFile extends CodeFile{
     boolean commentBlock=false;
     String line;
     HashMap<String, Integer> methodsLocDecl=new HashMap<>();
+    HashMap<String, Integer> methodsLocDeclReal=new HashMap<>();
     
     public cFile(File file) {
         super(file);
@@ -29,6 +33,7 @@ public class cFile extends CodeFile{
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             fanOut=0;
             int countLOC=0;
+            int countLOCr=0;
             boolean lineContinuous=false;
             int lineContinuousParOpen=0;
             int lineContinuousParClose=0;
@@ -38,6 +43,7 @@ public class cFile extends CodeFile{
             int methodCC=0;
             int lineMethodStarts=-1;
             int lineMethodDecl=-1;
+            int lineMethodDeclR=-1;
             int methodBrackOpen=0;
             int methodBrackClose=0;
             String methodName="";
@@ -45,6 +51,7 @@ public class cFile extends CodeFile{
             System.out.println(file.getAbsolutePath()+"  "+file.getName());
             String linePre="asd";
             while ((line = br.readLine()) != null) {
+                countLOCr++;
                 if (!line.trim().equals("")){
                     line= line.trim().replace(" +", " ");
                     
@@ -80,6 +87,7 @@ public class cFile extends CodeFile{
                             String[] methodDecl=line.split("\\(");
                             methodName= methodDecl[0];
                             lineMethodDecl=countLOC;
+                            lineMethodDeclR=countLOCr;
                             for (int i = 0; i < line.length(); i++) {
                                 if (line.charAt(i) == '(')
                                     lineContinuousParOpen++;
@@ -90,6 +98,7 @@ public class cFile extends CodeFile{
                                 if(line.contains("{")){
                                     lineMethodStarts=countLOC;
                                     methodsLocDecl.put(methodName,lineMethodDecl);
+                                    methodsLocDeclReal.put(methodName, lineMethodDeclR);
                                     methodStarted=true;
                                     lineContinuous=false;
                                 }
@@ -112,6 +121,7 @@ public class cFile extends CodeFile{
                                 if(line.contains("{")){
                                     lineMethodStarts=countLOC;
                                     methodsLocDecl.put(methodName,lineMethodDecl);
+                                    methodsLocDeclReal.put(methodName, lineMethodDeclR);
                                     methodStarted=true;
                                     lineContinuous=false;
                                 }
@@ -164,26 +174,13 @@ public class cFile extends CodeFile{
                 }
             }
             
-            //clear wrong methods
-            HashMap<String,Integer> temp= new HashMap<>();
-            for(String str : methodsLOC.keySet()) {
-                if(methodsLOC.get(str) < 0){
-                    methodsLocDecl.remove(str);
-                    temp.put(str, methodsLOC.get(str));
-                }
-            }
-            temp.keySet().forEach((str) -> {
-                methodsLOC.remove(str);
-            });
-            
             /*Print methods
             System.out.println("N= " +fanOut);
             for(String str: methodsLOC.keySet()){
                 System.out.println("Method: "+str+"  LOC: "+  methodsLOC.get(str)+" CC:"+ methodsCC.get(str));
             }*/
-            calculateCohesion();
         } catch (IOException ex) {
-            Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(cParserSemiLatest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -235,7 +232,44 @@ public class cFile extends CodeFile{
      */
     @Override
     public void calculateCohesion() {
-        cParserSemi cSemi= new cParserSemi(file,methodsLocDecl);
-        this.cohesion = cSemi.parse();
+        cParserSemiLatest ss = new cParserSemiLatest(file,methodsLocDecl);
+        ss.parse();
+        ParsedFilesController paFC=new ParsedFilesController();
+        this.cohesion= paFC.doAnalysisLcom(file);
+        
+        //calculateOpportunities();
+    }
+    
+    @Override
+    public void calculateOpportunities(boolean fast){
+        //Deletes previous if exist
+        File fileDelPrev = new File("./" + file.getName() + "_parsed.txt");
+        if(fileDelPrev.exists())
+            fileDelPrev.delete();
+        
+        //calculate opportunities
+        HashMap<String, Integer> methodsLocDeclNew=new HashMap<>();
+        Iterator it = methodsLocDeclReal.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            String[] methodSplit=pair.getKey().toString().split(" ");
+            methodsLocDeclNew.put(methodSplit[methodSplit.length-1], Integer.parseInt(pair.getValue().toString()));
+        }
+        
+        cParserSemiLatest ss = new cParserSemiLatest(file,methodsLocDeclNew);
+        ss.parse();
+        
+        try {
+            ParsedFilesController paFC=new ParsedFilesController();
+            this.opportunities = paFC.calculateOpportunities(fast, file, "c", methodsLocDeclNew);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //print
+        int i=0;
+        for(String str: this.opportunities){
+            System.out.println(i++ +" "+str);
+        }
     }
 }

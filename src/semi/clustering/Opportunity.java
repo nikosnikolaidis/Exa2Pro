@@ -90,7 +90,7 @@ public class Opportunity  implements Comparable<Opportunity> {
     //benefit metrics
     private double cob_benefit;
     private double lcom1_benefit;
-    private double lcom2_benefit;
+    public double lcom2_benefit;
     private double lcom3_benefit;
     private double lcom4_benefit;
     private double lcom5_benefit;
@@ -650,59 +650,50 @@ public class Opportunity  implements Comparable<Opportunity> {
     }
 
     public void addClusterMetrics(int start_cluster, int end_cluster, int size_cluster,
-            double cob_cluster, double lcom1_cluster, double lcom2_cluster,
-            double lcom3_cluster, double lcom4_cluster, double lcom5_cluster,
-            double tcc_cluster, double lcc_cluster, double dcd_cluster, double dci_cluster,
-            double cc_cluster, double coh_cluster, double scom_cluster,
-            double lscc_cluster, double comments_cluster, double lines_cluster_cluster) {
+            double lcom1_cluster, double lcom2_cluster) {
         this.start_line_cluster = start_cluster;
         this.end_line_cluster = end_cluster;
         this.size_cluster = size_cluster;
-        this.cob_cluster = cob_cluster;
+        //this.cob_cluster = cob_cluster;
         this.lcom1_cluster = lcom1_cluster;
         this.lcom2_cluster = lcom2_cluster;
-        this.lcom3_cluster = lcom3_cluster;
-        this.lcom4_cluster = lcom4_cluster;
-        this.lcom5_cluster = lcom5_cluster;
-        this.tcc_cluster = tcc_cluster;
-        this.lcc_cluster = lcc_cluster;
-        this.dcd_cluster = dcd_cluster;
-        this.dci_cluster = dci_cluster;
-        this.cc_cluster = cc_cluster;
-        this.coh_cluster = coh_cluster;
-        this.scom_cluster = scom_cluster;
-        this.lscc_cluster = lscc_cluster;
-        this.comments = comments_cluster;
-        this.lines_cluster_alwaysZero = lines_cluster_cluster;
+//        this.lcom3_cluster = lcom3_cluster;
+//        this.lcom4_cluster = lcom4_cluster;
+//        this.lcom5_cluster = lcom5_cluster;
+//        this.tcc_cluster = tcc_cluster;
+//        this.lcc_cluster = lcc_cluster;
+//        this.dcd_cluster = dcd_cluster;
+//        this.dci_cluster = dci_cluster;
+//        this.cc_cluster = cc_cluster;
+//        this.coh_cluster = coh_cluster;
+//        this.scom_cluster = scom_cluster;
+//        this.lscc_cluster = lscc_cluster;
+//        this.comments = comments_cluster;
+//        this.lines_cluster_alwaysZero = lines_cluster_cluster;
 
         this.setLinesCluster(String.format("%03d", start_line_cluster) + " to " + String.format("%03d", end_line_cluster));
         addMetricsToList();
     }
 
     public void addOriginalMetrics(int start_original, int end_original,
-            int size_original, double cob_original, double lcom1_original,
-            double lcom2_original, double lcom3_original,
-            double lcom4_original, double lcom5_original,
-            double tcc_original, double lcc_original, double dcd_original,
-            double dci_original, double cc_original, double coh_original,
-            double scom_original, double lscc_original) {
+            int size_original, double lcom1_original, double lcom2_original) {
         this.start_line_original = start_original;
         this.end_line_original = end_original;
         this.size_original = size_original;
-        this.cob_original = cob_original;
+        //this.cob_original = cob_original;
         this.lcom1_original = lcom1_original;
         this.lcom2_original = lcom2_original;
-        this.lcom3_original = lcom3_original;
-        this.lcom4_original = lcom4_original;
-        this.lcom5_original = lcom5_original;
-        this.tcc_original = tcc_original;
-        this.lcc_original = lcc_original;
-        this.dcd_original = dcd_original;
-        this.dci_original = dci_original;
-        this.cc_original = cc_original;
-        this.coh_original = coh_original;
-        this.scom_original = scom_original;
-        this.lscc_original = lscc_original;
+//        this.lcom3_original = lcom3_original;
+//        this.lcom4_original = lcom4_original;
+//        this.lcom5_original = lcom5_original;
+//        this.tcc_original = tcc_original;
+//        this.lcc_original = lcc_original;
+//        this.dcd_original = dcd_original;
+//        this.dci_original = dci_original;
+//        this.cc_original = cc_original;
+//        this.coh_original = coh_original;
+//        this.scom_original = scom_original;
+//        this.lscc_original = lscc_original;
     }
 
     public double[] getOriginalMetrics() {
@@ -711,27 +702,24 @@ public class Opportunity  implements Comparable<Opportunity> {
     }
 
     public void addNewMetrics(int start_new, int end_new, int size_new,
-            double cob_new, double lcom1_new, double lcom2_new,
-            double lcom3_new, double lcom4_new, double lcom5_new,
-            double tcc_new, double lcc_new, double dcd_new, double dci_new,
-            double cc_new, double coh_new, double scom_new, double lscc_new) {
+            double lcom1_new, double lcom2_new) {
         this.start_line_new = start_new;
         this.end_line_new = end_new;
         this.size_new = size_new;
-        this.cob_new = cob_new;
+        //this.cob_new = cob_new;
         this.lcom1_new = lcom1_new;
         this.lcom2_new = lcom2_new;
-        this.lcom3_new = lcom3_new;
-        this.lcom4_new = lcom4_new;
-        this.lcom5_new = lcom5_new;
-        this.tcc_new = tcc_new;
-        this.lcc_new = lcc_new;
-        this.dcd_new = dcd_new;
-        this.dci_new = dci_new;
-        this.cc_new = cc_new;
-        this.coh_new = coh_new;
-        this.scom_new = scom_new;
-        this.lscc_new = lscc_new;
+//        this.lcom3_new = lcom3_new;
+//        this.lcom4_new = lcom4_new;
+//        this.lcom5_new = lcom5_new;
+//        this.tcc_new = tcc_new;
+//        this.lcc_new = lcc_new;
+//        this.dcd_new = dcd_new;
+//        this.dci_new = dci_new;
+//        this.cc_new = cc_new;
+//        this.coh_new = coh_new;
+//        this.scom_new = scom_new;
+//        this.lscc_new = lscc_new;
 
         this.hasNewMetrics = true;
     }
@@ -847,20 +835,20 @@ public class Opportunity  implements Comparable<Opportunity> {
 
     public void calculateBenefit() {
 //        cob_benefit = Math.max(this.cob_new, cob_cluster) - cob_original;
-        cob_benefit = cob_original - Math.max(this.cob_new, cob_cluster);
+//        cob_benefit = cob_original - Math.max(this.cob_new, cob_cluster);
         lcom1_benefit = lcom1_original - Math.max(lcom1_new, lcom1_cluster);
         lcom2_benefit = lcom2_original - Math.max(lcom2_new, lcom2_cluster);
-        lcom3_benefit = lcom3_original - Math.max(lcom3_new, lcom3_cluster);
-        lcom4_benefit = lcom4_original - Math.max(lcom4_new, lcom4_cluster);
-        lcom5_benefit = lcom5_original - Math.max(lcom5_new, lcom5_cluster);
-        tcc_benefit = tcc_original-Math.max(this.tcc_new, tcc_cluster);
-        lcc_benefit = lcc_original-Math.max(this.lcc_new, lcc_cluster);
-        dcd_benefit = dcd_original-Math.max(this.dcd_new, dcd_cluster);
-        dci_benefit = dci_original-Math.max(this.dci_new, dci_cluster);
-        cc_benefit = cc_original-Math.max(this.cc_new, cc_cluster);
-        coh_benefit = coh_original-Math.max(this.coh_new, coh_cluster);
-        scom_benefit = scom_original-Math.max(this.scom_new, scom_cluster);
-        lscc_benefit = lscc_original-Math.max(this.lscc_new, lscc_cluster);
+//        lcom3_benefit = lcom3_original - Math.max(lcom3_new, lcom3_cluster);
+//        lcom4_benefit = lcom4_original - Math.max(lcom4_new, lcom4_cluster);
+//        lcom5_benefit = lcom5_original - Math.max(lcom5_new, lcom5_cluster);
+//        tcc_benefit = tcc_original-Math.max(this.tcc_new, tcc_cluster);
+//        lcc_benefit = lcc_original-Math.max(this.lcc_new, lcc_cluster);
+//        dcd_benefit = dcd_original-Math.max(this.dcd_new, dcd_cluster);
+//        dci_benefit = dci_original-Math.max(this.dci_new, dci_cluster);
+//        cc_benefit = cc_original-Math.max(this.cc_new, cc_cluster);
+//        coh_benefit = coh_original-Math.max(this.coh_new, coh_cluster);
+//        scom_benefit = scom_original-Math.max(this.scom_new, scom_cluster);
+//        lscc_benefit = lscc_original-Math.max(this.lscc_new, lscc_cluster);
 //        tcc_benefit = Math.max(this.tcc_new, tcc_cluster) - tcc_original;
 //        lcc_benefit = Math.max(this.lcc_new, lcc_cluster) - lcc_original;
 //        dcd_benefit = Math.max(this.dcd_new, dcd_cluster) - dcd_original;

@@ -88,7 +88,8 @@ public class SplitLongMethod {
                 // For Fortran
                 else {
                     if( line.trim().startsWith("#") || line.trim().equals("")
-                            || (fileLanguage.equals("f77") && line.trim().startsWith("C") )
+                            || (fileLanguage.equals("f77") && (line.trim().startsWith("C") || line.trim().startsWith("c")
+                                                            || line.trim().startsWith("!") || line.trim().startsWith("*")) )
                             || (fileLanguage.equals("f90") && line.trim().startsWith("!") ) ){
                         //invalid Line
                         invalidLinesAdd(invalid_lines, line_num);

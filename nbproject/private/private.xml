@@ -5,7 +5,7 @@
             <url>src/exa2pro/Analysis.java</url>
             <bookmark id="2">
                 <name/>
-                <line>66</line>
+                <line>73</line>
                 <key/>
             </bookmark>
         </file>
@@ -19,6 +19,8 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Nikos/Documents/NetBeansProjects/Exa2Pro/src/semi/Analyser.java</file>
+        </group>
     </open-files>
 </project-private>

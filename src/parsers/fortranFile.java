@@ -3,9 +3,14 @@ package parsers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +24,21 @@ public class fortranFile extends CodeFile{
     ArrayList<Integer> methodsLocStart =new ArrayList<>();
     ArrayList<Integer> methodsLocStop =new ArrayList<>();
     ArrayList<Integer> methodsCCArray =new ArrayList<>();
+    
+    ArrayList<Integer> arrayIfStart=new ArrayList<>();
+    ArrayList<Integer> arrayElseStart=new ArrayList<>();
+    ArrayList<Integer> arrayIfEnd=new ArrayList<>();
+    ArrayList<Integer> arrayDoStart=new ArrayList<>();
+    ArrayList<Integer> arrayDoEnd=new ArrayList<>();
+    
+    ArrayList<Integer> arraySelectCasesStart=new ArrayList<>();
+    ArrayList<Integer> arraySelectCasesEnd=new ArrayList<>();
+    ArrayList<Integer> arrayCasesStart=new ArrayList<>();
+    ArrayList<Integer> arrayCasesEnd=new ArrayList<>();
+    
+    int caseNumber=0;
+    boolean firstCase=false;
+    
     private boolean f90;
             
     public fortranFile(File file, boolean f90) {
@@ -38,10 +58,10 @@ public class fortranFile extends CodeFile{
             
             //System.out.println(file.getAbsolutePath()+"  "+file.getName());
             while ((line = br.readLine()) != null) {
+                countLOC ++;
                 if (!line.trim().equals("")){
                     String[] lineTable= line.trim().split(" ");
                     if( !isCommentLine(lineTable[0]) ){
-                        countLOC ++;
                     
                         // For fan-out
                         String[] use= lineTable[0].split(",");
@@ -111,7 +131,7 @@ public class fortranFile extends CodeFile{
                         // For CC
                         if( lineTable[0].equalsIgnoreCase("if") || lineTable[0].equalsIgnoreCase("else")
                                 || lineTable[0].equalsIgnoreCase("else if") || lineTable[0].equalsIgnoreCase("elseif")
-                                || lineTable[0].equalsIgnoreCase("do")
+                                || line.toLowerCase().contains("do while") || lineTable[0].equalsIgnoreCase("do")
                                 || lineTable[0].equalsIgnoreCase("case")){
                             if( methodsLocStart.size() == methodsLocStop.size()+1){
                                 int cc= methodsCCArray.get(methodsLocStart.size()-1);
@@ -128,11 +148,112 @@ public class fortranFile extends CodeFile{
                             }
                         }
                         
+                        //get all if/endif  and else
+                        if(lineTable[0].equalsIgnoreCase("if") || lineTable[0].toLowerCase().contains("if(")){
+                            arrayIfStart.add(countLOC);
+                            if(arrayIfEnd.size()+1<arrayIfStart.size())
+                                arrayIfEnd.add(0);
+                        }
+                        if(lineTable[0].equalsIgnoreCase("endif") || line.toLowerCase().contains("end if") ){
+                            if(arrayIfEnd.size()+1==arrayIfStart.size()){
+                                arrayIfEnd.add(countLOC);
+                            }
+                            else if(arrayIfEnd.size()==arrayIfStart.size()){
+                                int ifcounter=0;
+                                for(int i=0;i<arrayIfEnd.size();i++){
+                                    if(arrayIfEnd.get(i)==0)
+                                        ifcounter=i;
+                                }
+                                arrayIfEnd.set(ifcounter, countLOC);
+                            }
+                        }
+                        if(lineTable[0].equalsIgnoreCase("else") || lineTable[0].equalsIgnoreCase("elseif")){
+                            arrayElseStart.add(countLOC);
+                        }
+                        
+                        //get all do/enddo
+                        if(lineTable[0].equalsIgnoreCase("do") || line.toLowerCase().contains("do while") 
+                                    || line.toLowerCase().contains(": do") || line.toLowerCase().contains(":do")){
+                            arrayDoStart.add(countLOC);
+                            if(arrayDoEnd.size()+1<arrayDoStart.size())
+                                arrayDoEnd.add(0);
+                        }
+                        if(lineTable[0].equalsIgnoreCase("enddo") || line.toLowerCase().contains("end do") ){
+                            if(arrayDoEnd.size()+1==arrayDoStart.size()){
+                                arrayDoEnd.add(countLOC);
+                            }
+                            else if(arrayDoEnd.size()==arrayDoStart.size()){
+                                int ifcounter=0;
+                                for(int i=0;i<arrayDoEnd.size();i++){
+                                    if(arrayDoEnd.get(i)==0)
+                                        ifcounter=i;
+                                }
+                                arrayDoEnd.set(ifcounter, countLOC);
+                            }
+                        }
+                        
+                        //get all select cases
+                        if(line.toLowerCase().contains("select case(") || line.toLowerCase().contains("select case (")){
+                            arraySelectCasesStart.add(countLOC);
+                            if(arraySelectCasesEnd.size()+1<arraySelectCasesStart.size())
+                                arraySelectCasesEnd.add(0);
+                            firstCase= true;
+                        }
+                        if( line.toLowerCase().contains("end select") || line.toLowerCase().contains("endselect") ){
+                            if(arraySelectCasesEnd.size()+1==arraySelectCasesStart.size()){
+                                arraySelectCasesEnd.add(countLOC);
+                            }
+                            else if(arraySelectCasesEnd.size()==arraySelectCasesStart.size()){
+                                int casescounter=0;
+                                for(int i=0;i<arraySelectCasesEnd.size();i++){
+                                    if(arraySelectCasesEnd.get(i)==0)
+                                        casescounter=i;
+                                }
+                                arraySelectCasesEnd.set(casescounter, countLOC);
+                            }
+                        }
+                        
+                        //get all cases
+                        if(!firstCase && caseNumber>0 && (lineTable[0].toLowerCase().contains("case(") || lineTable[0].equalsIgnoreCase("case")
+                                || line.toLowerCase().contains("end select"))){
+                            if(arrayCasesEnd.size()+1==arrayCasesStart.size()){
+                                arrayCasesEnd.add(countLOC);
+                            }
+                            else if(arrayCasesEnd.size()==arrayCasesStart.size()){
+                                int casescounter=0;
+                                for(int i=0;i<arrayCasesEnd.size();i++){
+                                    if(arrayCasesEnd.get(i)==0)
+                                        casescounter=i;
+                                }
+                                arrayCasesEnd.set(casescounter, countLOC);
+                            }
+                        }
+                        if( lineTable[0].toLowerCase().contains("case(") || lineTable[0].equalsIgnoreCase("case") ){
+                            arrayCasesStart.add(countLOC);
+                            if(arrayCasesEnd.size()+1<arrayCasesStart.size())
+                                arrayCasesEnd.add(0);
+                            caseNumber++;
+                            if(firstCase)
+                                firstCase=false;
+                        }
+                        
                     }
                 }
             }
             if(checkForPreviousEnd)
                 methodEndsHere(checkForPreviousEndLine);
+            
+            br.close();
+            
+            //for last if condition of one line
+            if(arrayIfEnd.size()+1==arrayIfStart.size())
+                arrayIfEnd.add(0);
+            //for if condition of one line
+            for(int i=0;i<arrayIfStart.size();i++){
+                if(arrayIfEnd.get(i)==0){
+                    arrayIfEnd.set(i, arrayIfStart.get(i));
+                }
+            }
             
             //System.out.println("N= " +fanOut);
             for(int i=0; i<methodsName.size(); i++){
@@ -141,7 +262,7 @@ public class fortranFile extends CodeFile{
                 methodsLOC.put(methodsName.get(i), (methodsLocStop.get(i)-methodsLocStart.get(i)-1));
                 methodsCC.put(methodsName.get(i), methodsCCArray.get(i));
             }
-            calculateCohesion();
+            //calculateCohesion();
         } catch (IOException ex) {
             Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -216,7 +337,62 @@ public class fortranFile extends CodeFile{
      */
     @Override
     public void calculateCohesion() {
-        fortranParserSemi fortranSemi= new fortranParserSemi(file, f90,methodsLocStart, methodsName);
-        this.cohesion = fortranSemi.parse();
+        //Deletes previous if exist
+        File fileDelPrev = new File("./" + file.getName() + "_parsed.txt");
+        if(fileDelPrev.exists())
+            fileDelPrev.delete();
+        
+        //calculate cohesion
+        fortranParserSemi fortranSemi= new fortranParserSemi(file, f90,methodsLocStart, methodsLocStop, methodsName,
+                arrayIfStart, arrayElseStart, arrayIfEnd, arrayDoStart, arrayDoEnd,
+                arraySelectCasesStart, arraySelectCasesEnd, arrayCasesStart, arrayCasesEnd);
+        
+        fortranSemi.parse();
+        if(!fortranSemi.error){
+            ParsedFilesController paFC=new ParsedFilesController();
+            this.cohesion = paFC.doAnalysisLcom(file);
+        }
+        else
+            this.cohesion=0;
+    }
+    
+    @Override
+    public void calculateOpportunities(boolean fast){
+        //Deletes previous if exist
+        File fileDelPrev = new File("./" + file.getName() + "_parsed.txt");
+        if(fileDelPrev.exists())
+            fileDelPrev.delete();
+        
+        //create _parsed.txt file
+        fortranParserSemi fortranSemi= new fortranParserSemi(file, f90,methodsLocStart, methodsLocStop, methodsName,
+                arrayIfStart, arrayElseStart, arrayIfEnd, arrayDoStart, arrayDoEnd,
+                arraySelectCasesStart, arraySelectCasesEnd, arrayCasesStart, arrayCasesEnd);
+        fortranSemi.parse();
+        
+        //calculate opportunities
+        try {
+            HashMap<String, Integer> methodsLocDecl=new HashMap<>();
+            for(int i=0; i<methodsName.size(); i++){
+                methodsLocDecl.put(methodsName.get(i), methodsLocStart.get(i));
+                System.out.println(methodsName.get(i));
+            }
+            
+            String lang;
+            if(f90)
+                lang="f90";
+            else
+                lang="f77";
+            ParsedFilesController paFC=new ParsedFilesController();
+            this.opportunities = paFC.calculateOpportunities(fast, file, lang, methodsLocDecl);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        //print
+        int i=0;
+        for(String str: this.opportunities){
+            System.out.println(i++ +" "+str);
+        }
     }
 }

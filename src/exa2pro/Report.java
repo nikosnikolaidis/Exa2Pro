@@ -210,6 +210,8 @@ public class Report  implements Serializable{
                 JSONObject jobj1= (JSONObject) jobj.get("component");
                 JSONArray jsonarr_1 = (JSONArray) jobj1.get("measures");
                 
+                if(jsonarr_1.isEmpty())
+                    return "0";
                 JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(0);
                 return jsonobj_1.get("value").toString();
             }
@@ -218,7 +220,7 @@ public class Report  implements Serializable{
         } catch (IOException | ParseException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "";
+        return "0";
     }
     
     /*
@@ -249,6 +251,7 @@ public class Report  implements Serializable{
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+            return true;
         }
         return finished;
     }

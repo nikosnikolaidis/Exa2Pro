@@ -263,11 +263,11 @@ public class Method {
     public OpportunityList calculateAllClusters(int start, ArrayList<ArrayList<Integer>> invalid_lines, ArrayList<Integer> possible_invalid_bracket_close, ArrayList<Integer> lines_for_else) {
         for (int i = 1; i <= getMethodSize(invalid_lines); i++) {
             //System.out.println("starting in line: " + i);
-            //ClusterList cList = calculateClusters(i, invalid_lines);
-            //cList.sort();
-            //cList.merge();
-            //allClusters.addAll(cList);
-            //allClusters.setMethodEnd(cList.getMethodEnd());
+            ClusterList cList = calculateClusters(i, invalid_lines);
+            cList.sort();
+            cList.merge();
+            allClusters.addAll(cList);
+            allClusters.setMethodEnd(cList.getMethodEnd());
         }
         //System.out.println("Candidates Created");
         allClusters.removeDuplicates();

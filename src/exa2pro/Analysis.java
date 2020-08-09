@@ -89,6 +89,7 @@ public class Analysis {
     public void runCustomCreatedMetrics() {
         for (CodeFile file : project.getprojectFiles()) {
             file.parse();
+            file.calculateCohesion();
         }
         
         //print
