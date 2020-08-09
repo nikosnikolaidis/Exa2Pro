@@ -305,7 +305,7 @@ public class fortranParserSemi {
             if(line.contains("(")){
                 String[] callMethodSplit= line.split("call ")[1].split("\\(");
                 writer.append("Invocation#"+callMethodSplit[0]+"#"+countLOC+";"+System.lineSeparator());
-                String[] callParam= callMethodSplit[1].replace(")", "").replace("&", "")
+                String[] callParam= callMethodSplit[1].replace(")", "").replace("&", "").replace(";", "")
                         .replaceAll("\\+|\\-|\\*|\\%|\\/", ",").split(",");
                 for(String param: callParam){
                     param=param.trim();

@@ -122,7 +122,14 @@ public class Project implements Serializable {
                             parent= cf.file.getParent().split("/")[cf.file.getParent().split("/").length-1];
                         }
                         if((parent+"_"+cf.file.getName()).equals(fName)){
-                            Files.copy(f.toPath(), Paths.get(cf.file.getParent()+"/"+fName.split("_",2)[1]) );
+                            int count=0;
+                            if(parent.contains("_")){
+                                for(char ch: parent.toCharArray()){
+                                    if(ch=='_')
+                                        count++;
+                                }
+                            }
+                            Files.copy(f.toPath(), Paths.get(cf.file.getParent()+"/"+fName.split("_",count+2)[count+1]) );
                             f.delete();
                         }
                     }
