@@ -6,6 +6,11 @@
 package panels_frames;
 
 import exa2pro.Project;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 import parsers.CodeFile;
 
@@ -47,6 +52,18 @@ public class JPanelMetrics extends javax.swing.JPanel {
         for(CodeFile cf: project.getprojectFiles()){
             model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0});
         }
+        
+//        print the files with number of methods
+//        HashMap<String,Integer> temp=new HashMap<>();
+//        for(CodeFile cf: project.getprojectFiles()){
+//            temp.put(cf.file.getName(), cf.methodsLOC.size());
+//        }
+//        
+//        final Map<String, Integer> sortedByCount = temp.entrySet()
+//                .stream()
+//                .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+//        sortedByCount.forEach((key, value) -> System.out.println(key + ":" + value));
     }
     
     /**

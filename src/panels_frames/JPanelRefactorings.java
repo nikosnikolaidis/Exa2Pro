@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import static java.util.stream.Collectors.toMap;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.border.EmptyBorder;
 import parsers.CodeFile;
 
 /**
@@ -82,16 +84,24 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                 LinkedHashMap::new));
         
         //add the items to the list
+        System.out.println("CC");
         sortedCC.entrySet().forEach((item) -> {
+            System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelCC.addElement(item.getValue()+" "+item.getKey());
         });
+        System.out.println("LOC");
         sortedLOC.entrySet().forEach((item) -> {
+            System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelLOC.addElement(item.getValue()+" "+item.getKey());
         });
+        System.out.println("LCOM");
         sortedCohecion.entrySet().forEach((item) -> {
+            System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelCohesion.addElement(item.getValue()+" "+item.getKey());
         });
+        System.out.println("FO");
         sortedFanOut.entrySet().forEach((item) -> {
+            System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelFanOut.addElement(item.getValue()+" "+item.getKey());
         });
         
@@ -339,18 +349,30 @@ public class JPanelRefactorings extends javax.swing.JPanel {
     private void jListFilesIncoherentMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListFilesIncoherentMousePressed
         DefaultListModel<String> defaultListModelOpp = new DefaultListModel<>();
         
+        boolean fast;
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog(this,
+                    "Would you like to use the Faster Opportunity extractor, but in accuracy drawback?",
+                    "Algorithm Option", dialogButton);
+        if(dialogResult == 0) {
+            fast=true;
+        } else {
+            fast=false;
+        } 
+        
         String fileName= jListFilesIncoherent.getSelectedValue().split(" ")[1];
         for(CodeFile cf:project.getprojectFiles()){
            if(fileName.equals(cf.file.getName())){
                cf.parse();
                //cf.calculateCohesion();
-               cf.calculateOpportunities(true);
+               cf.calculateOpportunities(fast);
                
                cf.opportunities.forEach((opp) -> {
-                   defaultListModelOpp.addElement(opp);
+                   defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():"));
                });
-               if(!defaultListModelOpp.isEmpty())
+               //if(!defaultListModelOpp.isEmpty())
                    jPanel6.setVisible(true);
+               //jListOpportunities.setFixedCellWidth(100);
                jListOpportunities.setModel(defaultListModelOpp);
            }
        }

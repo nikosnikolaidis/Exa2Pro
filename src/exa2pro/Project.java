@@ -39,9 +39,19 @@ public class Project implements Serializable {
     }
     
     /**
-     * Creates an analysis and executes it
+     * Creates a small analysis and executes it
      */
     public void projectVersionAnalysis(){
+        Analysis a= new Analysis(this);
+        a.runCustomCreatedMetrics();
+        
+        saveToFile();
+    }
+    
+    /**
+     * Creates a Full analysis and executes it
+     */
+    public void projectVersionAnalysisFull(){
         Analysis a= new Analysis(this);
         a.runCustomCreatedMetrics();
         a.createPropertiesFile();

@@ -3,6 +3,7 @@ package exa2pro;
 import exa2pro.Exa2Pro;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -104,29 +105,48 @@ public class PieChart extends ApplicationFrame {
     */
     public static HashMap<String, Double> calculateThresholds(){
         int sumFO=0;
+        ArrayList<Integer> FO=new ArrayList<>();
         int sumCo=0;
+        ArrayList<Double> Co=new ArrayList<>();
         int sumCC=0;
+        ArrayList<Integer> CC=new ArrayList<>();
         int sumLOC=0;
+        ArrayList<Integer> LOC=new ArrayList<>();
         int totalfiles=0;
         int totalmethods=0;
         for(ProjectCredentials pC: Exa2Pro.projecCredentialstList){
             Project p= pC.getProjects().get(pC.getProjects().size()-1);
             for(CodeFile cf: p.getprojectFiles()){
                 sumFO += cf.fanOut;
+                FO.add(cf.fanOut);
                 sumCo += cf.cohesion;
+                Co.add(cf.cohesion);
                 totalfiles++;
                 for(String key : cf.methodsLOC.keySet()){
                     sumCC += cf.methodsCC.get(key);
+                    CC.add(cf.methodsCC.get(key));
                     sumLOC += cf.methodsLOC.get(key);
+                    LOC.add(cf.methodsLOC.get(key));
                     totalmethods++;
                 }
             }
         }
         HashMap<String, Double> temp=new HashMap<>();
-        temp.put("FanOut", (sumFO*1.0)/totalfiles);
-        temp.put("LCOM2", (sumCo*1.0)/totalfiles);
-        temp.put("CC", (sumCC*1.0)/totalmethods);
-        temp.put("LOC", (sumLOC*1.0)/totalmethods);
+//        temp.put("FanOut", (sumFO*1.0)/totalfiles);
+//        temp.put("LCOM2", (sumCo*1.0)/totalfiles);
+//        temp.put("CC", (sumCC*1.0)/totalmethods);
+//        temp.put("LOC", (sumLOC*1.0)/totalmethods);
+        
+        Collections.sort(FO);
+        Collections.sort(Co);
+        Collections.sort(CC);
+        Collections.sort(LOC);
+        int f= (int) Math.floor(FO.size()*0.9);
+        int m= (int) Math.floor(CC.size()*0.9);
+        temp.put("FanOut", 1.0*FO.get(f));
+        temp.put("LCOM2", 1.0*Co.get(f));
+        temp.put("CC", 1.0*CC.get(m));
+        temp.put("LOC", 1.0*LOC.get(m));
         
         return temp;
     }

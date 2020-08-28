@@ -434,7 +434,7 @@ public class HomeFrame extends javax.swing.JFrame {
                 
                 populateProjectList();
                 
-                p.projectVersionAnalysis();
+                p.projectVersionAnalysisFull();
                 // Project saved and being transfered to Projects Panel
                 jTextFieldProjectName.setText("");
                 jTextFieldProjectDirectory.setText("");
