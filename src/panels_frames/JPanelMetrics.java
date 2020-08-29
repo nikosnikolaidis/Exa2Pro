@@ -35,7 +35,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void addRowsInTable(){
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "File", "Fan-Out", "LCOM2"
+                "File", "Fan-Out", "LCOL"
             }){
                 Class[] types = { String.class, Integer.class, Integer.class};
                 @Override
@@ -86,7 +86,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
 
             },
             new String [] {
-                "File", "Fan-Out", "LCOM2"
+                "File", "Fan-Out", "LCOL"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -168,7 +168,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "File", "Fan-Out", "LCOM2"
+                "File", "Fan-Out", "LCOL"
             }));
         
         addRowsInTable();

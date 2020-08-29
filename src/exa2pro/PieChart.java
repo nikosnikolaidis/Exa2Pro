@@ -58,7 +58,7 @@ public class PieChart extends ApplicationFrame {
                     total++;
                 }
             }
-            else if (metric.equals("LCOM2")){
+            else if (metric.equals("LCOL")){
                 System.out.println("LCOM2 threshold: "+threshold);
                 for(CodeFile cf: project.getprojectFiles()){
                     if(cf.cohesion>threshold)

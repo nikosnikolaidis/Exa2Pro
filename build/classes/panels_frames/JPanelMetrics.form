@@ -61,7 +61,7 @@
               <Table columnCount="3" rowCount="0">
                 <Column editable="false" title="File" type="java.lang.Object"/>
                 <Column editable="false" title="Fan-Out" type="java.lang.Object"/>
-                <Column editable="false" title="LCOM2" type="java.lang.Object"/>
+                <Column editable="false" title="LCOL" type="java.lang.Object"/>
               </Table>
             </Property>
           </Properties>

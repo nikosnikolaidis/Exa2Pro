@@ -72,7 +72,7 @@
                 <StringItem index="0" value="TD"/>
                 <StringItem index="1" value="Issues"/>
                 <StringItem index="2" value="Fan-Out"/>
-                <StringItem index="3" value="LCOM2"/>
+                <StringItem index="3" value="LCOL"/>
                 <StringItem index="4" value="CC"/>
                 <StringItem index="5" value="LOC"/>
               </StringArray>

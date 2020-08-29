@@ -8,7 +8,10 @@ package panels_frames;
 import exa2pro.PieChart;
 import exa2pro.Project;
 import java.awt.Color;
+import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Map;
+import parsers.CodeFile;
 
 /**
  *
@@ -58,7 +61,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
         
         jPanel7.removeAll();
-        PieChart chart1 = new PieChart(project,"Pie","LCOM2"," of Files", temp.get("LCOM2"));
+        PieChart chart1 = new PieChart(project,"Pie","LCOL"," of Files", temp.get("LCOM2"));
         javax.swing.GroupLayout jPanelChartLayout1 = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanelChartLayout1);
         jPanelChartLayout1.setHorizontalGroup(
@@ -123,8 +126,31 @@ public class ProjectFrame extends javax.swing.JFrame {
         jTextArea1.setText(project.getprojectReport().getLinesOfCodeForAllLanguages());
         jLabelDateAnalysis.setText(project.getprojectReport().getDate()+"");
         jLabelCodeSmells.setText(project.getprojectReport().getTotalCodeSmells()+"");
-        jLabelComplexity.setText(project.getprojectReport().getTotalComplexity()+"");
         jLabelTechnicalDebt.setText(project.getprojectReport().getTotalDebt());
+        
+        //print the metrics of system
+        double sumIn=0;
+        int sumCC=0;
+        int sumLOC=0;
+        int sumFO=0;
+        int c=0;
+        for(CodeFile cf: project.getprojectFiles()){
+            sumIn+= cf.cohesion;
+            sumFO+= cf.fanOut;
+            for (Map.Entry<String, Integer> entry : cf.methodsCC.entrySet()) {
+                sumCC+= entry.getValue();
+                c++;
+            }
+            for (Map.Entry<String, Integer> entry : cf.methodsLOC.entrySet()) {
+                sumLOC+= entry.getValue();
+            }
+        }
+        
+        DecimalFormat df = new DecimalFormat("#.#");
+        jLabelCC.setText( df.format(sumCC*1.0/c) +"");
+        jLabelLOC.setText( df.format(sumLOC*1.0/c) +"");
+        jLabelFO.setText( df.format(sumFO*1.0/project.getprojectFiles().size()) +"");
+        jLabelLCOL.setText( df.format(sumIn/project.getprojectFiles().size()) +"");
     }
 
     /**
@@ -169,9 +195,15 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
         jLabelCodeSmells = new javax.swing.JLabel();
         jLabelTechnicalDebt = new javax.swing.JLabel();
-        jLabelComplexity = new javax.swing.JLabel();
+        jLabelCC = new javax.swing.JLabel();
+        jLabelLOC = new javax.swing.JLabel();
+        jLabelFO = new javax.swing.JLabel();
+        jLabelLCOL = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -360,7 +392,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel6.setText("Measures");
+        jLabel6.setText("System Measures");
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel7.setText("Code Smells");
@@ -369,13 +401,28 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel8.setText("Technical Debt");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel9.setText("Complexity");
+        jLabel9.setText("CC");
+
+        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel10.setText("LOC");
+
+        jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel11.setText("FanOut");
+
+        jLabel12.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel12.setText("LCOL");
 
         jLabelCodeSmells.setText("jLabel12");
 
         jLabelTechnicalDebt.setText("jLabel13");
 
-        jLabelComplexity.setText("jLabel14");
+        jLabelCC.setText("jLabel14");
+
+        jLabelLOC.setText("jLabel11");
+
+        jLabelFO.setText("jLabel12");
+
+        jLabelLCOL.setText("jLabel13");
 
         jPanel10.setLayout(new java.awt.GridLayout(2, 2, 10, 10));
 
@@ -441,42 +488,63 @@ public class ProjectFrame extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabelCodeSmells, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 120, Short.MAX_VALUE)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabelTechnicalDebt))
-                        .addGap(100, 100, 100)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelComplexity)
-                            .addComponent(jLabel9))
-                        .addGap(290, 290, 290))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabelCodeSmells, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabelTechnicalDebt))
+                                .addGap(60, 60, 60)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabelCC))
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabelLOC))
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabelFO))
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelLCOL)
+                                    .addComponent(jLabel12))))
+                        .addGap(0, 98, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabelCodeSmells))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabelTechnicalDebt)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel12))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelCodeSmells))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelTechnicalDebt))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelComplexity)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelCC)
+                            .addComponent(jLabelLOC)
+                            .addComponent(jLabelFO)
+                            .addComponent(jLabelLCOL))))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -647,6 +715,9 @@ public class ProjectFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -661,9 +732,12 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelCC;
     private javax.swing.JLabel jLabelCodeSmells;
-    private javax.swing.JLabel jLabelComplexity;
     private javax.swing.JLabel jLabelDateAnalysis;
+    private javax.swing.JLabel jLabelFO;
+    private javax.swing.JLabel jLabelLCOL;
+    private javax.swing.JLabel jLabelLOC;
     private javax.swing.JLabel jLabelProjectName;
     private javax.swing.JLabel jLabelTechnicalDebt;
     private javax.swing.JLabel jLabelTotallLines;

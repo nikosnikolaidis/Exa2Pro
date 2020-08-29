@@ -95,7 +95,7 @@ public class LineChart extends ApplicationFrame {
                         num= sum/p.getprojectFiles().size();
                         break;
                     }
-                case "LCOM2":
+                case "LCOL":
                     {
                         double sum=0;
                         sum = p.getprojectFiles().stream().map((cf) -> cf.cohesion).reduce(sum, Double::sum);
