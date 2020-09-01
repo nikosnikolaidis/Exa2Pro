@@ -76,8 +76,10 @@ public class ParsedFilesController {
         input.close();
         
         //change small if to one line
-        ExtraParseUtils epu=new ExtraParseUtils();
-        epu.convertSimpleIfsToLine(file.getName() + "_parsed.txt");
+        if(fast){
+            ExtraParseUtils epu=new ExtraParseUtils();
+            epu.convertSimpleIfsToLine(file.getName() + "_parsed.txt");
+        }
         
         //Get All start lines of methods in order
         ArrayList<Integer> allStartLines= new ArrayList<>();
@@ -91,9 +93,11 @@ public class ParsedFilesController {
         //Start analysis and opp extractor
         Analyser analyser = new Analyser();
         analyser.setFile(file);
-        JavaClass myclass=analyser.performAnalysis();
+        //JavaClass myclass=analyser.performAnalysis();
         
-        classResults.add(myclass);
+        try {
+        
+        classResults.add(analyser.performAnalysis());
         JavaClass clazz = classResults.get(classResults.size()-1);
         for (int index = 0; index < clazz.getMethods().size(); index++) {
             boolean needsRefactoring = clazz.getMethods().get(index).needsRefactoring(selected_metric);	
@@ -262,6 +266,12 @@ public class ParsedFilesController {
                 System.out.println("File Name:"+className+" M:"+methodName+ "   " + method.getMetricIndexFromName("lcom2"));
             }
         }
+        
+        }catch (OutOfMemoryError E) {
+            System.out.println("Out of memory!");
+	}
+        
+        
 	File fileDel = new File("./" + file.getName() + "_parsed.txt");
         fileDel.delete();
         
