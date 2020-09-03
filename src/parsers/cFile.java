@@ -62,14 +62,14 @@ public class cFile extends CodeFile{
                         // For fan-out
                         if( lineTable[0].equals("#include") ){
                             String temp=line.replace("#include", "");
-                            if(temp.trim().charAt(0)=='"'){
+                            if(temp.trim().charAt(0)=='"' && !includeFiles.contains(temp.trim())){
                                 includeFiles.add(temp.trim());
                                 fanOut ++;
                             }
                         }
                         else if( lineTable[0].equals("#") && lineTable[1].equals("include") ){
                             String temp=line.replace("# include", "");
-                            if(temp.trim().charAt(0)=='"'){
+                            if(temp.trim().charAt(0)=='"' && !includeFiles.contains(temp.trim())){
                                 includeFiles.add(temp.trim());
                                 fanOut ++;
                             }
@@ -154,12 +154,17 @@ public class cFile extends CodeFile{
                             }
                             else{
                                 //calculate cc
-                                if(line.toLowerCase().contains("if") || line.toLowerCase().contains("else")
-                                        || line.toLowerCase().contains("else if") || line.toLowerCase().contains("for")
-                                        || line.toLowerCase().contains("while") 
-                                        || (line.toLowerCase().contains("case") && line.contains(":"))){
-                                    methodCC++;
-                                }
+                                if(lineTable.length>0) {
+	                            	if(lineTable[0].equalsIgnoreCase("if") || lineTable[0].equalsIgnoreCase("else") ||
+                                                lineTable[0].equalsIgnoreCase("for") || lineTable[0].equalsIgnoreCase("while") ||
+	                                        (line.toLowerCase().contains("case") && line.contains(":"))){
+	                                    methodCC++;
+	                                }
+                            	}
+                            	if(lineTable.length>1) {
+                            		if((lineTable[0].equals("}") && lineTable[1].equalsIgnoreCase("else")))
+                            			methodCC++;
+                            	}
                             }
                         }
                         if(line.contains("/*") && !line.contains("*/")){

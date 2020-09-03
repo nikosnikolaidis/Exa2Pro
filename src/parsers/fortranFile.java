@@ -82,7 +82,7 @@ public class fortranFile extends CodeFile{
                                 }
                             }
                         }
-                        if(lineTable[0].equals("INCLUDE") && line.contains(".inc"))
+                        if(lineTable[0].equalsIgnoreCase("INCLUDE") && line.contains(".inc"))
                             fanOut ++;
                         
                         // For start count LOC in function/subroutine
@@ -129,8 +129,9 @@ public class fortranFile extends CodeFile{
                         
                         
                         // For CC
-                        if( lineTable[0].equalsIgnoreCase("if") || lineTable[0].equalsIgnoreCase("else")
-                                || lineTable[0].equalsIgnoreCase("else if") || lineTable[0].equalsIgnoreCase("elseif")
+                        if( lineTable[0].equalsIgnoreCase("if") || lineTable[0].toLowerCase().contains("if(")
+                        		|| lineTable[0].equalsIgnoreCase("else") || lineTable[0].equalsIgnoreCase("elseif")
+                        		|| lineTable[0].toLowerCase().contains("elseif(")
                                 || line.toLowerCase().contains("do while") || lineTable[0].equalsIgnoreCase("do")
                                 || lineTable[0].equalsIgnoreCase("case")){
                             if( methodsLocStart.size() == methodsLocStop.size()+1){
