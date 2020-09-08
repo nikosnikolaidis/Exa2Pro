@@ -17,15 +17,19 @@ import java.util.HashMap;
 public abstract class CodeFile implements Serializable{
     public File file;
     public int fanOut;
+    public HashMap<String, String> methodInvocations;
+    public HashMap<String, String> commonBlockDeclaration;
     public HashMap<String, Integer> methodsLOC;
     public HashMap<String, Integer> methodsCC;
-    public double cohesion;                     //TODO maybe change to hashmap for cohesion for each method
+    public double cohesion;
     public ArrayList<String> opportunities;
     
     public CodeFile(File file){
         this.file=file;
         methodsLOC= new HashMap<>();
         methodsCC= new HashMap<>();
+        methodInvocations= new HashMap<>();
+        commonBlockDeclaration= new HashMap<>();
     }
     
     public abstract void parse();

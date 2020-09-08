@@ -95,7 +95,10 @@ public class fortranParserSemi {
                                 if(f90){
                                     methodToPrint="Method:"+methodsName.get(i)+"(";
                                     String[] newLine= line.split(methodsName.get(i),2);
-                                    line= newLine[1].trim().substring(1).trim();
+                                    if(newLine[1].trim().equals(""))
+                                        line="";
+                                    else
+                                        line= newLine[1].trim().substring(1).trim();
                                 }
                                 else{
                                     methodToPrint="Method:"+methodsName.get(i)+"(";
@@ -111,7 +114,7 @@ public class fortranParserSemi {
                         // Method Decleration
                         if(methodDel){
                             if(f90){
-                                 if(line.trim().charAt(line.trim().length()-1)=='&') {
+                                 if(!line.equals("") && line.trim().charAt(line.trim().length()-1)=='&') {
                                     addMethodParam(methodParam);
                                 }
                                 else{

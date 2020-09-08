@@ -12,6 +12,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import parsers.CodeFile;
@@ -90,6 +92,56 @@ public class Analysis {
         for (CodeFile file : project.getprojectFiles()) {
             file.parse();
             file.calculateCohesion();
+        }
+        
+        //FanOut from invocations
+        //for each file
+        for (CodeFile file : project.getprojectFiles()) {
+            HashSet<String> fanOutFiles= new HashSet<>();
+            //for each invocation
+            for (Map.Entry<String, String> entry : file.methodInvocations.entrySet()) {
+                //check if not in same file
+                boolean methodMine= false;
+                for (Map.Entry<String, Integer> entry2 : file.methodsLOC.entrySet()) {
+                    if(entry.getKey().equalsIgnoreCase(entry2.getKey())){
+                        methodMine= true;
+                    }
+                }
+                //check in every other file the methods
+                if(!methodMine){
+                    for (CodeFile file2 : project.getprojectFiles()) {
+                        for (Map.Entry<String, Integer> entry2 : file2.methodsLOC.entrySet()) {
+                            if(entry.getKey().equalsIgnoreCase(entry2.getKey()) 
+                                        || entry.getKey().equalsIgnoreCase(entry2.getKey().replaceAll("static|void", "").trim())){
+                                fanOutFiles.add(file2.file.getName());
+                            }
+                        }
+                    }
+                }
+            }
+            //fanOut update
+            file.fanOut+= fanOutFiles.size();
+        }
+        
+        //FanOut from common blocks
+        //for each file
+        for (CodeFile file : project.getprojectFiles()) {
+            HashSet<String> fanOutFiles= new HashSet<>();
+            //for each common block
+            for (Map.Entry<String, String> entry : file.commonBlockDeclaration.entrySet()) {
+                //check in every other file the common block
+                for (CodeFile file2 : project.getprojectFiles()) {
+                    if(!file.file.getName().equals(file2.file.getName())){
+                        for (Map.Entry<String, String> entry2 : file2.commonBlockDeclaration.entrySet()) {
+                            if(entry.getKey().split("/")[1].trim().equalsIgnoreCase(entry2.getKey().split("/")[1].trim())){
+                                fanOutFiles.add(file2.file.getName());
+                            }
+                        }
+                    }
+                }
+            }
+            //fanOut update
+            file.fanOut+= fanOutFiles.size();
         }
         
         //print

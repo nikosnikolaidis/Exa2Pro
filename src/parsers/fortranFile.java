@@ -64,6 +64,33 @@ public class fortranFile extends CodeFile{
                     if( !isCommentLine(lineTable[0]) ){
                     
                         // For fan-out
+                        //Method invocation
+                        if((line.trim().toLowerCase().startsWith("call ") && !(line.toLowerCase().contains("if") || line.toLowerCase().contains("do") )) ||
+                                    (line.contains("call ") && !line.matches(".*\\\".*call.*?\\\".*")) ){
+                            String[] callMethodSplit= line.toLowerCase().split("call ")[1].split("\\(");
+                            int tempN= methodsName.size();
+                            String meth;
+                            if(tempN==0)
+                                meth="";
+                            else
+                                meth=methodsName.get(methodsName.size()-1);
+                            methodInvocations.put(callMethodSplit[0], meth);
+                        }
+                        
+                        // For fan-out
+                        //"common blocks" for same variables
+                        if(line.trim().toLowerCase().startsWith("common")){
+                            int tempN= methodsName.size();
+                            String meth;
+                            if(tempN==0)
+                                meth="";
+                            else
+                                meth=methodsName.get(methodsName.size()-1);
+                            commonBlockDeclaration.put(line.trim().toLowerCase(), meth);
+                        }
+                        
+                        // For fan-out
+                        //"use" for module
                         String[] use= lineTable[0].split(",");
                         if( use[0].equalsIgnoreCase("use") ){
                             if (line.contains("::")){       //<use,INTRINSIC :: name>
@@ -82,8 +109,6 @@ public class fortranFile extends CodeFile{
                                 }
                             }
                         }
-                        if(lineTable[0].equalsIgnoreCase("INCLUDE") && line.contains(".inc"))
-                            fanOut ++;
                         
                         // For start count LOC in function/subroutine
                         if( lineTable[0].equalsIgnoreCase("function") || lineTable[0].equalsIgnoreCase("subroutine") ){
@@ -263,6 +288,12 @@ public class fortranFile extends CodeFile{
                 methodsLOC.put(methodsName.get(i), (methodsLocStop.get(i)-methodsLocStart.get(i)-1));
                 methodsCC.put(methodsName.get(i), methodsCCArray.get(i));
             }
+            
+//            if(file.getName().equals("deps.f")){
+//                for(int i=0; i<arrayDoStart.size(); i++){
+//                    System.out.println("start: "+arrayDoStart.get(i)+ " end: "+ arrayDoEnd.get(i));
+//                }
+//            }
             //calculateCohesion();
         } catch (IOException ex) {
             Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
@@ -318,7 +349,7 @@ public class fortranFile extends CodeFile{
         if(f90)
             return word.charAt(0) == '!';
         else
-            return (word.charAt(0) == 'C' || word.charAt(0) == 'c' || word.charAt(0) == '!' || word.charAt(0) == '*');
+            return (word.equalsIgnoreCase("c") || word.toLowerCase().startsWith("c ") || word.toLowerCase().startsWith("c-") || word.charAt(0) == '!' || word.charAt(0) == '*');
     }
     private boolean isCommentStarts(String word){
         if(word.length()>0){
