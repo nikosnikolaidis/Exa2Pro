@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.swing.JLabel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import parsers.CodeFile;
 
@@ -35,14 +37,14 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void addRowsInTable(){
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "File", "Fan-Out", "LCOL"
+                "File", "Fan-Out", "LCOL", "LCOF"
             }){
-                Class[] types = { String.class, Integer.class, Integer.class};
+                Class[] types = { String.class, Integer.class, Integer.class, String.class};
                 @Override
                 public Class getColumnClass(int columnIndex) {
                     return this.types[columnIndex];
                 }
-                boolean[] canEdit = { false, false, false};
+                boolean[] canEdit = { false, false, false, false};
                 public boolean isCellEditable(int columnIndex) {
                     return this.canEdit[columnIndex];
                 }
@@ -50,8 +52,16 @@ public class JPanelMetrics extends javax.swing.JPanel {
         
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for(CodeFile cf: project.getprojectFiles()){
-            model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0});
+            if(cf.lcof==-1)
+                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0, "NonDefined"});
+            else
+                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0, ""+cf.lcof});
         }
+        
+        //right aligment in lcof column
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        jTable1.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
         
 //        print the files with number of methods
 //        HashMap<String,Integer> temp=new HashMap<>();
@@ -168,7 +178,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "File", "Fan-Out", "LCOL"
+                "File", "Fan-Out", "LCOL", "LCOF"
             }));
         
         addRowsInTable();

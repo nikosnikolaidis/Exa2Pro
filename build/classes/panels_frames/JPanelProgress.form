@@ -68,13 +68,14 @@
         <Component class="javax.swing.JList" name="jListMetrics">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-              <StringArray count="6">
+              <StringArray count="7">
                 <StringItem index="0" value="TD"/>
                 <StringItem index="1" value="Issues"/>
                 <StringItem index="2" value="Fan-Out"/>
                 <StringItem index="3" value="LCOL"/>
-                <StringItem index="4" value="CC"/>
-                <StringItem index="5" value="LOC"/>
+                <StringItem index="4" value="LCOF"/>
+                <StringItem index="5" value="CC"/>
+                <StringItem index="6" value="LOC"/>
               </StringArray>
             </Property>
           </Properties>

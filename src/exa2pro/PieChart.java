@@ -68,6 +68,18 @@ public class PieChart extends ApplicationFrame {
                     total++;
                 }
             }
+            else if (metric.equals("LCOF")){
+                System.out.println("LCOF threshold: "+threshold);
+                for(CodeFile cf: project.getprojectFiles()){
+                    if(cf.lcof!=-1){
+                        if(cf.lcof>threshold)
+                            n++;
+                        else
+                            p++;
+                        total++;
+                    }
+                }
+            }
             else if (metric.equals("CC")){
                 System.out.println("CC threshold: "+threshold);
                 for(CodeFile cf: project.getprojectFiles()){
@@ -112,6 +124,7 @@ public class PieChart extends ApplicationFrame {
         ArrayList<Integer> CC=new ArrayList<>();
         int sumLOC=0;
         ArrayList<Integer> LOC=new ArrayList<>();
+        ArrayList<Integer> LCOF=new ArrayList<>();
         int totalfiles=0;
         int totalmethods=0;
         for(ProjectCredentials pC: Exa2Pro.projecCredentialstList){
@@ -121,6 +134,8 @@ public class PieChart extends ApplicationFrame {
                 FO.add(cf.fanOut);
                 sumCo += cf.cohesion;
                 Co.add(cf.cohesion);
+                if(cf.lcof!=-1)
+                    LCOF.add(cf.lcof);
                 totalfiles++;
                 for(String key : cf.methodsLOC.keySet()){
                     sumCC += cf.methodsCC.get(key);
@@ -141,12 +156,17 @@ public class PieChart extends ApplicationFrame {
         Collections.sort(Co);
         Collections.sort(CC);
         Collections.sort(LOC);
+        Collections.sort(LCOF);
         int f= (int) Math.floor(FO.size()*0.9);
+        int c= (int) Math.floor(Co.size()*0.9);
         int m= (int) Math.floor(CC.size()*0.9);
+        int l= (int) Math.floor(LOC.size()*0.9);
+        int l1= (int) Math.floor(LCOF.size()*0.9);
         temp.put("FanOut", 1.0*FO.get(f));
-        temp.put("LCOM2", 1.0*Co.get(f));
+        temp.put("LCOM2", 1.0*Co.get(c));
         temp.put("CC", 1.0*CC.get(m));
-        temp.put("LOC", 1.0*LOC.get(m));
+        temp.put("LOC", 1.0*LOC.get(l));
+        temp.put("LCOF", 1.0*LCOF.get(l1));
         
         return temp;
     }

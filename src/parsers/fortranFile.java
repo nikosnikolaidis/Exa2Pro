@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -29,6 +30,7 @@ public class fortranFile extends CodeFile{
     ArrayList<Integer> arrayElseStart=new ArrayList<>();
     ArrayList<Integer> arrayIfEnd=new ArrayList<>();
     ArrayList<Integer> arrayDoStart=new ArrayList<>();
+    HashMap<Integer,Integer> arrayDoStartFlag=new HashMap<>();
     ArrayList<Integer> arrayDoEnd=new ArrayList<>();
     
     ArrayList<Integer> arraySelectCasesStart=new ArrayList<>();
@@ -38,6 +40,8 @@ public class fortranFile extends CodeFile{
     
     int caseNumber=0;
     boolean firstCase=false;
+    
+    boolean module=false;
     
     private boolean f90;
             
@@ -56,11 +60,14 @@ public class fortranFile extends CodeFile{
             int checkForPreviousEndLine= 0;
             ArrayList<String> useFiles=new ArrayList<>();
             
+            String doFlag="";
+            int doFlagLine=0;
+            
             //System.out.println(file.getAbsolutePath()+"  "+file.getName());
             while ((line = br.readLine()) != null) {
                 countLOC ++;
                 if (!line.trim().equals("")){
-                    String[] lineTable= line.trim().split(" ");
+                    String[] lineTable= line.trim().replaceAll("\\s\\s+", " ").split(" ");
                     if( !isCommentLine(lineTable[0]) ){
                     
                         // For fan-out
@@ -110,6 +117,29 @@ public class fortranFile extends CodeFile{
                             }
                         }
                         
+                        //For LCOM real(LCOF)
+                        if(module && methodsName.isEmpty()){
+                            if(line.contains("::")){
+                                String[] declareAtr= line.trim().split("::", 2);
+                                if(!declareAtr[0].replaceAll("public|private", "").trim().equals("")){
+                                    attributes.add(declareAtr[1].trim().replaceAll("=.*|!.*|\\(.*", "").trim());
+                                }
+                            }
+                        }
+                        if(lineTable[0].equalsIgnoreCase("module") || Pattern.matches(".module", lineTable[0])){
+                            module= true;
+                        }
+                        
+                        if(!methodsName.isEmpty()){
+                            String[] lineVar= replaceWithSpaces(line).split(" ");
+                            for(String str: lineVar){
+                                if( attributes.contains(str.trim()) ){
+                                    attributesInMethods.add(str.trim()+" "+methodsName.get(methodsName.size()-1));
+                                }
+                            }
+                        }
+                        
+                        
                         // For start count LOC in function/subroutine
                         if( lineTable[0].equalsIgnoreCase("function") || lineTable[0].equalsIgnoreCase("subroutine") ){
                             methodStartsHere(checkForPreviousEnd,checkForPreviousEndLine,lineTable,1,countLOC);
@@ -137,6 +167,9 @@ public class fortranFile extends CodeFile{
                         // For stop count LOC in function/subroutine
                         if( lineTable[0].equalsIgnoreCase("end") && lineTable.length>1 ){
                             if( lineTable[1].equalsIgnoreCase("function") || lineTable[1].equalsIgnoreCase("subroutine") ){
+                                methodEndsHere(countLOC);
+                            }
+                            if( arrayDoStart.size()==arrayDoEnd.size() && arrayIfStart.size()==arrayIfEnd.size()){
                                 methodEndsHere(countLOC);
                             }
                         }
@@ -201,6 +234,11 @@ public class fortranFile extends CodeFile{
                         if(lineTable[0].equalsIgnoreCase("do") || line.toLowerCase().contains("do while") 
                                     || line.toLowerCase().contains(": do") || line.toLowerCase().contains(":do")){
                             arrayDoStart.add(countLOC);
+                            if(lineTable.length>1 && Pattern.matches("[0-9]*", lineTable[1]) ){
+                                arrayDoStartFlag.put(Integer.parseInt(lineTable[1]), arrayDoStart.size()-1);
+                                doFlag= lineTable[1];
+                                doFlagLine= countLOC;
+                            }
                             if(arrayDoEnd.size()+1<arrayDoStart.size())
                                 arrayDoEnd.add(0);
                         }
@@ -216,6 +254,31 @@ public class fortranFile extends CodeFile{
                                 }
                                 arrayDoEnd.set(ifcounter, countLOC);
                             }
+                        }
+                        if(line.toLowerCase().contains("continue")){
+                            String t= line.replaceAll("\\s\\s+", " ");
+                            if(t.charAt(0) == ' ')
+                                t= t.substring(1);
+                            String[] temp= t.split(" ");
+                            if(temp.length>1 && Pattern.matches("[0-9]*", temp[0]) && temp[1].equalsIgnoreCase("continue")){
+                                if(arrayDoStartFlag.containsKey(Integer.parseInt(temp[0])) ){
+                                    if(arrayDoEnd.size()+1==arrayDoStart.size()){
+                                        arrayDoEnd.add(countLOC);
+                                    }
+                                    else if(arrayDoEnd.size()==arrayDoStart.size()){
+                                        arrayDoEnd.set(arrayDoStartFlag.get(Integer.parseInt(temp[0])), countLOC);
+                                    }
+                                }
+                            }
+                        }
+                        else if(lineTable[0].equals(doFlag) ){
+                            if(arrayDoEnd.size()+1==arrayDoStart.size()){
+                                arrayDoEnd.add(countLOC);
+                            }
+                            else if(arrayDoEnd.size()==arrayDoStart.size()){
+                                arrayDoEnd.set(arrayDoStartFlag.get(Integer.parseInt(lineTable[0])), countLOC);
+                            }
+                            
                         }
                         
                         //get all select cases
@@ -283,18 +346,26 @@ public class fortranFile extends CodeFile{
             
             //System.out.println("N= " +fanOut);
             for(int i=0; i<methodsName.size(); i++){
-                //System.out.println("Method: "+methodsName.get(i)+" lines of code: "
-                //        + (methodsLocStop.get(i)-methodsLocStart.get(i)-1) +" CC:"+ methodsCCArray.get(i));
+//                System.out.println("Method: "+methodsName.get(i)+" lines: "
+//                        + methodsLocStop.get(i)+"-"+(methodsLocStart.get(i)-1) +" CC:"+ methodsCCArray.get(i));
                 methodsLOC.put(methodsName.get(i), (methodsLocStop.get(i)-methodsLocStart.get(i)-1));
                 methodsCC.put(methodsName.get(i), methodsCCArray.get(i));
             }
             
-//            if(file.getName().equals("deps.f")){
+//                System.out.println("do");
 //                for(int i=0; i<arrayDoStart.size(); i++){
 //                    System.out.println("start: "+arrayDoStart.get(i)+ " end: "+ arrayDoEnd.get(i));
 //                }
-//            }
-            //calculateCohesion();
+//                System.out.println("if");
+//                for(int i=0; i<arrayIfStart.size(); i++){
+//                    System.out.println("start: "+arrayIfStart.get(i)+ " end: "+ arrayIfEnd.get(i));
+//                }
+
+//                if(module && methodsLocStart.size()>1 && !attributes.isEmpty())
+//                    System.out.println("Fileeeee Module: "+file.getName());
+//                else
+//                    System.out.println("Fileeeee Not Module: "+file.getName());
+
         } catch (IOException ex) {
             Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -347,7 +418,7 @@ public class fortranFile extends CodeFile{
         if (word.charAt(0)== '#')
             return true;
         if(f90)
-            return word.charAt(0) == '!';
+            return word.charAt(0) == '!' || word.equalsIgnoreCase("c") || word.toLowerCase().startsWith("c ") || word.toLowerCase().startsWith("c-");
         else
             return (word.equalsIgnoreCase("c") || word.toLowerCase().startsWith("c ") || word.toLowerCase().startsWith("c-") || word.charAt(0) == '!' || word.charAt(0) == '*');
     }
@@ -426,5 +497,51 @@ public class fortranFile extends CodeFile{
         for(String str: this.opportunities){
             System.out.println(i++ +" "+str);
         }
+    }
+    
+    /**
+     * It deletes all non important
+     */
+    private String replaceWithSpaces(String line){
+        line= line.replaceAll("\\\".*?\\\"", " ");
+        line= line.replaceAll("\\+", " ");
+        line= line.replaceAll("-", " ");
+        line= line.replaceAll("\\(", " ");
+        line= line.replaceAll("\\)", " ");
+        line= line.replaceAll("\\*", " ");
+        line= line.replaceAll("/", " ");
+        line= line.replaceAll("%", " ");
+        line= line.replaceAll("=", " ");
+        line= line.replaceAll("&", " ");
+        line= line.replaceAll("#", " ");
+        line= line.replaceAll(":", " ");
+        line= line.replaceAll(";", " ");
+        line= line.replaceAll("\\[", " ");
+        line= line.replaceAll("\\]", " ");
+        line= line.replaceAll("\\{", " ");
+        line= line.replaceAll("\\}", " ");
+        line= line.replaceAll(",", " ");
+        line= line.replaceAll(">", " ");
+        line= line.replaceAll("<", " ");
+        line= line.replaceAll("\"", " ");
+        line= line.replaceAll("'", " ");
+        line= line.replaceAll("\\|\\|", " ");
+        line= line.replaceAll("\\?", " ");
+        
+        line= line.replaceAll("use ", " ");
+        line= line.replaceAll("implicit", " ");
+        line= line.replaceAll("none", " ");
+        line= line.replaceAll("only", " ");
+        
+        return line;
+    }
+    
+    /**
+     * It returns if a string is a number
+     * @param str string to check
+     */
+    public boolean isNumeric(final String str) {
+        return (str.chars().allMatch(Character::isDigit) ||
+                Pattern.matches("([0-9]*)\\.([0-9,D]*)", str) );
     }
 }

@@ -75,6 +75,23 @@ public class cFile extends CodeFile{
                             }
                         }
                         
+                        //For LCOM real(LCOF)
+                        if(methodsLocDecl.isEmpty() && line.contains(";")){
+                            String temp= line.replaceAll("=.*", "").trim().replaceAll("\\(.*\\)", "").replaceAll("\\[.*\\]", "").trim().replaceAll("::", " ");
+                            String[] tempTable= temp.split(" ");
+                            temp= tempTable[tempTable.length-1];
+                            attributes.add(temp);
+                        }
+                        if(!methodsLocDecl.isEmpty()){
+                            String[] lineVar= replaceWithSpaces(line).split(" ");
+                            for(String str: lineVar){
+                                if( attributes.contains(str.trim()) ){
+                                    attributesInMethods.add(str.trim()+" "+methodName);
+                                }
+                            }
+                        }
+                        
+                        
                         // For start count LOC in function/subroutine
                         if(lineContinuous && (lineContinuousParOpen == lineContinuousParClose) && !line.contains("{")){
                             lineContinuous=false;
@@ -184,6 +201,8 @@ public class cFile extends CodeFile{
             for(String str: methodsLOC.keySet()){
                 System.out.println("Method: "+str+"  LOC: "+  methodsLOC.get(str)+" CC:"+ methodsCC.get(str));
             }*/
+//            if(!attributes.isEmpty())
+//                    System.out.println("Fileeeee not attr: "+file.getName());
         } catch (IOException ex) {
             Logger.getLogger(cParserSemiLatest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -277,4 +296,34 @@ public class cFile extends CodeFile{
             System.out.println(i++ +" "+str);
         }
     }
+    
+    private String replaceWithSpaces(String line) {
+		line = line.replaceAll("\\+", " ");
+		line = line.replaceAll("-", " ");
+		line = line.replaceAll("\\(", " ");
+		line = line.replaceAll("\\)", " ");
+		line = line.replaceAll("\\*", " ");
+		line = line.replaceAll("/", " ");
+		line = line.replaceAll("%", " ");
+		line = line.replaceAll("=", " ");
+		line = line.replaceAll("&", " ");
+		line = line.replaceAll("::", " ");
+		line = line.replaceAll(":", " ");
+		line = line.replaceAll(";", " ");
+		line = line.replaceAll("\\[", " ");
+		line = line.replaceAll("\\]", " ");
+		line = line.replaceAll("\\{", " ");
+		line = line.replaceAll("\\}", " ");
+		line = line.replaceAll(",", " ");
+		line = line.replaceAll(">", " ");
+		line = line.replaceAll("<", " ");
+		line = line.replaceAll("\"", " ");
+		line = line.replaceAll("'", " ");
+		line = line.replaceAll("^", " ");
+		line = line.replaceAll("!", " ");
+		line = line.replaceAll("\\?", " ");
+		line = line.replaceAll("\\|\\|", " ");
+		line = line.replaceAll("\\|", " ");
+		return line;
+	}
 }

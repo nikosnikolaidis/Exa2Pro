@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
@@ -144,10 +145,56 @@ public class Analysis {
             file.fanOut+= fanOutFiles.size();
         }
         
+        
+        //LCOM real
+        //for each file
+        for (CodeFile file : project.getprojectFiles()) {
+            if(!file.attributes.isEmpty()){
+                int numberOfMethods= file.methodsLOC.size();
+                ArrayList<String> methodPairsShareAttr=new ArrayList<>();
+                int shareAttrib= 0;
+                for(String str: file.attributesInMethods){
+                    for(String str2: file.attributesInMethods){
+                        if(!str.equals(str2) && str.split(" ",2)[0].equals(str2.split(" ",2)[0])){
+                            shareAttrib++;
+                            methodPairsShareAttr.add(str.split(" ",2)[1] +" "+ str2.split(" ",2)[1]);
+                        }
+                    }
+                }
+                shareAttrib=shareAttrib/2;
+
+                ArrayList<String> methodPairs=new ArrayList<>();
+                for(String str: file.methodsLOC.keySet()){
+                    for(String str2: file.methodsLOC.keySet()){
+                        if(!str.equals(str2) 
+                                && !methodPairsShareAttr.contains(str +" "+ str2)
+                                && !methodPairsShareAttr.contains(str2 +" "+ str)
+                                && !methodPairs.contains(str +" "+ str2)
+                                && !methodPairs.contains(str2 +" "+ str) )
+                            methodPairs.add(str +" "+ str2);
+                    }
+                }
+
+                int lcof= 0;
+                if(methodPairs.size()>shareAttrib)
+                    lcof= methodPairs.size() - shareAttrib;
+
+                //System.out.println("----file: "+ file.file.getName()+" meth: "+numberOfMethods+" methodPairs:"+methodPairs.size()+" shareAttrib:"+shareAttrib+ " lcom: "+ lcof);
+
+                file.lcof=lcof;
+            }
+            else
+                file.lcof= -1;
+        }
+        
         //print
         for (CodeFile file : project.getprojectFiles()) {
-            System.out.println("File: "+file.file.getPath()+" ---> "+"fan-out:"+file.fanOut
-                    + "  cohesion:"+file.cohesion);
+            if(file.lcof!=-1)
+                System.out.println("File: "+file.file.getPath()+" ---> "+"fan-out:"+file.fanOut
+                        +"  lcof:"+file.lcof + "  lcol:"+file.cohesion);
+            else
+                System.out.println("File: "+file.file.getPath()+" ---> "+"fan-out:"+file.fanOut
+                        + "  lcol:"+file.cohesion);
         }
     }
 

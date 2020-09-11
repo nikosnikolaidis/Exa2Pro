@@ -102,6 +102,19 @@ public class LineChart extends ApplicationFrame {
                         num= sum/p.getprojectFiles().size();
                         break;
                     }
+                case "LCOF":
+                    {
+                        int sum=0;
+                        int i=0;
+                        for(CodeFile cf: p.getprojectFiles()){
+                            if(cf.lcof!=-1){
+                                sum+= cf.lcof;
+                                i++;
+                            }
+                        }
+                        num= sum/i;
+                        break;
+                    }
                 case "CC":
                     {
                         int sum=0;

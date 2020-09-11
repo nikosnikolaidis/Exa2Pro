@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  *
@@ -17,6 +18,9 @@ import java.util.HashMap;
 public abstract class CodeFile implements Serializable{
     public File file;
     public int fanOut;
+    public int lcof;
+    public HashSet<String> attributes;
+    public HashSet<String> attributesInMethods;
     public HashMap<String, String> methodInvocations;
     public HashMap<String, String> commonBlockDeclaration;
     public HashMap<String, Integer> methodsLOC;
@@ -30,6 +34,8 @@ public abstract class CodeFile implements Serializable{
         methodsCC= new HashMap<>();
         methodInvocations= new HashMap<>();
         commonBlockDeclaration= new HashMap<>();
+        attributes= new HashSet<>();
+        attributesInMethods= new HashSet<>();
     }
     
     public abstract void parse();

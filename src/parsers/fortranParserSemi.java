@@ -306,7 +306,7 @@ public class fortranParserSemi {
         }
         else if(line.trim().toLowerCase().startsWith("call ") && !(line.toLowerCase().contains("if") || line.toLowerCase().contains("do") )){
             if(line.contains("(")){
-                String[] callMethodSplit= line.split("call ")[1].split("\\(");
+                String[] callMethodSplit= line.toLowerCase().split("call ")[1].split("\\(");
                 writer.append("Invocation#"+callMethodSplit[0]+"#"+countLOC+";"+System.lineSeparator());
                 String[] callParam= callMethodSplit[1].replace(")", "").replace("&", "").replace(";", "")
                         .replaceAll("\\+|\\-|\\*|\\%|\\/", ",").split(",");
@@ -344,13 +344,15 @@ public class fortranParserSemi {
             if(line.contains("call ") && !line.matches(".*\\\".*call.*?\\\".*")){
                 String[] callMethodSplit= line.split("call ")[1].split("\\(");
                 writer.append("Invocation#"+callMethodSplit[0]+"#"+countLOC+";"+System.lineSeparator());
-                String[] callParam= callMethodSplit[1].replace(")", "").replace("&", "")
-                        .replaceAll("\\+|\\-|\\*|\\%|\\/", ",").split(",");
-                for(String param: callParam){
-                    param=param.trim();
-                    if(!param.equals("") && !isNumeric(param)){
-                        if(!param.substring(0, 1).equals("\"") && !param.replace("\"", "").trim().equals(""))
-                            writer.append("Usage#"+param.replace("\"", "").trim()+"#"+countLOC+";"+System.lineSeparator());
+                if(callMethodSplit.length>1){
+                    String[] callParam= callMethodSplit[1].replace(")", "").replace("&", "")
+                            .replaceAll("\\+|\\-|\\*|\\%|\\/", ",").split(",");
+                    for(String param: callParam){
+                        param=param.trim();
+                        if(!param.equals("") && !isNumeric(param)){
+                            if(!param.substring(0, 1).equals("\"") && !param.replace("\"", "").trim().equals(""))
+                                writer.append("Usage#"+param.replace("\"", "").trim()+"#"+countLOC+";"+System.lineSeparator());
+                        }
                     }
                 }
             }
