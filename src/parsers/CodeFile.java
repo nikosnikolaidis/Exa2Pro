@@ -21,7 +21,7 @@ public abstract class CodeFile implements Serializable{
     public int lcop;
     public HashSet<String> attributes;
     public HashSet<String> attributesInMethods;
-    public HashMap<String, String> methodInvocations;
+    public HashSet<String> methodInvocations;
     public HashMap<String, String> commonBlockDeclaration;
     public HashMap<String, Integer> methodsLOC;
     public HashMap<String, Integer> methodsCC;
@@ -32,7 +32,7 @@ public abstract class CodeFile implements Serializable{
         this.file=file;
         methodsLOC= new HashMap<>();
         methodsCC= new HashMap<>();
-        methodInvocations= new HashMap<>();
+        methodInvocations= new HashSet<>();
         commonBlockDeclaration= new HashMap<>();
         attributes= new HashSet<>();
         attributesInMethods= new HashSet<>();

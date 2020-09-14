@@ -100,11 +100,12 @@ public class Analysis {
         for (CodeFile file : project.getprojectFiles()) {
             HashSet<String> fanOutFiles= new HashSet<>();
             //for each invocation
-            for (Map.Entry<String, String> entry : file.methodInvocations.entrySet()) {
+            for (String entry : file.methodInvocations) {
+                String[] table= entry.split(";",2);
                 //check if not in same file
                 boolean methodMine= false;
                 for (Map.Entry<String, Integer> entry2 : file.methodsLOC.entrySet()) {
-                    if(entry.getKey().equalsIgnoreCase(entry2.getKey())){
+                    if(table[0].equalsIgnoreCase(entry2.getKey())){
                         methodMine= true;
                     }
                 }
@@ -112,8 +113,8 @@ public class Analysis {
                 if(!methodMine){
                     for (CodeFile file2 : project.getprojectFiles()) {
                         for (Map.Entry<String, Integer> entry2 : file2.methodsLOC.entrySet()) {
-                            if(entry.getKey().equalsIgnoreCase(entry2.getKey()) 
-                                        || entry.getKey().equalsIgnoreCase(entry2.getKey().replaceAll("static|void", "").trim())){
+                            if(table[0].equalsIgnoreCase(entry2.getKey()) 
+                                        || table[0].equalsIgnoreCase(entry2.getKey().replaceAll("static|void", "").trim())){
                                 fanOutFiles.add(file2.file.getName());
                             }
                         }

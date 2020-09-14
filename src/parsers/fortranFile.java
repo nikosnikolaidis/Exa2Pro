@@ -1,6 +1,7 @@
 
 package parsers;
 
+import csvControlers.CSVWriteForClustering;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +82,7 @@ public class fortranFile extends CodeFile{
                                 meth="";
                             else
                                 meth=methodsName.get(methodsName.size()-1);
-                            methodInvocations.put(callMethodSplit[0], meth);
+                            methodInvocations.add(callMethodSplit[0] +";"+ meth);
                         }
                         
                         // For fan-out
@@ -351,6 +352,12 @@ public class fortranFile extends CodeFile{
                 methodsLOC.put(methodsName.get(i), (methodsLocStop.get(i)-methodsLocStart.get(i)-1));
                 methodsCC.put(methodsName.get(i), methodsCCArray.get(i));
             }
+            
+            
+            //export csv for attributes and invocations
+//            if(module){
+//                new CSVWriteForClustering(this);
+//            }
             
 //                System.out.println("do");
 //                for(int i=0; i<arrayDoStart.size(); i++){
