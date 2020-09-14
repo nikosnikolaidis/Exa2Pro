@@ -75,7 +75,7 @@ public class cFile extends CodeFile{
                             }
                         }
                         
-                        //For LCOM real(LCOF)
+                        //For LCOM real(LCOP)
                         if(methodsLocDecl.isEmpty() && line.contains(";")){
                             String temp= line.replaceAll("=.*", "").trim().replaceAll("\\(.*\\)", "").replaceAll("\\[.*\\]", "").trim().replaceAll("::", " ");
                             String[] tempTable= temp.split(" ");

@@ -18,7 +18,7 @@ import java.util.HashSet;
 public abstract class CodeFile implements Serializable{
     public File file;
     public int fanOut;
-    public int lcof;
+    public int lcop;
     public HashSet<String> attributes;
     public HashSet<String> attributesInMethods;
     public HashMap<String, String> methodInvocations;

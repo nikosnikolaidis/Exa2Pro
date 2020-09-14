@@ -59,7 +59,7 @@ public class PieChart extends ApplicationFrame {
                 }
             }
             else if (metric.equals("LCOL")){
-                System.out.println("LCOM2 threshold: "+threshold);
+                System.out.println("LCOL threshold: "+threshold);
                 for(CodeFile cf: project.getprojectFiles()){
                     if(cf.cohesion>threshold)
                         n++;
@@ -68,11 +68,11 @@ public class PieChart extends ApplicationFrame {
                     total++;
                 }
             }
-            else if (metric.equals("LCOF")){
-                System.out.println("LCOF threshold: "+threshold);
+            else if (metric.equals("LCOP")){
+                System.out.println("LCOP threshold: "+threshold);
                 for(CodeFile cf: project.getprojectFiles()){
-                    if(cf.lcof!=-1){
-                        if(cf.lcof>threshold)
+                    if(cf.lcop!=-1){
+                        if(cf.lcop>threshold)
                             n++;
                         else
                             p++;
@@ -124,7 +124,7 @@ public class PieChart extends ApplicationFrame {
         ArrayList<Integer> CC=new ArrayList<>();
         int sumLOC=0;
         ArrayList<Integer> LOC=new ArrayList<>();
-        ArrayList<Integer> LCOF=new ArrayList<>();
+        ArrayList<Integer> LCOP=new ArrayList<>();
         int totalfiles=0;
         int totalmethods=0;
         for(ProjectCredentials pC: Exa2Pro.projecCredentialstList){
@@ -134,8 +134,8 @@ public class PieChart extends ApplicationFrame {
                 FO.add(cf.fanOut);
                 sumCo += cf.cohesion;
                 Co.add(cf.cohesion);
-                if(cf.lcof!=-1)
-                    LCOF.add(cf.lcof);
+                if(cf.lcop!=-1)
+                    LCOP.add(cf.lcop);
                 totalfiles++;
                 for(String key : cf.methodsLOC.keySet()){
                     sumCC += cf.methodsCC.get(key);
@@ -148,7 +148,7 @@ public class PieChart extends ApplicationFrame {
         }
         HashMap<String, Double> temp=new HashMap<>();
 //        temp.put("FanOut", (sumFO*1.0)/totalfiles);
-//        temp.put("LCOM2", (sumCo*1.0)/totalfiles);
+//        temp.put("LCOL", (sumCo*1.0)/totalfiles);
 //        temp.put("CC", (sumCC*1.0)/totalmethods);
 //        temp.put("LOC", (sumLOC*1.0)/totalmethods);
         
@@ -156,17 +156,17 @@ public class PieChart extends ApplicationFrame {
         Collections.sort(Co);
         Collections.sort(CC);
         Collections.sort(LOC);
-        Collections.sort(LCOF);
+        Collections.sort(LCOP);
         int f= (int) Math.floor(FO.size()*0.9);
         int c= (int) Math.floor(Co.size()*0.9);
         int m= (int) Math.floor(CC.size()*0.9);
         int l= (int) Math.floor(LOC.size()*0.9);
-        int l1= (int) Math.floor(LCOF.size()*0.9);
+        int l1= (int) Math.floor(LCOP.size()*0.9);
         temp.put("FanOut", 1.0*FO.get(f));
-        temp.put("LCOM2", 1.0*Co.get(c));
+        temp.put("LCOL", 1.0*Co.get(c));
         temp.put("CC", 1.0*CC.get(m));
         temp.put("LOC", 1.0*LOC.get(l));
-        temp.put("LCOF", 1.0*LCOF.get(l1));
+        temp.put("LCOP", 1.0*LCOP.get(l1));
         
         return temp;
     }

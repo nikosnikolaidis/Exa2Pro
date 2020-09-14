@@ -117,7 +117,7 @@ public class fortranFile extends CodeFile{
                             }
                         }
                         
-                        //For LCOM real(LCOF)
+                        //For LCOM real(LCOP)
                         if(module && methodsName.isEmpty()){
                             if(line.contains("::")){
                                 String[] declareAtr= line.trim().split("::", 2);

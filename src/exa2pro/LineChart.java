@@ -102,13 +102,13 @@ public class LineChart extends ApplicationFrame {
                         num= sum/p.getprojectFiles().size();
                         break;
                     }
-                case "LCOF":
+                case "LCOP":
                     {
                         int sum=0;
                         int i=0;
                         for(CodeFile cf: p.getprojectFiles()){
-                            if(cf.lcof!=-1){
-                                sum+= cf.lcof;
+                            if(cf.lcop!=-1){
+                                sum+= cf.lcop;
                                 i++;
                             }
                         }

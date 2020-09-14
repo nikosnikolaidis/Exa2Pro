@@ -175,23 +175,23 @@ public class Analysis {
                     }
                 }
 
-                int lcof= 0;
+                int lcop= 0;
                 if(methodPairs.size()>shareAttrib)
-                    lcof= methodPairs.size() - shareAttrib;
+                    lcop= methodPairs.size() - shareAttrib;
 
-                //System.out.println("----file: "+ file.file.getName()+" meth: "+numberOfMethods+" methodPairs:"+methodPairs.size()+" shareAttrib:"+shareAttrib+ " lcom: "+ lcof);
+                //System.out.println("----file: "+ file.file.getName()+" meth: "+numberOfMethods+" methodPairs:"+methodPairs.size()+" shareAttrib:"+shareAttrib+ " lcom: "+ lcop);
 
-                file.lcof=lcof;
+                file.lcop=lcop;
             }
             else
-                file.lcof= -1;
+                file.lcop= -1;
         }
         
         //print
         for (CodeFile file : project.getprojectFiles()) {
-            if(file.lcof!=-1)
+            if(file.lcop!=-1)
                 System.out.println("File: "+file.file.getPath()+" ---> "+"fan-out:"+file.fanOut
-                        +"  lcof:"+file.lcof + "  lcol:"+file.cohesion);
+                        +"  lcop:"+file.lcop + "  lcol:"+file.cohesion);
             else
                 System.out.println("File: "+file.file.getPath()+" ---> "+"fan-out:"+file.fanOut
                         + "  lcol:"+file.cohesion);
@@ -207,7 +207,7 @@ public class Analysis {
 
             System.out.println(System.getProperty("user.dir"));
             Process proc = Runtime.getRuntime().exec("cmd /c \"cd " + project.getCredentials().getProjectDirectory() + " && "
-                    + System.getProperty("user.dir") + "\\sonar-scanner-4.2-windows\\bin\\sonar-scanner.bat\"");
+                    + Exa2Pro.sonarScannerPath+ "\"");
             BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 
             //waits till sonar scanner finishes
@@ -268,7 +268,7 @@ public class Analysis {
         try {
             ProcessBuilder pbuilder = new ProcessBuilder("bash", "-c", 
                     "cd '"+project.getCredentials().getProjectDirectory()+"' ; '"+
-                    System.getProperty("user.dir")+ "/sonar-scanner-4.2-linux/bin/sonar-scanner'");
+                    Exa2Pro.sonarScannerPath+ "'");
             File err = new File("err.txt");
             pbuilder.redirectError(err);
             Process p = pbuilder.start();

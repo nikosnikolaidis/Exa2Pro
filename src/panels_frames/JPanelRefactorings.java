@@ -41,22 +41,22 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         //create the models
         DefaultListModel<String> defaultListModelFanOut = new DefaultListModel<>();
         DefaultListModel<String> defaultListModelCohesion = new DefaultListModel<>();
-        DefaultListModel<String> defaultListModelLCOF = new DefaultListModel<>();
+        DefaultListModel<String> defaultListModelLCOP = new DefaultListModel<>();
         DefaultListModel<String> defaultListModelCC = new DefaultListModel<>();
         DefaultListModel<String> defaultListModelLOC = new DefaultListModel<>();
         //create the lists for all the methods and files
         HashMap<String, Double> allFilesCohesion = new HashMap<>();
-        HashMap<String, Integer> allFilesLCOF = new HashMap<>();
+        HashMap<String, Integer> allFilesLCOP = new HashMap<>();
         HashMap<String, Integer> allFilesFanOut = new HashMap<>();
         HashMap<String, Integer> allMethodsCC = new HashMap<>();
         HashMap<String, Integer> allMethodsLOC = new HashMap<>();
         for(CodeFile cf: project.getprojectFiles()){
             if(cf.fanOut >= thresholds.get("FanOut"))
                 allFilesFanOut.put(cf.file.getName(), cf.fanOut);
-            if(Math.round(cf.cohesion * 10.0)/10.0 >= thresholds.get("LCOM2"))
+            if(Math.round(cf.cohesion * 10.0)/10.0 >= thresholds.get("LCOL"))
                 allFilesCohesion.put(cf.file.getName(), Math.round(cf.cohesion * 10.0)/10.0);
-            if(cf.lcof!=-1 && Math.round(cf.lcof * 10.0)/10.0 >= thresholds.get("LCOF"))
-                allFilesLCOF.put(cf.file.getName(), cf.lcof);
+            if(cf.lcop!=-1 && Math.round(cf.lcop * 10.0)/10.0 >= thresholds.get("LCOP"))
+                allFilesLCOP.put(cf.file.getName(), cf.lcop);
             allMethodsCC.putAll(prefixHashMap(cf.methodsCC, cf.file.getName(), thresholds, "CC"));
             allMethodsLOC.putAll(prefixHashMap(cf.methodsLOC, cf.file.getName(), thresholds, "LOC"));
         }
@@ -86,7 +86,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         .collect(
             toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
                 LinkedHashMap::new));
-        HashMap<String, Integer> sortedLCOF= allFilesLCOF.entrySet()
+        HashMap<String, Integer> sortedLCOP= allFilesLCOP.entrySet()
         .stream()
         .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
         .collect(
@@ -114,17 +114,17 @@ public class JPanelRefactorings extends javax.swing.JPanel {
             System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelFanOut.addElement(item.getValue()+" "+item.getKey());
         });
-        System.out.println("LCOF");
-        sortedLCOF.entrySet().forEach((item) -> {
+        System.out.println("LCOP");
+        sortedLCOP.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
-            defaultListModelLCOF.addElement(item.getValue()+" "+item.getKey());
+            defaultListModelLCOP.addElement(item.getValue()+" "+item.getKey());
         });
         
         jListFilesFanOut.setModel(defaultListModelFanOut);
         jListFilesIncoherent.setModel(defaultListModelCohesion);
         jListMethodsComplex.setModel(defaultListModelCC);
         jListMethodsLOC.setModel(defaultListModelLOC);
-        jListFilesLCOF.setModel(defaultListModelLCOF);
+        jListFilesLCOP.setModel(defaultListModelLCOP);
     }
     private HashMap prefixHashMap(HashMap source, String prefix, HashMap<String, Double> thresholds, String metric) {
         HashMap result = new HashMap();
@@ -162,7 +162,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jPanel7 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jListFilesLCOF = new javax.swing.JList<>();
+        jListFilesLCOP = new javax.swing.JList<>();
         jPanel3 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -249,9 +249,9 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jPanel5.add(jPanel2);
 
         jLabel14.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel14.setText("(LCOF) Incoherent Files");
+        jLabel14.setText("(LCOP) Incoherent Files");
 
-        jScrollPane6.setViewportView(jListFilesLCOF);
+        jScrollPane6.setViewportView(jListFilesLCOP);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -260,10 +260,10 @@ public class JPanelRefactorings extends javax.swing.JPanel {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel14)
-                        .addGap(0, 113, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(5, 5, 5))
         );
         jPanel7Layout.setVerticalGroup(
@@ -440,7 +440,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelRefactorings;
     private javax.swing.JList<String> jListFilesFanOut;
     private javax.swing.JList<String> jListFilesIncoherent;
-    private javax.swing.JList<String> jListFilesLCOF;
+    private javax.swing.JList<String> jListFilesLCOP;
     private javax.swing.JList<String> jListMethodsComplex;
     private javax.swing.JList<String> jListMethodsLOC;
     private javax.swing.JList<String> jListOpportunities;

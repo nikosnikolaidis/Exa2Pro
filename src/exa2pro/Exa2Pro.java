@@ -33,6 +33,7 @@ public class Exa2Pro {
     public static String iCodePath;
     public static String sonarPath;
     public static String sonarURL;
+    public static String sonarScannerPath;
 
     /**
      * @param args the command line arguments
@@ -41,6 +42,11 @@ public class Exa2Pro {
         getProjetsFromFile();
         getSettingFromFile();
 
+        if(isWindows())
+            sonarScannerPath= System.getProperty("user.dir") + "\\sonar-scanner-4.2-windows\\bin\\sonar-scanner.bat";
+        else
+            sonarScannerPath= System.getProperty("user.dir")+ "/sonar-scanner-4.2-linux/bin/sonar-scanner";
+        
         HomeFrame homeFrame = new HomeFrame();
         homeFrame.setVisible(true);
     }

@@ -37,7 +37,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void addRowsInTable(){
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "File", "Fan-Out", "LCOL", "LCOF"
+                "File", "Fan-Out", "LCOL", "LCOP"
             }){
                 Class[] types = { String.class, Integer.class, Integer.class, String.class};
                 @Override
@@ -52,13 +52,13 @@ public class JPanelMetrics extends javax.swing.JPanel {
         
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for(CodeFile cf: project.getprojectFiles()){
-            if(cf.lcof==-1)
+            if(cf.lcop==-1)
                 model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0, "NonDefined"});
             else
-                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0, ""+cf.lcof});
+                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0, ""+cf.lcop});
         }
         
-        //right aligment in lcof column
+        //right aligment in lcop column
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
         jTable1.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
@@ -178,7 +178,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "File", "Fan-Out", "LCOL", "LCOF"
+                "File", "Fan-Out", "LCOL", "LCOP"
             }));
         
         addRowsInTable();

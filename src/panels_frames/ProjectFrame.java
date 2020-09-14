@@ -61,7 +61,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
         
         jPanel7.removeAll();
-        PieChart chart1 = new PieChart(project,"Pie","LCOL"," of Files", temp.get("LCOM2"));
+        PieChart chart1 = new PieChart(project,"Pie","LCOL"," of Files", temp.get("LCOL"));
         javax.swing.GroupLayout jPanelChartLayout1 = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanelChartLayout1);
         jPanelChartLayout1.setHorizontalGroup(
@@ -80,7 +80,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
         
         jPanel11.removeAll();
-        PieChart chart5 = new PieChart(project,"Pie","LCOF"," of Files", temp.get("LCOF"));
+        PieChart chart5 = new PieChart(project,"Pie","LCOP"," of Files", temp.get("LCOP"));
         javax.swing.GroupLayout jPanelChartLayout5 = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanelChartLayout5);
         jPanelChartLayout5.setHorizontalGroup(
@@ -149,7 +149,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         
         //print the metrics of system
         double sumIn=0;
-        int sumLCOF=0;
+        int sumLCOP=0;
         int countNonUndif=0;
         int sumCC=0;
         int sumLOC=0;
@@ -158,8 +158,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         for(CodeFile cf: project.getprojectFiles()){
             sumIn+= cf.cohesion;
             sumFO+= cf.fanOut;
-            if(cf.lcof!=-1){
-                sumLCOF+= cf.lcof;
+            if(cf.lcop!=-1){
+                sumLCOP+= cf.lcop;
                 countNonUndif++;
             }
             for (Map.Entry<String, Integer> entry : cf.methodsCC.entrySet()) {
@@ -176,7 +176,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabelLOC.setText( df.format(sumLOC*1.0/c) +"");
         jLabelFO.setText( df.format(sumFO*1.0/project.getprojectFiles().size()) +"");
         jLabelLCOL.setText( df.format(sumIn/project.getprojectFiles().size()) +"");
-        jLabelLCOF.setText( df.format(sumLCOF/countNonUndif) +"");
+        jLabelLCOP.setText(df.format(sumLCOP/countNonUndif) +"");
     }
 
     /**
@@ -231,7 +231,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabelLOC = new javax.swing.JLabel();
         jLabelFO = new javax.swing.JLabel();
         jLabelLCOL = new javax.swing.JLabel();
-        jLabelLCOF = new javax.swing.JLabel();
+        jLabelLCOP = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -442,7 +442,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel12.setText("LCOL");
 
         jLabel13.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel13.setText("LCOF");
+        jLabel13.setText("LCOP");
 
         jLabelCodeSmells.setText("jLabel12");
 
@@ -456,7 +456,7 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         jLabelLCOL.setText("jLabel13");
 
-        jLabelLCOF.setText("jLabel14");
+        jLabelLCOP.setText("jLabel14");
 
         jPanel10.setLayout(new java.awt.GridLayout(2, 2, 10, 10));
 
@@ -558,7 +558,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                             .addComponent(jLabelLCOL))
                         .addGap(55, 55, 55)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelLCOF)
+                            .addComponent(jLabelLCOP)
                             .addComponent(jLabel13))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -598,7 +598,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                             .addComponent(jLabelLOC)
                             .addComponent(jLabelFO)
                             .addComponent(jLabelLCOL)
-                            .addComponent(jLabelLCOF))))
+                            .addComponent(jLabelLCOP))))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -793,8 +793,8 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelCodeSmells;
     private javax.swing.JLabel jLabelDateAnalysis;
     private javax.swing.JLabel jLabelFO;
-    private javax.swing.JLabel jLabelLCOF;
     private javax.swing.JLabel jLabelLCOL;
+    private javax.swing.JLabel jLabelLCOP;
     private javax.swing.JLabel jLabelLOC;
     private javax.swing.JLabel jLabelProjectName;
     private javax.swing.JLabel jLabelTechnicalDebt;

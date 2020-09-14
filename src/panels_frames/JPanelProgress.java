@@ -45,7 +45,7 @@ public class JPanelProgress extends javax.swing.JPanel {
         jLabeProgress.setText("Progress");
 
         jListMetrics.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "TD", "Issues", "Fan-Out", "LCOL", "LCOF", "CC", "LOC" };
+            String[] strings = { "TD", "Issues", "Fan-Out", "LCOL", "LCOP", "CC", "LOC" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
@@ -95,8 +95,8 @@ public class JPanelProgress extends javax.swing.JPanel {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(jLabeProgress)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 374, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 362, Short.MAX_VALUE)))
                     .addGap(7, 7, 7)))
         );
     }// </editor-fold>//GEN-END:initComponents

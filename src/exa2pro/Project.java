@@ -163,7 +163,7 @@ public class Project implements Serializable {
     }
     
     // Saves to File the List of projects
-    public void saveToFile(){
+    public static void saveToFile(){
         try {
             FileOutputStream f = new FileOutputStream(new File("myProjects.txt"));
             ObjectOutputStream o = new ObjectOutputStream(f);
