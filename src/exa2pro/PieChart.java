@@ -166,7 +166,10 @@ public class PieChart extends ApplicationFrame {
         temp.put("LCOL", 1.0*Co.get(c));
         temp.put("CC", 1.0*CC.get(m));
         temp.put("LOC", 1.0*LOC.get(l));
-        temp.put("LCOP", 1.0*LCOP.get(l1));
+        if(!LCOP.isEmpty())
+            temp.put("LCOP", 1.0*LCOP.get(l1));
+        else
+            temp.put("LCOP", 0.0);
         
         return temp;
     }

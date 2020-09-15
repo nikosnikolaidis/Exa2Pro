@@ -176,7 +176,10 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabelLOC.setText( df.format(sumLOC*1.0/c) +"");
         jLabelFO.setText( df.format(sumFO*1.0/project.getprojectFiles().size()) +"");
         jLabelLCOL.setText( df.format(sumIn/project.getprojectFiles().size()) +"");
-        jLabelLCOP.setText(df.format(sumLCOP/countNonUndif) +"");
+        if(countNonUndif==0)
+            jLabelLCOP.setText("-");
+        else
+            jLabelLCOP.setText(df.format(sumLCOP/countNonUndif) +"");
     }
 
     /**
