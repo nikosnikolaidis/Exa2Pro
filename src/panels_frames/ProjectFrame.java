@@ -204,6 +204,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jPanelButtonMetrics = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
+        jPanelButtonForecasting = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
         jPanelButtonMore = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jPanelParent = new javax.swing.JPanel();
@@ -317,6 +319,19 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonMetrics.add(jLabel22);
 
         jPanel3.add(jPanelButtonMetrics);
+
+        jPanelButtonForecasting.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelButtonForecasting.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelButtonForecasting.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanelButtonForecastingMouseClicked(evt);
+            }
+        });
+
+        jLabel19.setText("Forecasting");
+        jPanelButtonForecasting.add(jLabel19);
+
+        jPanel3.add(jPanelButtonForecasting);
 
         jPanelButtonMore.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonMore.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -467,7 +482,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 276, Short.MAX_VALUE)
+            .addGap(0, 286, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -480,7 +495,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 276, Short.MAX_VALUE)
+            .addGap(0, 286, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -493,7 +508,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 276, Short.MAX_VALUE)
+            .addGap(0, 286, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -519,7 +534,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 276, Short.MAX_VALUE)
+            .addGap(0, 286, Short.MAX_VALUE)
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -566,7 +581,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+                            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -577,7 +592,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
@@ -649,7 +664,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE))
         );
 
         pack();
@@ -722,6 +737,17 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelParent.revalidate();
     }//GEN-LAST:event_jPanelButtonMetricsMouseClicked
 
+    private void jPanelButtonForecastingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelButtonForecastingMouseClicked
+        reverseBorders();
+        jPanelButtonForecasting.setBackground(new Color(240, 240, 240));
+        jPanelButtonForecasting.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        
+        jPanelParent.removeAll();
+        jPanelParent.add(new JPanelForecasting(project));
+        jPanelParent.repaint();
+        jPanelParent.revalidate();
+    }//GEN-LAST:event_jPanelButtonForecastingMouseClicked
+
     private void reverseBorders(){
         jPanelButtonIssues.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonIssues.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -783,6 +809,7 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
@@ -812,6 +839,7 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JPanel jPanelButtonForecasting;
     private javax.swing.JPanel jPanelButtonIssues;
     private javax.swing.JPanel jPanelButtonMetrics;
     private javax.swing.JPanel jPanelButtonMore;
