@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="FortranFilesTest" time="0.056" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="FortranFilesTest" time="0.066" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="windows"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -17,7 +17,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-11.0.8\bin"/>
-    <property name="sun.java.command" value="C:\Users\Nikos\AppData\Local\Temp\surefire10432292891056661978\surefirebooter4247770768936452310.jar C:\Users\Nikos\AppData\Local\Temp\surefire10432292891056661978 2020-09-21T19-57-48_211-jvmRun1 surefire11996131998805760877tmp surefire_09841274093206524636tmp"/>
+    <property name="sun.java.command" value="C:\Users\Nikos\AppData\Local\Temp\surefire18020922421608279262\surefirebooter4213716570444091867.jar C:\Users\Nikos\AppData\Local\Temp\surefire18020922421608279262 2020-09-23T22-44-14_931-jvmRun1 surefire4129339389699657732tmp surefire_04596797152226331507tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Nikos\Documents\NetBeansProjects\Exa2Pro\target\test-classes;C:\Users\Nikos\Documents\NetBeansProjects\Exa2Pro\target\classes;C:\Users\Nikos\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.4.2\junit-jupiter-api-5.4.2.jar;C:\Users\Nikos\.m2\repository\org\apiguardian\apiguardian-api\1.0.0\apiguardian-api-1.0.0.jar;C:\Users\Nikos\.m2\repository\org\opentest4j\opentest4j\1.1.1\opentest4j-1.1.1.jar;C:\Users\Nikos\.m2\repository\org\junit\platform\junit-platform-commons\1.4.2\junit-platform-commons-1.4.2.jar;C:\Users\Nikos\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.4.2\junit-jupiter-engine-5.4.2.jar;C:\Users\Nikos\.m2\repository\org\junit\platform\junit-platform-engine\1.4.2\junit-platform-engine-1.4.2.jar;C:\Users\Nikos\.m2\repository\org\jfree\jfreechart\1.5.0\jfreechart-1.5.0.jar;C:\Users\Nikos\.m2\repository\com\googlecode\json-simple\json-simple\1.1.1\json-simple-1.1.1.jar;C:\Users\Nikos\.m2\repository\junit\junit\4.10\junit-4.10.jar;C:\Users\Nikos\.m2\repository\org\hamcrest\hamcrest-core\1.1\hamcrest-core-1.1.jar;C:\Users\Nikos\.m2\repository\javax\xml\bind\jaxb-api\2.3.1\jaxb-api-2.3.1.jar;C:\Users\Nikos\.m2\repository\javax\activation\javax.activation-api\1.2.0\javax.activation-api-1.2.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -33,7 +33,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="surefire.real.class.path" value="C:\Users\Nikos\AppData\Local\Temp\surefire10432292891056661978\surefirebooter4247770768936452310.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Nikos\AppData\Local\Temp\surefire18020922421608279262\surefirebooter4213716570444091867.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="11.0.8+10-LTS"/>
@@ -60,6 +60,6 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="55.0"/>
   </properties>
-  <testcase name="test_restore_n_1" classname="FortranFilesTest" time="0.028"/>
-  <testcase name="test_restore__n" classname="FortranFilesTest" time="0.026"/>
+  <testcase name="test_restore_n_1" classname="FortranFilesTest" time="0.035"/>
+  <testcase name="test_restore__n" classname="FortranFilesTest" time="0.028"/>
 </testsuite>

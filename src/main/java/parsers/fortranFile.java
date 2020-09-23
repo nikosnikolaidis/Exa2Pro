@@ -130,15 +130,7 @@ public class fortranFile extends CodeFile{
                         if(lineTable[0].equalsIgnoreCase("module") || Pattern.matches(".module", lineTable[0])){
                             module= true;
                         }
-                        
-                        if(!methodsName.isEmpty()){
-                            String[] lineVar= replaceWithSpaces(line).split(" ");
-                            for(String str: lineVar){
-                                if( attributes.contains(str.trim()) ){
-                                    attributesInMethods.add(str.trim()+" "+methodsName.get(methodsName.size()-1));
-                                }
-                            }
-                        }
+                        //attributes in methods searched after start of method
                         
                         
                         // For start count LOC in function/subroutine
@@ -162,6 +154,16 @@ public class fortranFile extends CodeFile{
                             if(lineTable.length>4 && tempCom>3){
                                 if(lineTable[3].equalsIgnoreCase("function") || lineTable[3].equalsIgnoreCase("subroutine") )
                                     methodStartsHere(checkForPreviousEnd,checkForPreviousEndLine,lineTable,4,countLOC);
+                            }
+                        }
+                        
+                        //attributes in methods
+                        if(!methodsName.isEmpty()){
+                            String[] lineVar= replaceWithSpaces(line).split(" ");
+                            for(String str: lineVar){
+                                if( attributes.contains(str.trim()) ){
+                                    attributesInMethods.add(str.trim()+" "+methodsName.get(methodsName.size()-1));
+                                }
                             }
                         }
                         
