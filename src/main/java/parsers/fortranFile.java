@@ -307,7 +307,7 @@ public class fortranFile extends CodeFile{
                         
                         //get all cases
                         if(!firstCase && caseNumber>0 && (lineTable[0].toLowerCase().contains("case(") || lineTable[0].equalsIgnoreCase("case")
-                                || line.toLowerCase().contains("end select"))){
+                                || line.toLowerCase().contains("end select") || line.toLowerCase().contains("endselect"))){
                             if(arrayCasesEnd.size()+1==arrayCasesStart.size()){
                                 arrayCasesEnd.add(countLOC);
                             }
