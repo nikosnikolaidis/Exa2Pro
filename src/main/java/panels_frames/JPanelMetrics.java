@@ -37,7 +37,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void addRowsInTable(){
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "File", "Fan-Out", "LCOL", "LCOP"
+                "File", "CBF", "LOC", "LCOP"
             }){
                 Class[] types = { String.class, Integer.class, Integer.class, String.class};
                 @Override
@@ -53,9 +53,9 @@ public class JPanelMetrics extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for(CodeFile cf: project.getprojectFiles()){
             if(cf.lcop==-1)
-                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0, "NonDefined"});
+                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.totalLines * 10.0)/10.0, "NonDefined"});
             else
-                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.cohesion * 10.0)/10.0, ""+cf.lcop});
+                model.addRow(new Object[]{cf.file.getName(), cf.fanOut, Math.round(cf.totalLines * 10.0)/10.0, ""+cf.lcop});
         }
         
         //right aligment in lcop column
@@ -154,7 +154,7 @@ public class JPanelMetrics extends javax.swing.JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {}, new String [] {
-                "Method", "CC", "LOC"
+                "Method", "CC", "LCOL"
             }){
                 Class[] types = { String.class, Integer.class, Integer.class};
                 @Override
@@ -170,7 +170,11 @@ public class JPanelMetrics extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for(CodeFile cf: project.getprojectFiles()){
             for(String key :cf.methodsLOC.keySet()){
-                model.addRow(new Object[]{cf.file.getName()+": "+key, cf.methodsCC.get(key),cf.methodsLOC.get(key)});
+                if(cf.methodsLCOL.containsKey(key.split(" ")[key.split(" ").length-1]))
+                    model.addRow(new Object[]{cf.file.getName()+": "+key, cf.methodsCC.get(key),
+                        cf.methodsLCOL.get(key.split(" ")[key.split(" ").length-1])});
+                else
+                    model.addRow(new Object[]{cf.file.getName()+": "+key, cf.methodsCC.get(key),"-"});
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed

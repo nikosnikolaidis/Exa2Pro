@@ -364,15 +364,15 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabelTechnicalDebt.setText(project.getprojectReport().getTotalDebt());
         
         //print the metrics of system
-        double sumIn=0;
+        double sumLOC=0;
         int sumLCOP=0;
         int countNonUndif=0;
         int sumCC=0;
-        int sumLOC=0;
+        int sumLCOL=0;
         int sumFO=0;
         int c=0;
         for(CodeFile cf: project.getprojectFiles()){
-            sumIn+= cf.cohesion;
+            sumLOC+= cf.totalLines;
             sumFO+= cf.fanOut;
             if(cf.lcop!=-1){
                 sumLCOP+= cf.lcop;
@@ -382,16 +382,16 @@ public class ProjectFrame extends javax.swing.JFrame {
                 sumCC+= entry.getValue();
                 c++;
             }
-            for (Map.Entry<String, Integer> entry : cf.methodsLOC.entrySet()) {
-                sumLOC+= entry.getValue();
+            for (Map.Entry<String, Double> entry : cf.methodsLCOL.entrySet()) {
+                sumLCOL+= entry.getValue();
             }
         }
         
         DecimalFormat df = new DecimalFormat("#.#");
         jLabelCC.setText( df.format(sumCC*1.0/c) +"");
-        jLabelLOC.setText( df.format(sumLOC*1.0/c) +"");
+        jLabelLCOL.setText( df.format(sumLCOL*1.0/c) +"");
         jLabelFO.setText( df.format(sumFO*1.0/project.getprojectFiles().size()) +"");
-        jLabelLCOL.setText( df.format(sumIn/project.getprojectFiles().size()) +"");
+        jLabelLOC.setText( df.format(sumLOC/project.getprojectFiles().size()) +"");
         if(countNonUndif==0)
             jLabelLCOP.setText("-");
         else
@@ -670,7 +670,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel10.setText("LOC");
 
         jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel11.setText("FanOut");
+        jLabel11.setText("CBF");
 
         jLabel12.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel12.setText("LCOL");
@@ -975,6 +975,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonRefactorings.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanelButtonMetrics.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonMetrics.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelButtonForecasting.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelButtonForecasting.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanelButtonMore.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonMore.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
     }

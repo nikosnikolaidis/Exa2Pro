@@ -463,7 +463,7 @@ public class fortranFile extends CodeFile{
         fortranSemi.parse();
         if(!fortranSemi.error){
             ParsedFilesController paFC=new ParsedFilesController();
-            this.cohesion = paFC.doAnalysisLcom(file);
+            paFC.doAnalysisLcom(this);
         }
         else
             this.cohesion=0;

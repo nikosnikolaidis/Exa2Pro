@@ -40,28 +40,25 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         HashMap<String, Double> thresholds= exa2pro.PieChart.calculateThresholds();
         //create the models
         DefaultListModel<String> defaultListModelFanOut = new DefaultListModel<>();
-        DefaultListModel<String> defaultListModelCohesion = new DefaultListModel<>();
+        DefaultListModel<String> defaultListModelLOC = new DefaultListModel<>();
         DefaultListModel<String> defaultListModelLCOP = new DefaultListModel<>();
         DefaultListModel<String> defaultListModelCC = new DefaultListModel<>();
-        DefaultListModel<String> defaultListModelLOC = new DefaultListModel<>();
+        DefaultListModel<String> defaultListModelLCOL = new DefaultListModel<>();
         //create the lists for all the methods and files
-        HashMap<String, Double> allFilesCohesion = new HashMap<>();
         HashMap<String, Integer> allFilesLCOP = new HashMap<>();
         HashMap<String, Integer> allFilesFanOut = new HashMap<>();
         HashMap<String, Integer> allMethodsCC = new HashMap<>();
-        HashMap<String, Integer> allMethodsLOC = new HashMap<>();
+        HashMap<String, Integer> allMethodsLCOL = new HashMap<>();
         HashMap<String, Integer> allFilesLOC = new HashMap<>();
         for(CodeFile cf: project.getprojectFiles()){
             if(cf.fanOut >= thresholds.get("FanOut"))
                 allFilesFanOut.put(cf.file.getName(), cf.fanOut);
-            if(Math.round(cf.cohesion * 10.0)/10.0 >= thresholds.get("LCOL"))
-                allFilesCohesion.put(cf.file.getName(), Math.round(cf.cohesion * 10.0)/10.0);
             if(cf.lcop!=-1 && Math.round(cf.lcop * 10.0)/10.0 >= thresholds.get("LCOP"))
                 allFilesLCOP.put(cf.file.getName(), cf.lcop);
-            if(cf.totalLines>=thresholds.get("FileLOC"))
+            if(cf.totalLines>=thresholds.get("LOC"))
                 allFilesLOC.put(cf.file.getName(), cf.totalLines);
             allMethodsCC.putAll(prefixHashMap(cf.methodsCC, cf.file.getName(), thresholds, "CC"));
-            allMethodsLOC.putAll(prefixHashMap(cf.methodsLOC, cf.file.getName(), thresholds, "LOC"));
+            allMethodsLCOL.putAll(prefixHashMap(cf.methodsLCOL, cf.file.getName(), thresholds, "LCOL"));
         }
         
         //sort the lists
@@ -71,13 +68,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         .collect(
             toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
                 LinkedHashMap::new));
-        HashMap<String, Integer> sortedLOC= allMethodsLOC.entrySet()
-        .stream()
-        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
-        .collect(
-            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
-                LinkedHashMap::new));
-        HashMap<String, Double> sortedCohecion= allFilesCohesion.entrySet()
+        HashMap<String, Integer> sortedLCOL= allMethodsLCOL.entrySet()
         .stream()
         .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
         .collect(
@@ -103,38 +94,34 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                 LinkedHashMap::new));
         
         //add the items to the list
-        System.out.println("CC");
+        System.out.println("CC: "+ sortedCC.size());
         sortedCC.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelCC.addElement(item.getValue()+" "+item.getKey());
         });
-        System.out.println("LOC");
-        sortedLOC.entrySet().forEach((item) -> {
+        System.out.println("LCOL: "+ sortedLCOL.size());
+        sortedLCOL.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
-            defaultListModelLOC.addElement(item.getValue()+" "+item.getKey());
+            defaultListModelLCOL.addElement(item.getValue()+" "+item.getKey());
         });
-        System.out.println("LCOL");
-        sortedCohecion.entrySet().forEach((item) -> {
-            System.out.println(item.getValue()+" "+item.getKey());
-            defaultListModelCohesion.addElement(item.getValue()+" "+item.getKey());
-        });
-        System.out.println("FO");
+        System.out.println("FO: "+ sortedFanOut.size());
         sortedFanOut.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelFanOut.addElement(item.getValue()+" "+item.getKey());
         });
-        System.out.println("LCOP");
+        System.out.println("LCOP: "+ sortedLCOP.size());
         sortedLCOP.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelLCOP.addElement(item.getValue()+" "+item.getKey());
         });
-        System.out.println("File LOC");
+        System.out.println("File LOC"+ sortedFilesLOC.size());
         sortedFilesLOC.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
+            defaultListModelLOC.addElement(item.getValue()+" "+item.getKey());
         });
         
         jListFilesFanOut.setModel(defaultListModelFanOut);
-        jListFilesIncoherent.setModel(defaultListModelCohesion);
+        jListFilesIncoherent.setModel(defaultListModelLCOL);
         jListMethodsComplex.setModel(defaultListModelCC);
         jListMethodsLOC.setModel(defaultListModelLOC);
         jListFilesLCOP.setModel(defaultListModelLCOP);
@@ -146,8 +133,14 @@ public class JPanelRefactorings extends javax.swing.JPanel {
             HashMap.Entry entry = (HashMap.Entry) iter.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
-            if((Integer)value >= thresholds.get(metric))
-                result.put(prefix + '.' + key.toString(), value);
+            if(value instanceof Integer) {
+            	if((Integer)value >= thresholds.get(metric))
+            		result.put(prefix + '.' + key.toString(), value);
+            }
+            else {
+            	if((Double)value >= thresholds.get(metric))
+            		result.put(prefix + '.' + key.toString(), value);
+            }
         }
         return result;
     }
@@ -168,22 +161,22 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jListFilesFanOut = new javax.swing.JList<>();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel12 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jListFilesIncoherent = new javax.swing.JList<>();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jListFilesLCOP = new javax.swing.JList<>();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jListMethodsComplex = new javax.swing.JList<>();
         jPanel4 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
         jListMethodsLOC = new javax.swing.JList<>();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jListFilesLCOP = new javax.swing.JList<>();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jListFilesIncoherent = new javax.swing.JList<>();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jListMethodsComplex = new javax.swing.JList<>();
         jPanel6 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -197,7 +190,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel10.setText("Big Fan-Out Files");
+        jLabel10.setText("(CBF) Over Coupled Files/Modules");
 
         jScrollPane2.setViewportView(jListFilesFanOut);
 
@@ -226,8 +219,68 @@ public class JPanelRefactorings extends javax.swing.JPanel {
 
         jPanel5.add(jPanel1);
 
+        jLabel13.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel13.setText("(LOC) Large Files/Modules");
+
+        jScrollPane5.setViewportView(jListMethodsLOC);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(5, 5, 5))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel5.add(jPanel4);
+
+        jLabel14.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel14.setText("(LCOP) Large Files/Modules");
+
+        jScrollPane6.setViewportView(jListFilesLCOP);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(5, 5, 5))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel5.add(jPanel7);
+
         jLabel12.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel12.setText("(LCOL) Incoherent Files");
+        jLabel12.setText("(LCOL) Long Procedures");
 
         jListFilesIncoherent.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -261,38 +314,8 @@ public class JPanelRefactorings extends javax.swing.JPanel {
 
         jPanel5.add(jPanel2);
 
-        jLabel14.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel14.setText("(LCOP) Incoherent Files");
-
-        jScrollPane6.setViewportView(jListFilesLCOP);
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel14)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(5, 5, 5))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel5.add(jPanel7);
-
         jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel11.setText("Complex Methods");
+        jLabel11.setText("(CC) Complex Procedures");
 
         jScrollPane3.setViewportView(jListMethodsComplex);
 
@@ -320,36 +343,6 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         );
 
         jPanel5.add(jPanel3);
-
-        jLabel13.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel13.setText("Long Methods");
-
-        jScrollPane5.setViewportView(jListMethodsLOC);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(5, 5, 5))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel5.add(jPanel4);
 
         jLabel1.setText("Opportunity refactorings");
 

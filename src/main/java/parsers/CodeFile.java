@@ -26,12 +26,14 @@ public abstract class CodeFile implements Serializable{
     public HashMap<String, String> commonBlockDeclaration;
     public HashMap<String, Integer> methodsLOC;
     public HashMap<String, Integer> methodsCC;
+    public HashMap<String, Double> methodsLCOL;
     public double cohesion;
     public ArrayList<String> opportunities;
     
     public CodeFile(File file){
         this.file=file;
         methodsLOC= new HashMap<>();
+        methodsLCOL= new HashMap<>();
         methodsCC= new HashMap<>();
         methodInvocations= new HashSet<>();
         commonBlockDeclaration= new HashMap<>();

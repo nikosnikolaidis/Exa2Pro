@@ -296,7 +296,7 @@ public class cFile extends CodeFile{
         cParserSemiLatest ss = new cParserSemiLatest(file,methodsLocDecl);
         ss.parse();
         ParsedFilesController paFC=new ParsedFilesController();
-        this.cohesion= paFC.doAnalysisLcom(file);
+        paFC.doAnalysisLcom(this);
         
         //calculateOpportunities();
     }

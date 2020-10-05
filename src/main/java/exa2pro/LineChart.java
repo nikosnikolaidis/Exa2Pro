@@ -95,11 +95,11 @@ public class LineChart extends ApplicationFrame {
                         num= sum/p.getprojectFiles().size();
                         break;
                     }
-                case "LCOL":
+                case "LOC":
                     {
-                        double sum=0;
-                        sum = p.getprojectFiles().stream().map((cf) -> cf.cohesion).reduce(sum, Double::sum);
-                        num= sum/p.getprojectFiles().size();
+                        int sum=0;
+                        sum = p.getprojectFiles().stream().map((cf) -> cf.totalLines).reduce(sum, Integer::sum);
+                        num= sum*1.0/p.getprojectFiles().size();
                         break;
                     }
                 case "LCOP":
@@ -128,13 +128,13 @@ public class LineChart extends ApplicationFrame {
                         num= sum/i;
                         break;
                     }
-                case "LOC":
+                case "LCOL":
                     {
                         int sum=0;
                         int i=0;
                         for(CodeFile cf: p.getprojectFiles()){
-                            for (HashMap.Entry pair : cf.methodsLOC.entrySet()) {
-                                sum+= (Integer)pair.getValue();
+                            for (HashMap.Entry pair : cf.methodsLCOL.entrySet()) {
+                                sum+= (Double)pair.getValue();
                                 i++;
                             }
                         }
