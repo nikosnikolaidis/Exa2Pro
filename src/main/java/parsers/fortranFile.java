@@ -70,7 +70,8 @@ public class fortranFile extends CodeFile{
                 if (!line.trim().equals("")){
                     String[] lineTable= line.trim().replaceAll("\\s\\s+", " ").split(" ");
                     if( !isCommentLine(lineTable[0]) ){
-                    
+                        totalLines++;
+                        
                         // For fan-out
                         //Method invocation
                         if((line.trim().toLowerCase().startsWith("call ") && !(line.toLowerCase().contains("if") || line.toLowerCase().contains("do") )) ||

@@ -78,11 +78,11 @@ public class Analysis {
 
             writer.append("sonar.sources=." + System.lineSeparator());
 
+            writer.append("sonar.sourceEncoding=UTF-8"+ System.lineSeparator());
             if(project.containsFortran()){
                 writer.append("sonar.icode.launch=true" +System.lineSeparator());
                 writer.append("sonar.icode.path="+ Exa2Pro.iCodePath.replace("\\", "\\\\") +System.lineSeparator());
             }
-            //writer.append("sonar.sourceEncoding=UTF-8");
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
@@ -240,6 +240,7 @@ public class Analysis {
             report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
             
             report.getIssuesFromSonarQube();
+            report.getTDLinesOfFilesFromSonarQube();
         } catch (InterruptedException | IOException ex) {
             Logger.getLogger(Analysis.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -304,6 +305,7 @@ public class Analysis {
             report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
             
             report.getIssuesFromSonarQube();
+            report.getTDLinesOfFilesFromSonarQube();
         } catch (Exception e) {
             e.printStackTrace();
         }

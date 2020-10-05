@@ -50,6 +50,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         HashMap<String, Integer> allFilesFanOut = new HashMap<>();
         HashMap<String, Integer> allMethodsCC = new HashMap<>();
         HashMap<String, Integer> allMethodsLOC = new HashMap<>();
+        HashMap<String, Integer> allFilesLOC = new HashMap<>();
         for(CodeFile cf: project.getprojectFiles()){
             if(cf.fanOut >= thresholds.get("FanOut"))
                 allFilesFanOut.put(cf.file.getName(), cf.fanOut);
@@ -57,6 +58,8 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                 allFilesCohesion.put(cf.file.getName(), Math.round(cf.cohesion * 10.0)/10.0);
             if(cf.lcop!=-1 && Math.round(cf.lcop * 10.0)/10.0 >= thresholds.get("LCOP"))
                 allFilesLCOP.put(cf.file.getName(), cf.lcop);
+            if(cf.totalLines>=thresholds.get("FileLOC"))
+                allFilesLOC.put(cf.file.getName(), cf.totalLines);
             allMethodsCC.putAll(prefixHashMap(cf.methodsCC, cf.file.getName(), thresholds, "CC"));
             allMethodsLOC.putAll(prefixHashMap(cf.methodsLOC, cf.file.getName(), thresholds, "LOC"));
         }
@@ -92,6 +95,12 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         .collect(
             toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
                 LinkedHashMap::new));
+        HashMap<String, Integer> sortedFilesLOC= allFilesLOC.entrySet()
+        .stream()
+        .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
+        .collect(
+            toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
+                LinkedHashMap::new));
         
         //add the items to the list
         System.out.println("CC");
@@ -104,7 +113,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
             System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelLOC.addElement(item.getValue()+" "+item.getKey());
         });
-        System.out.println("LCOM");
+        System.out.println("LCOL");
         sortedCohecion.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelCohesion.addElement(item.getValue()+" "+item.getKey());
@@ -118,6 +127,10 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         sortedLCOP.entrySet().forEach((item) -> {
             System.out.println(item.getValue()+" "+item.getKey());
             defaultListModelLCOP.addElement(item.getValue()+" "+item.getKey());
+        });
+        System.out.println("File LOC");
+        sortedFilesLOC.entrySet().forEach((item) -> {
+            System.out.println(item.getValue()+" "+item.getKey());
         });
         
         jListFilesFanOut.setModel(defaultListModelFanOut);

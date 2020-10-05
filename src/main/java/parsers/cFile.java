@@ -232,6 +232,7 @@ public class cFile extends CodeFile{
                 //the last one is lost!
             }
             
+            totalLines=countLOCr;
             /*Print methods
             System.out.println("N= " +fanOut);
             for(String str: methodsLOC.keySet()){

@@ -5,12 +5,31 @@
  */
 package panels_frames;
 
+import exa2pro.Exa2Pro;
 import exa2pro.PieChart;
 import exa2pro.Project;
+import exa2pro.Report;
 import java.awt.Color;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static java.util.stream.Collectors.toMap;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import parsers.CodeFile;
 
 /**
@@ -37,6 +56,203 @@ public class ProjectFrame extends javax.swing.JFrame {
         
         populateJLabels();
         addPieChart();
+        
+        
+            ///calculate Interest///
+            double totalInterest=0.0;
+            //for each file
+            for (CodeFile file : project.getprojectFiles()) {
+                HashMap<String,Double> similarityOfFiles=new HashMap<>();
+                int sumCC=0;
+                for(String key:file.methodsLOC.keySet()){
+                    sumCC+= file.methodsCC.get(key);
+                }
+                int size=file.methodsLOC.size();
+                if(size==0)
+                    size=1;
+                double avCC= (sumCC*1.0)/size;
+                
+                if(file.file.getName().equals("funobj_real.f"))
+                	System.out.println("LOC:"+file.totalLines+ "  CC:"+avCC+ "  NOP:"+file.methodsLOC.size()
+                			+"  TD:"+project.getprojectReport().getTdOfEachFile().get(file.file.getName()));
+                //calculate the similarity with all the rest
+                for (CodeFile file2 : project.getprojectFiles()) {
+                    if( !file.file.getAbsolutePath().equals(file2.file.getAbsolutePath()) ){
+                        int sumCC2=0;
+                        for(String key2:file2.methodsLOC.keySet()){
+                            sumCC2+= file2.methodsCC.get(key2);
+                        }
+                        int size2=file2.methodsLOC.size();
+                        if(size2==0)
+                            size2=1;
+                        double avCC2= (sumCC2*1.0)/size2;
+                        
+                        HashMap<String, Integer> tdOfFiles=project.getprojectReport().getTdOfEachFile();
+
+                        System.out.println("LOC:"+file2.totalLines+ "  CC:"+avCC2+ "  NOP:"+file2.methodsLOC.size()
+            					+"  TD:"+project.getprojectReport().getTdOfEachFile().get(file2.file.getName()));
+                        
+                        double tempCC= avCC;
+                        if(tempCC==0)
+                        	tempCC=1;
+                        int tempNOP= file.methodsLOC.size();
+                        if(tempNOP==0)
+                        	tempNOP=1;
+                        int tempTD= tdOfFiles.get(file.file.getName());
+                        if(tempTD==0)
+                        		tempTD=1;
+                        
+                        double similarity= ( Math.abs(file.totalLines-file2.totalLines)*1.0/file.totalLines +
+                                Math.abs(avCC-avCC2)*1.0/tempCC +
+                                Math.abs(file.methodsLOC.size()-file2.methodsLOC.size())*1.0/tempNOP +
+                                Math.abs(tdOfFiles.get(file.file.getName())-tdOfFiles.get(file2.file.getName()))*1.0/tempTD
+                                )/4;
+                        similarityOfFiles.put(file2.file.getAbsolutePath(), similarity);
+                    }
+                }
+                
+                //keep top 3
+                Map<String, Double> sortedSimilarity= similarityOfFiles.entrySet().stream()
+                    .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
+                    .collect(
+                        toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
+                            LinkedHashMap::new));
+                List<Entry<String, Double>> list = 
+                            new ArrayList<Entry<String, Double>>(sortedSimilarity.entrySet());
+                System.out.println(list.get(list.size()-1));
+                System.out.println(list.get(list.size()-2));
+                System.out.println(list.get(list.size()-3));
+//                System.out.println(list.get(list.size()-4));
+//                System.out.println(list.get(list.size()-5));
+                System.out.println("--");
+                System.out.println("file");
+                System.out.println("lcol:"+ file.cohesion 
+                		+"  FO:"+file.fanOut+ "  CC:"+avCC+ "  LOC:"+file.totalLines);
+            
+                
+                ArrayList<CodeFile> filesForCompare= new ArrayList<>();
+                for (CodeFile fileTemp : project.getprojectFiles()) {
+                    if(list.get(list.size()-1).getKey().equals(fileTemp.file.getAbsolutePath()) )
+                        filesForCompare.add(fileTemp);
+                }
+                for(CodeFile fileTemp: project.getprojectFiles()) {
+                	if(list.get(list.size()-2).getKey().equals(fileTemp.file.getAbsolutePath()) ||
+                            list.get(list.size()-3).getKey().equals(fileTemp.file.getAbsolutePath()) 
+//                            || list.get(list.size()-4).getKey().equals(fileTemp.file.getAbsolutePath()) ||
+//                            list.get(list.size()-5).getKey().equals(fileTemp.file.getAbsolutePath())
+                            )
+                		filesForCompare.add(fileTemp);
+                }
+                
+                //get optimal metrics
+                int sumCCopt=0;
+                for(String key:filesForCompare.get(0).methodsLOC.keySet()){
+                    sumCCopt+= filesForCompare.get(0).methodsCC.get(key);
+                }
+                int sizeOpt=filesForCompare.get(0).methodsLOC.size();
+                if(sizeOpt==0)
+                    sizeOpt=1;
+                double avCCopt= sumCCopt*1.0/sizeOpt;
+                
+                double optimalLOC= filesForCompare.get(0).totalLines;
+                double optimalCC= avCCopt;
+                int optimalFO= filesForCompare.get(0).fanOut;
+                double optimalLCOL= filesForCompare.get(0).cohesion;
+                System.out.println("file 1");
+                System.out.println("lcol:"+ optimalLCOL +"  FO:"+optimalFO+ "  CC:"+optimalCC+ "  LOC:"+optimalLOC);
+                
+                for (int i=1; i<filesForCompare.size(); i++) {
+                    if(filesForCompare.get(i).fanOut < optimalFO)
+                        optimalFO=filesForCompare.get(i).fanOut;
+                    if( (filesForCompare.get(i).cohesion!=0 && filesForCompare.get(i).cohesion < optimalLCOL)
+                    		|| optimalLCOL==0)
+                        optimalLCOL=filesForCompare.get(i).cohesion;
+                    if(filesForCompare.get(i).totalLines!=0 && filesForCompare.get(i).totalLines<optimalLOC)
+                    	optimalLOC=filesForCompare.get(i).totalLines;
+                    sumCCopt=0;
+                    for(String key:filesForCompare.get(i).methodsLOC.keySet()){
+                        sumCCopt+= filesForCompare.get(i).methodsCC.get(key);
+                    }
+                    sizeOpt=filesForCompare.get(i).methodsLOC.size();
+                    if(sizeOpt==0)
+                        sizeOpt=1;
+                    avCCopt= sumCCopt*1.0/sizeOpt;
+                    if(avCCopt < optimalCC)
+                        optimalCC=avCCopt;
+                    System.out.println("file "+(i+1));
+                    System.out.println("lcol:"+ filesForCompare.get(i).cohesion 
+                    		+"  FO:"+filesForCompare.get(i).fanOut+ "  CC:"+avCCopt+ "  LOC:"+filesForCompare.get(i).totalLines);
+                }
+                
+                int investFO=0;
+                if(file.fanOut==0 && optimalFO==0)
+                	investFO=1;
+                int investCC=0;
+                if(avCC==0 && optimalCC==0)
+                	investCC=1;
+                
+                //normalize
+                if(optimalLOC==0)
+                	optimalLOC=1.0;
+                if(optimalCC==0)
+                	optimalCC=1.0;
+                if(optimalFO==0)
+                	optimalFO=1;
+                if(optimalLCOL==0)
+                	optimalLCOL=1.0;
+                
+                //get new lines average
+                int sumNewLines= 0;
+                int sumFiles=0;
+                for(Project proj: project.getCredentials().getProjects()){
+                    sumNewLines+= proj.getprojectReport().getNewLinesOfCode();
+                    sumFiles+= proj.getprojectFiles().size();
+                }
+                if(project.getCredentials().getProjects().size()>1){
+                    int avgNewLines= sumNewLines/(project.getCredentials().getProjects().size()-1);
+                    int avgFiles= sumFiles/(project.getCredentials().getProjects().size()-1);
+                    avgNewLines= avgNewLines/avgFiles;
+
+                        //calculate the interest per LOC
+                        double sumInterestPerLOC=0;
+	                    double interestLCOL= (file.cohesion-optimalLCOL)*1.0/optimalLCOL;
+	                    if(file.cohesion!=0)
+	                    	sumInterestPerLOC+= interestLCOL;
+                        
+	                    if(investFO==1)
+	                    	sumInterestPerLOC+= (investFO-optimalFO)*1.0/optimalFO;
+	                    else
+	                    	sumInterestPerLOC+= (file.fanOut-optimalFO)*1.0/optimalFO;
+	                    
+	                    sumInterestPerLOC+= (file.totalLines-optimalLOC)*1.0/optimalLOC;
+	                    
+                        if(investCC==1)
+                        	sumInterestPerLOC+= (investCC-optimalCC)*1.0/optimalCC;
+                        else
+                        	sumInterestPerLOC+=(avCC-optimalCC)*1.0/optimalCC;
+	                    
+	                    double avgInterestPerLOC= (sumInterestPerLOC)/4;
+	                    if(file.cohesion==0)
+                             avgInterestPerLOC= (sumInterestPerLOC)/3;
+
+                        //calculate the interest in AVG LOC
+                        double interestInAvgLOC= avgInterestPerLOC*avgNewLines;
+                        //calculate the interest in hours
+                        double interestInHours= interestInAvgLOC/25;
+                        //calculate the interest in dollars
+                        double interestInEuros= interestInHours*39.44;
+
+                        totalInterest+= interestInEuros;
+                        
+                }
+                
+                
+            }
+            
+            
+            
+            
+            System.out.println("Total Interest: " +totalInterest);
     }
     
     private void addPieChart(){

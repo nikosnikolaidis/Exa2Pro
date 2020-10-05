@@ -19,6 +19,7 @@ public abstract class CodeFile implements Serializable{
     public File file;
     public int fanOut;
     public int lcop;
+    public int totalLines;
     public HashSet<String> attributes;
     public HashSet<String> attributesInMethods;
     public HashSet<String> methodInvocations;

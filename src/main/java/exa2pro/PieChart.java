@@ -124,6 +124,7 @@ public class PieChart extends ApplicationFrame {
         ArrayList<Integer> CC=new ArrayList<>();
         int sumLOC=0;
         ArrayList<Integer> LOC=new ArrayList<>();
+        ArrayList<Integer> FileLOC=new ArrayList<>();
         ArrayList<Integer> LCOP=new ArrayList<>();
         int totalfiles=0;
         int totalmethods=0;
@@ -144,6 +145,7 @@ public class PieChart extends ApplicationFrame {
                     LOC.add(cf.methodsLOC.get(key));
                     totalmethods++;
                 }
+                FileLOC.add(cf.totalLines);
             }
         }
         HashMap<String, Double> temp=new HashMap<>();
@@ -156,16 +158,19 @@ public class PieChart extends ApplicationFrame {
         Collections.sort(Co);
         Collections.sort(CC);
         Collections.sort(LOC);
+        Collections.sort(FileLOC);
         Collections.sort(LCOP);
         int f= (int) Math.floor(FO.size()*0.9);
         int c= (int) Math.floor(Co.size()*0.9);
         int m= (int) Math.floor(CC.size()*0.9);
         int l= (int) Math.floor(LOC.size()*0.9);
+        int lFile= (int) Math.floor(FileLOC.size()*0.9);
         int l1= (int) Math.floor(LCOP.size()*0.9);
         temp.put("FanOut", 1.0*FO.get(f));
         temp.put("LCOL", 1.0*Co.get(c));
         temp.put("CC", 1.0*CC.get(m));
         temp.put("LOC", 1.0*LOC.get(l));
+        temp.put("FileLOC", 1.0*FileLOC.get(lFile));
         if(!LCOP.isEmpty())
             temp.put("LCOP", 1.0*LCOP.get(l1));
         else
