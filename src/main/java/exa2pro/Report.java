@@ -59,62 +59,78 @@ public class Report  implements Serializable{
      * get TD of each File
      */
     public void getTDLinesOfFilesFromSonarQube(){
-        //for each file
-        for(CodeFile cf: project.getprojectFiles()){
-            //get file name
-            String parentDir= project.getCredentials().getProjectDirectory();
-            String fileNameForSave=cf.file.getName();
-            String fileName;
-            if(cf instanceof fortranFile){
-                fileName= "temp_fortran_" +cf.file.getParentFile().getName()+ "_";
-            }
-            else {
-            	fileName= cf.file.getParent().replace(parentDir.replace("//", ""), "");
-            	if(!fileName.equals("")) {
-            		fileName= fileName.replace("\\", "/").substring(1).replace(" ", "%20") + "/";
-            	}
-            }
-            fileName= project.getCredentials().getProjectName()+":"+fileName+cf.file.getName();
-            
-            //get metric new lines
-            getNewLinesOfCodeFromSonarQube(fileName);
-            
-            //get metric TD
-            int metric= 0;
-            try {
-                URL url = new URL(Exa2Pro.sonarURL+"/api/measures/component?component="
-                        +fileName+"&metricKeys=sqale_index");
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.connect();
-                int responsecode = conn.getResponseCode();
-                if(responsecode != 200)
-                    throw new RuntimeException("HttpResponseCode: "+responsecode);
-                else{
-                    Scanner sc = new Scanner(url.openStream());
-                    String inline="";
-                    while(sc.hasNext()){
-                        inline+=sc.nextLine();
-                    }
-                    sc.close();
+        try{
+            URL urlTry = new URL(Exa2Pro.sonarURL+"/api/measures/component?component="
+                        +project.getCredentials().getProjectName()+"&metricKeys=sqale_index");
+                HttpURLConnection connTry = (HttpURLConnection)urlTry.openConnection();
+                connTry.setRequestMethod("GET");
+                connTry.connect();
+                int responsecodeTry = connTry.getResponseCode();
+                if(responsecodeTry==200){
+                    //for each file
+                    for(CodeFile cf: project.getprojectFiles()){
+                        //get file name
+                        String parentDir= project.getCredentials().getProjectDirectory();
+                        String fileNameForSave=cf.file.getName();
+                        String fileName;
+                        if(cf instanceof fortranFile){
+                            fileName= "temp_fortran_" +cf.file.getParentFile().getName()+ "_";
+                        }
+                        else {
+                            fileName= cf.file.getParent().replace(parentDir.replace("//", ""), "");
+                            if(!fileName.equals("")) {
+                                    fileName= fileName.replace("\\", "/").substring(1).replace(" ", "%20") + "/";
+                            }
+                        }
+                        fileName= project.getCredentials().getProjectName()+":"+fileName+cf.file.getName();
 
-                    JSONParser parse = new JSONParser();
-                    JSONObject jobj = (JSONObject)parse.parse(inline);
-                    JSONObject jobj1= (JSONObject) jobj.get("component");
-                    JSONArray jsonarr_1 = (JSONArray) jobj1.get("measures");
+                        //get metric new lines
+                        getNewLinesOfCodeFromSonarQube(fileName);
 
-                    if(!jsonarr_1.isEmpty()){
-                        JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(0);
-                        metric= Integer.parseInt(jsonobj_1.get("value").toString());
+                        //get metric TD
+                        int metric= 0;
+                        try {
+                            URL url = new URL(Exa2Pro.sonarURL+"/api/measures/component?component="
+                                    +fileName+"&metricKeys=sqale_index");
+                            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                            conn.setRequestMethod("GET");
+                            conn.connect();
+                            int responsecode = conn.getResponseCode();
+                            if(responsecode != 200)
+                                    System.err.println(responsecode+ " "+Exa2Pro.sonarURL+"/api/measures/component?component="
+                                    +fileName+"&metricKeys=sqale_index");
+            //                    throw new RuntimeException("HttpResponseCode: "+responsecode);
+                            else{
+                                Scanner sc = new Scanner(url.openStream());
+                                String inline="";
+                                while(sc.hasNext()){
+                                    inline+=sc.nextLine();
+                                }
+                                sc.close();
+
+                                JSONParser parse = new JSONParser();
+                                JSONObject jobj = (JSONObject)parse.parse(inline);
+                                JSONObject jobj1= (JSONObject) jobj.get("component");
+                                JSONArray jsonarr_1 = (JSONArray) jobj1.get("measures");
+
+                                if(!jsonarr_1.isEmpty()){
+                                    JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(0);
+                                    metric= Integer.parseInt(jsonobj_1.get("value").toString());
+                                }
+                            }
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException | ParseException ex) {
+                            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        tdOfEachFile.put(fileNameForSave, metric);
+                        System.out.println("file: "+fileNameForSave+ "  td: "+metric);
                     }
                 }
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException | ParseException ex) {
-                Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            tdOfEachFile.put(fileNameForSave, metric);
-            System.out.println("file: "+fileNameForSave+ "  td: "+metric);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -129,8 +145,11 @@ public class Report  implements Serializable{
             conn.setRequestMethod("GET");
             conn.connect();
             int responsecode = conn.getResponseCode();
-            if(responsecode != 200)
-                throw new RuntimeException("HttpResponseCode: "+responsecode);
+            if(responsecode != 200) {
+            	System.err.println(responsecode+" "+ Exa2Pro.sonarURL+"/api/measures/component?component="
+                            +file+"&metricKeys=new_lines");
+            	//throw new RuntimeException("HttpResponseCode: "+responsecode);
+            }
             else{
                 Scanner sc = new Scanner(url.openStream());
                 String inline="";

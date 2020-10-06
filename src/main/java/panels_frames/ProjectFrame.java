@@ -61,6 +61,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             ///calculate Interest///
             double totalInterest=0.0;
             //for each file
+            if(!project.getprojectReport().getTdOfEachFile().isEmpty())
             for (CodeFile file : project.getprojectFiles()) {
                 HashMap<String,Double> similarityOfFiles=new HashMap<>();
                 int sumCC=0;
@@ -71,13 +72,18 @@ public class ProjectFrame extends javax.swing.JFrame {
                 if(size==0)
                     size=1;
                 double avCC= (sumCC*1.0)/size;
-                
-                if(file.file.getName().equals("funobj_real.f"))
-                	System.out.println("LOC:"+file.totalLines+ "  CC:"+avCC+ "  NOP:"+file.methodsLOC.size()
-                			+"  TD:"+project.getprojectReport().getTdOfEachFile().get(file.file.getName()));
+                System.out.println("--");
+                System.out.println("   LOC:"+file.totalLines+ " CC:"+avCC+
+                		" FO:"+file.fanOut+" LCOL:"+file.cohesion+ " NOP:"+file.methodsLOC.size()
+                		+" TD:"+project.getprojectReport().getTdOfEachFile().get(file.file.getName()));
                 //calculate the similarity with all the rest
+                System.out.println("=======");
                 for (CodeFile file2 : project.getprojectFiles()) {
                     if( !file.file.getAbsolutePath().equals(file2.file.getAbsolutePath()) ){
+                    	if(file.file.getName().equals("prep_annealing.f") 
+                    					&& file2.file.getName().equals("x2p_copy.hpp")) {
+                    		System.out.println("!**");
+                    	}
                         int sumCC2=0;
                         for(String key2:file2.methodsLOC.keySet()){
                             sumCC2+= file2.methodsCC.get(key2);
@@ -88,13 +94,13 @@ public class ProjectFrame extends javax.swing.JFrame {
                         double avCC2= (sumCC2*1.0)/size2;
                         
                         HashMap<String, Integer> tdOfFiles=project.getprojectReport().getTdOfEachFile();
-
-                        System.out.println("LOC:"+file2.totalLines+ "  CC:"+avCC2+ "  NOP:"+file2.methodsLOC.size()
-            					+"  TD:"+project.getprojectReport().getTdOfEachFile().get(file2.file.getName()));
                         
                         double tempCC= avCC;
                         if(tempCC==0)
                         	tempCC=1;
+                        double tempLCOL= file.cohesion;
+                        if(tempLCOL==0)
+                        	tempLCOL=1;
                         int tempNOP= file.methodsLOC.size();
                         if(tempNOP==0)
                         	tempNOP=1;
@@ -104,10 +110,16 @@ public class ProjectFrame extends javax.swing.JFrame {
                         
                         double similarity= ( Math.abs(file.totalLines-file2.totalLines)*1.0/file.totalLines +
                                 Math.abs(avCC-avCC2)*1.0/tempCC +
+                                //Math.abs(file.cohesion-file2.cohesion)*1.0/tempLCOL+
                                 Math.abs(file.methodsLOC.size()-file2.methodsLOC.size())*1.0/tempNOP +
                                 Math.abs(tdOfFiles.get(file.file.getName())-tdOfFiles.get(file2.file.getName()))*1.0/tempTD
                                 )/4;
-                        similarityOfFiles.put(file2.file.getAbsolutePath(), similarity);
+                        similarityOfFiles.put(file2.file.getAbsolutePath(), 1-similarity);
+
+                        System.out.println("LOC:"+file2.totalLines+ " CC:"+avCC2+
+                        		" FO:"+file2.fanOut+" LCOL:"+file2.cohesion+ " NOP:"+file2.methodsLOC.size()
+                        		+ " TD:"+tdOfFiles.get(file2.file.getName()));
+                        System.out.println(1-similarity);
                     }
                 }
                 
@@ -119,28 +131,15 @@ public class ProjectFrame extends javax.swing.JFrame {
                             LinkedHashMap::new));
                 List<Entry<String, Double>> list = 
                             new ArrayList<Entry<String, Double>>(sortedSimilarity.entrySet());
-                System.out.println(list.get(list.size()-1));
-                System.out.println(list.get(list.size()-2));
-                System.out.println(list.get(list.size()-3));
-//                System.out.println(list.get(list.size()-4));
-//                System.out.println(list.get(list.size()-5));
-                System.out.println("--");
-                System.out.println("file");
-                System.out.println("lcol:"+ file.cohesion 
-                		+"  FO:"+file.fanOut+ "  CC:"+avCC+ "  LOC:"+file.totalLines);
-            
                 
                 ArrayList<CodeFile> filesForCompare= new ArrayList<>();
                 for (CodeFile fileTemp : project.getprojectFiles()) {
-                    if(list.get(list.size()-1).getKey().equals(fileTemp.file.getAbsolutePath()) )
+                    if(list.get(0).getKey().equals(fileTemp.file.getAbsolutePath()) )
                         filesForCompare.add(fileTemp);
                 }
                 for(CodeFile fileTemp: project.getprojectFiles()) {
-                	if(list.get(list.size()-2).getKey().equals(fileTemp.file.getAbsolutePath()) ||
-                            list.get(list.size()-3).getKey().equals(fileTemp.file.getAbsolutePath()) 
-//                            || list.get(list.size()-4).getKey().equals(fileTemp.file.getAbsolutePath()) ||
-//                            list.get(list.size()-5).getKey().equals(fileTemp.file.getAbsolutePath())
-                            )
+                	if(list.get(1).getKey().equals(fileTemp.file.getAbsolutePath()) ||
+                            list.get(2).getKey().equals(fileTemp.file.getAbsolutePath()) )
                 		filesForCompare.add(fileTemp);
                 }
                 
@@ -158,8 +157,8 @@ public class ProjectFrame extends javax.swing.JFrame {
                 double optimalCC= avCCopt;
                 int optimalFO= filesForCompare.get(0).fanOut;
                 double optimalLCOL= filesForCompare.get(0).cohesion;
-                System.out.println("file 1");
-                System.out.println("lcol:"+ optimalLCOL +"  FO:"+optimalFO+ "  CC:"+optimalCC+ "  LOC:"+optimalLOC);
+                System.out.println("LOC:"+filesForCompare.get(0).totalLines+ " CC:"+avCCopt+
+                		" FO:"+filesForCompare.get(0).fanOut+" LCOL:"+filesForCompare.get(0).cohesion);
                 
                 for (int i=1; i<filesForCompare.size(); i++) {
                     if(filesForCompare.get(i).fanOut < optimalFO)
@@ -179,9 +178,8 @@ public class ProjectFrame extends javax.swing.JFrame {
                     avCCopt= sumCCopt*1.0/sizeOpt;
                     if(avCCopt < optimalCC)
                         optimalCC=avCCopt;
-                    System.out.println("file "+(i+1));
-                    System.out.println("lcol:"+ filesForCompare.get(i).cohesion 
-                    		+"  FO:"+filesForCompare.get(i).fanOut+ "  CC:"+avCCopt+ "  LOC:"+filesForCompare.get(i).totalLines);
+                    System.out.println("LOC:"+filesForCompare.get(i).totalLines+ " CC:"+avCCopt+
+                    		" FO:"+filesForCompare.get(i).fanOut+" LCOL:"+filesForCompare.get(i).cohesion);
                 }
                 
                 int investFO=0;
@@ -199,7 +197,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                 if(optimalFO==0)
                 	optimalFO=1;
                 if(optimalLCOL==0)
-                	optimalLCOL=1.0;
+                	optimalLCOL=file.cohesion;
                 
                 //get new lines average
                 int sumNewLines= 0;
@@ -232,18 +230,20 @@ public class ProjectFrame extends javax.swing.JFrame {
                         	sumInterestPerLOC+=(avCC-optimalCC)*1.0/optimalCC;
 	                    
 	                    double avgInterestPerLOC= (sumInterestPerLOC)/4;
+	                    //Is this necessary?
 	                    if(file.cohesion==0)
                              avgInterestPerLOC= (sumInterestPerLOC)/3;
 
                         //calculate the interest in AVG LOC
                         double interestInAvgLOC= avgInterestPerLOC*avgNewLines;
+                        interestInAvgLOC= avgInterestPerLOC*82.4;
+                        
                         //calculate the interest in hours
                         double interestInHours= interestInAvgLOC/25;
                         //calculate the interest in dollars
                         double interestInEuros= interestInHours*39.44;
 
                         totalInterest+= interestInEuros;
-                        
                 }
                 
                 

@@ -416,7 +416,8 @@ public class JPanelRefactorings extends javax.swing.JPanel {
             fast=false;
         } 
         
-        String fileName= jListFilesIncoherent.getSelectedValue().split(" ")[1];
+        String fileName= jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[0]+"."+
+        		jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[1];
         for(CodeFile cf:project.getprojectFiles()){
            if(fileName.equals(cf.file.getName())){
                cf.parse();
