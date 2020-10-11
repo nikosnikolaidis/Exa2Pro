@@ -286,7 +286,8 @@ public class fortranFile extends CodeFile{
                         }
                         
                         //get all select cases
-                        if(line.toLowerCase().contains("select case(") || line.toLowerCase().contains("select case (")){
+                        if(line.toLowerCase().contains("select case(") || line.toLowerCase().contains("select case (")
+                        		|| line.toLowerCase().contains("selectcase(") || line.toLowerCase().contains("selectcase (")){
                             arraySelectCasesStart.add(countLOC);
                             if(arraySelectCasesEnd.size()+1<arraySelectCasesStart.size())
                                 arraySelectCasesEnd.add(0);

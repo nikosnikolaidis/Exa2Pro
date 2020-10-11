@@ -5,7 +5,35 @@
  */
 package panels_frames;
 
+import exa2pro.Exa2Pro;
 import exa2pro.Project;
+import exa2pro.Report;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -14,6 +42,8 @@ import exa2pro.Project;
 public class JPanelForecasting extends javax.swing.JPanel {
 
     Project project;
+    HashMap<Integer,Double> pastVersionValues= new HashMap<>();
+    HashMap<Integer,Double> newVersionValues= new HashMap<>();
     
     /**
      * Creates new form JPanelMetrics
@@ -21,6 +51,38 @@ public class JPanelForecasting extends javax.swing.JPanel {
     public JPanelForecasting(Project project) {
         this.project= project;
         initComponents();
+        
+        getFromDB(10);
+        
+        createAndAdd();
+        
+        jSlider1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+               
+            }
+         });
+    }
+
+    private void createAndAdd() {
+        JPanel p= createChartPanel();
+        javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanelChartLayout);
+        jPanelChartLayout.setHorizontalGroup(
+                jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelChartLayout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+                                .addGap(2, 2, 2))
+        );
+        jPanelChartLayout.setVerticalGroup(
+                jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelChartLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                                .addGap(2, 2, 2))
+        );
+        jLabelHorizon.setText(jSlider1.getValue()+"");
     }
 
     
@@ -33,19 +95,247 @@ public class JPanelForecasting extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanelParent = new javax.swing.JPanel();
+        jSlider1 = new javax.swing.JSlider();
+        jLabelHorizon = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+
+        jSlider1.setMajorTickSpacing(5);
+        jSlider1.setMinimum(1);
+        jSlider1.setPaintTicks(true);
+        jSlider1.setValue(10);
+        jSlider1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jSlider1MouseReleased(evt);
+            }
+        });
+
+        jLabelHorizon.setText("10");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 382, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanelParentLayout = new javax.swing.GroupLayout(jPanelParent);
+        jPanelParent.setLayout(jPanelParentLayout);
+        jPanelParentLayout.setHorizontalGroup(
+            jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelParentLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelParentLayout.createSequentialGroup()
+                        .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, 665, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelHorizon)))
+                .addGap(0, 0, 0))
+        );
+        jPanelParentLayout.setVerticalGroup(
+            jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelParentLayout.createSequentialGroup()
+                .addGroup(jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelHorizon, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jButton1.setText("Files/Modules");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1135, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 530, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanelParent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jSlider1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider1MouseReleased
+         pastVersionValues.clear();
+                newVersionValues.clear();
+                jPanel1.removeAll();
+                
+		getFromDB(jSlider1.getValue());
+		createAndAdd();
+		repaint();
+    }//GEN-LAST:event_jSlider1MouseReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if(jButton1.getText().equals("Files/Modules")){
+            jButton1.setText("Project");
+            jPanelParent.removeAll();
+            
+            //toDo
+            //create the othe plot
+        }
+        else{
+            jButton1.setText("Files/Modules");
+            jPanelParent.removeAll();
+            
+            getFromDB(jSlider1.getValue());
+            createAndAdd();
+            repaint();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabelHorizon;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanelParent;
+    private javax.swing.JSlider jSlider1;
     // End of variables declaration//GEN-END:variables
+
+    private void getFromDB(int horizon) {
+        try {
+            URL url = new URL("http://160.40.52.130:5001/TDForecaster/SystemForecasting?horizon="+ horizon
+                    + "&project=metalwalls_measures&regressor=ridge&ground_truth=yes");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responsecode = conn.getResponseCode();
+            if(responsecode != 200) {
+            	System.err.println("http://160.40.52.130:5001/TDForecaster/SystemForecasting?horizon="+ horizon
+                    + "&project=metalwalls_measures&regressor=ridge&ground_truth=yes");
+            }
+            else{
+                Scanner sc = new Scanner(url.openStream());
+                String inline="";
+                while(sc.hasNext()){
+                    inline+=sc.nextLine();
+                }
+                sc.close();
+                JSONParser parse = new JSONParser();
+                JSONObject jobj = (JSONObject)parse.parse(inline);
+                
+                //forecasting values
+                JSONObject jobj2= (JSONObject) jobj.get("results");
+                JSONArray jsonarr_2 = (JSONArray) jobj2.get("forecasts");
+                for(int i=0; i<jsonarr_2.size(); i++){
+                    JSONObject jsonobj_2 = (JSONObject)jsonarr_2.get(i);
+                    newVersionValues.put( Integer.parseInt(jsonobj_2.get("version").toString()),
+                                Double.parseDouble(jsonobj_2.get("value").toString()) );
+                }
+                
+                //past values
+                JSONObject jobj1= (JSONObject) jobj.get("results");
+                JSONArray jsonarr_1 = (JSONArray) jobj1.get("ground_truth");
+                for(int i=0; i<jsonarr_1.size(); i++){
+                    JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
+                    pastVersionValues.put( Integer.parseInt(jsonobj_1.get("version").toString()),
+                                Double.parseDouble(jsonobj_1.get("value").toString()) );
+                }
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | ParseException ex) {
+            Logger.getLogger(ProjectFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private JPanel createChartPanel() {
+        String chartTitle = "Forecasting";
+        String xAxisLabel = "version";
+        String yAxisLabel = "TD";
+
+        XYDataset dataset = createDataset();
+
+        JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, 
+                xAxisLabel, yAxisLabel, dataset);
+
+        customizeChart(chart);
+
+        // saves the chart as an image files
+//        File imageFile = new File("XYLineChart.png");
+//        int width = 640;
+//        int height = 480;
+//
+//        try {
+//            ChartUtilities.saveChartAsPNG(imageFile, chart, width, height);
+//        } catch (IOException ex) {
+//            System.err.println(ex);
+//        }
+
+        return new ChartPanel(chart);
+    }
+
+    private XYDataset createDataset() {    // this method creates the data as time seris 
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        XYSeries series1 = new XYSeries("Past");
+        XYSeries series2 = new XYSeries("Forecasting");
+        
+        for(int key: pastVersionValues.keySet()){
+            series1.add(key, pastVersionValues.get(key));
+        }
+        
+        for(int key: newVersionValues.keySet()){
+            series2.add(key, newVersionValues.get(key));
+        }
+        
+        dataset.addSeries(series1);
+        dataset.addSeries(series2);
+        
+        return dataset;
+    }
+
+    private void customizeChart(JFreeChart chart) {   // here we make some customization
+        XYPlot plot = chart.getXYPlot();
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+
+        // sets paint color for each series
+        renderer.setSeriesPaint(0, Color.RED);
+        renderer.setSeriesPaint(1, Color.GREEN);
+
+        // sets thickness for series (using strokes)
+        renderer.setSeriesStroke(0, new BasicStroke(4.0f));
+        renderer.setSeriesStroke(1, new BasicStroke(3.0f));
+
+        // sets paint color for plot outlines
+        plot.setOutlinePaint(Color.BLUE);
+        plot.setOutlineStroke(new BasicStroke(2.0f));
+
+        // sets renderer for lines
+        plot.setRenderer(renderer);
+
+        // sets plot background
+        plot.setBackgroundPaint(Color.DARK_GRAY);
+
+        // sets paint color for the grid lines
+        plot.setRangeGridlinesVisible(true);
+        plot.setRangeGridlinePaint(Color.BLACK);
+
+        plot.setDomainGridlinesVisible(true);
+        plot.setDomainGridlinePaint(Color.BLACK);
+
+    }
 }
