@@ -8,6 +8,9 @@ package panels_frames;
 import exa2pro.Exa2Pro;
 import exa2pro.Project;
 import exa2pro.ProjectCredentials;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 
 /**
  *
@@ -16,12 +19,14 @@ import exa2pro.ProjectCredentials;
 public class JPanelMore extends javax.swing.JPanel {
 
     Project project;
+    ProjectFrame parentFrame;
     
     /**
      * Creates new form JPanelMore
      */
-    public JPanelMore(Project project) {
+    public JPanelMore(Project project, ProjectFrame frame) {
         this.project= project;
+        this.parentFrame= frame;
         initComponents();
         
         //if there are more than 1 version enable delete last analysis
@@ -122,6 +127,10 @@ public class JPanelMore extends javax.swing.JPanel {
     private void jButtonDeleteProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteProjectActionPerformed
         Exa2Pro.projecCredentialstList.remove(project.getCredentials());
         project.saveToFile();
+        
+        parentFrame.homeFrame.populateProjectList();
+        parentFrame.setVisible(false);
+        parentFrame.dispose();
     }//GEN-LAST:event_jButtonDeleteProjectActionPerformed
 
 

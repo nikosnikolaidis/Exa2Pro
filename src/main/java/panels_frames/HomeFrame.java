@@ -30,15 +30,19 @@ public class HomeFrame extends javax.swing.JFrame {
     }
 
     //Populate List with Projects
-    private void populateProjectList() {
-        if(!Exa2Pro.projecCredentialstList.isEmpty()){
-            DefaultListModel<ProjectCredentials> defaultListModel= new DefaultListModel<>();
-            for(ProjectCredentials p: Exa2Pro.projecCredentialstList){
-                defaultListModel.addElement(p);
-            }
-            jListProjects.setModel(defaultListModel);
-            jListProjects.setCellRenderer(new PanelProjectList());
+    public void populateProjectList() {
+    	if(jListProjects.getModel().getSize()>0) {
+    		DefaultListModel<ProjectCredentials> listModel = (DefaultListModel<ProjectCredentials>) jListProjects.getModel();
+            listModel.removeAllElements();
         }
+        DefaultListModel<ProjectCredentials> defaultListModel= new DefaultListModel<>();
+        for(ProjectCredentials p: Exa2Pro.projecCredentialstList){
+        	defaultListModel.addElement(p);
+        }
+        jListProjects.setModel(defaultListModel);
+        jListProjects.setCellRenderer(new PanelProjectList());
+        jListProjects.repaint();
+        jListProjects.revalidate();
     }
 
     /**
@@ -452,7 +456,7 @@ public class HomeFrame extends javax.swing.JFrame {
 
     private void jListProjectsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListProjectsMousePressed
         ProjectCredentials selectedProject= jListProjects.getSelectedValue();
-        ProjectFrame projectF= new ProjectFrame(selectedProject.getProjects().get(selectedProject.getProjects().size()-1));
+        ProjectFrame projectF= new ProjectFrame(selectedProject.getProjects().get(selectedProject.getProjects().size()-1), this);
         projectF.setVisible(true);
     }//GEN-LAST:event_jListProjectsMousePressed
 

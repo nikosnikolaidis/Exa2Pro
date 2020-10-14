@@ -10,6 +10,8 @@ import exa2pro.PieChart;
 import exa2pro.Project;
 import exa2pro.Report;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -39,6 +41,7 @@ import parsers.CodeFile;
 public class ProjectFrame extends javax.swing.JFrame {
     
     Project project;
+    HomeFrame homeFrame;
 
     /**
      * Creates new form ProjectFrame
@@ -50,8 +53,9 @@ public class ProjectFrame extends javax.swing.JFrame {
      * Creates new form Home
      * @param p the project that was selected to view
      */
-    public ProjectFrame(Project p){
+    public ProjectFrame(Project p, HomeFrame homeFrame){
         this.project=p;
+        this.homeFrame= homeFrame;
         initComponents();
         
         populateJLabels();
@@ -288,7 +292,7 @@ public class ProjectFrame extends javax.swing.JFrame {
 
                         //calculate the interest in AVG LOC
                         double interestInAvgLOC= avgInterestPerLOC*avgNewLines;
-                        interestInAvgLOC= avgInterestPerLOC*5.77;//40.72;//41.67;//82.4;
+                        interestInAvgLOC= avgInterestPerLOC*5.77; //metalwalls: 2.829; //co2capture: 5.77;
                         
                         //calculate the interest in hours
                         double interestInHours= interestInAvgLOC/25;
@@ -990,7 +994,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonMore.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         
         jPanelParent.removeAll();
-        jPanelParent.add(new JPanelMore(project));
+        jPanelParent.add(new JPanelMore(project,this));
         jPanelParent.repaint();
         jPanelParent.revalidate();
     }//GEN-LAST:event_jPanelButtonMoreMouseClicked

@@ -30,7 +30,7 @@ public class Exa2Pro {
 
     private static String OS = System.getProperty("os.name").toLowerCase();
     public static ArrayList<ProjectCredentials> projecCredentialstList = new ArrayList<>();
-    public static String iCodePath;
+    public static String iCodePath="";
     public static String sonarPath;
     public static String sonarURL;
     public static String sonarScannerPath;
