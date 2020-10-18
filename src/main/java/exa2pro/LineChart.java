@@ -112,6 +112,8 @@ public class LineChart extends ApplicationFrame {
                                 i++;
                             }
                         }
+                        if(i==0)
+                            i=1;
                         num= sum/i;
                         break;
                     }
