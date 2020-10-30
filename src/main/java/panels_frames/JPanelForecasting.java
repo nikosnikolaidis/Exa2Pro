@@ -5,43 +5,12 @@
  */
 package panels_frames;
 
-import exa2pro.Exa2Pro;
+import exa2pro.BubbleChartForecasting;
+import exa2pro.LineChartForecasting;
 import exa2pro.Project;
-import exa2pro.Report;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.labels.BubbleXYItemLabelGenerator;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYBubbleRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.DefaultXYZDataset;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.data.xy.XYZDataset;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -50,13 +19,8 @@ import org.json.simple.parser.ParseException;
 public class JPanelForecasting extends javax.swing.JPanel {
 
     Project project;
-    HashMap<Integer,Double> pastVersionValues= new HashMap<>();
-    HashMap<Integer,Double> newVersionValues= new HashMap<>();
-    
-    ArrayList<String> fileNames= new ArrayList<>();
-    ArrayList<Double> changeProneness= new ArrayList<>();
-    ArrayList<Double> expectedComplexityChange= new ArrayList<>();
-    ArrayList<Double> forecastingFile= new ArrayList<>();
+    LineChartForecasting lineChartForecasting;
+    BubbleChartForecasting bubbleChartForecasting;
     
     /**
      * Creates new form JPanelMetrics
@@ -66,7 +30,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
         initComponents();
         
         jPanelFiles.setVisible(false);
-        getFromDBProject(10);
+        lineChartForecasting = new LineChartForecasting(10);
         createAndAdd(false);
         
         jSliderHorizon.addChangeListener(new ChangeListener() {
@@ -87,11 +51,11 @@ public class JPanelForecasting extends javax.swing.JPanel {
     private void createAndAdd(boolean bubble) {
         JPanel p;
         if(!bubble){
-            p= createChartPanel();
+            p= lineChartForecasting.chartPanel;
             jLabelHorizon.setText(jSliderHorizon.getValue()+"");
         }
         else{
-            p= createBubblePanel();
+            p= bubbleChartForecasting.chartPanel;
             jLabelFiles.setText(jSliderFiles.getValue()+"");
         }
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanel1);
@@ -279,21 +243,15 @@ public class JPanelForecasting extends javax.swing.JPanel {
 
     private void jSliderHorizonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSliderHorizonMouseReleased
         if(jButton1.getText().equals("Files/Modules")){
-            pastVersionValues.clear();
-            newVersionValues.clear();
             jPanel1.removeAll();
 
-            getFromDBProject(jSliderHorizon.getValue());
+            lineChartForecasting= new LineChartForecasting(jSliderHorizon.getValue());
             createAndAdd(false);
         }
         else{
-            fileNames.clear();
-            changeProneness.clear();
-            expectedComplexityChange.clear();
-            forecastingFile.clear();
             jPanel1.removeAll();
             
-            getFromDBFiles(jSliderHorizon.getValue(), jSliderFiles.getValue());
+            bubbleChartForecasting= new BubbleChartForecasting(jSliderHorizon.getValue(), jSliderFiles.getValue());
             createAndAdd(true);
         }
 	repaint();
@@ -310,7 +268,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
             jLabelHorizon.setText("10");
             jSliderFiles.setValue(10);
             jLabelFiles.setText("10");
-            getFromDBFiles(jSliderHorizon.getValue(),jSliderFiles.getValue());
+            bubbleChartForecasting= new BubbleChartForecasting(jSliderHorizon.getValue(),jSliderFiles.getValue());
             createAndAdd(true);
             repaint();
         }
@@ -322,20 +280,16 @@ public class JPanelForecasting extends javax.swing.JPanel {
             jPanelFiles.setVisible(false);
             jSliderHorizon.setValue(10);
             jLabelHorizon.setText("10");
-            getFromDBProject(jSliderHorizon.getValue());
+            lineChartForecasting= new LineChartForecasting(jSliderHorizon.getValue());
             createAndAdd(false);
             repaint();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jSliderFilesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSliderFilesMouseReleased
-        fileNames.clear();
-        changeProneness.clear();
-        expectedComplexityChange.clear();
-        forecastingFile.clear();
         jPanel1.removeAll();
         
-        getFromDBFiles(jSliderHorizon.getValue(), jSliderFiles.getValue());
+        bubbleChartForecasting= new BubbleChartForecasting(jSliderHorizon.getValue(),jSliderFiles.getValue());
         createAndAdd(true);
 	repaint();
     }//GEN-LAST:event_jSliderFilesMouseReleased
@@ -356,228 +310,4 @@ public class JPanelForecasting extends javax.swing.JPanel {
     private javax.swing.JSlider jSliderHorizon;
     // End of variables declaration//GEN-END:variables
 
-    private void getFromDBProject(int horizon) {
-        try {
-            URL url = new URL("http://160.40.52.130:5001/TDForecaster/SystemForecasting?horizon="+ horizon
-                    + "&project=metalwalls_measures&regressor=ridge&ground_truth=yes");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            int responsecode = conn.getResponseCode();
-            if(responsecode != 200) {
-            	System.err.println("http://160.40.52.130:5001/TDForecaster/SystemForecasting?horizon="+ horizon
-                    + "&project=metalwalls_measures&regressor=ridge&ground_truth=yes");
-            }
-            else{
-                Scanner sc = new Scanner(url.openStream());
-                String inline="";
-                while(sc.hasNext()){
-                    inline+=sc.nextLine();
-                }
-                sc.close();
-                JSONParser parse = new JSONParser();
-                JSONObject jobj = (JSONObject)parse.parse(inline);
-                
-                //forecasting values
-                JSONObject jobj2= (JSONObject) jobj.get("results");
-                JSONArray jsonarr_2 = (JSONArray) jobj2.get("forecasts");
-                for(int i=0; i<jsonarr_2.size(); i++){
-                    JSONObject jsonobj_2 = (JSONObject)jsonarr_2.get(i);
-                    newVersionValues.put( Integer.parseInt(jsonobj_2.get("version").toString()),
-                                Double.parseDouble(jsonobj_2.get("value").toString()) );
-                }
-                
-                //past values
-                JSONObject jobj1= (JSONObject) jobj.get("results");
-                JSONArray jsonarr_1 = (JSONArray) jobj1.get("ground_truth");
-                for(int i=0; i<jsonarr_1.size(); i++){
-                    JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
-                    pastVersionValues.put( Integer.parseInt(jsonobj_1.get("version").toString()),
-                                Double.parseDouble(jsonobj_1.get("value").toString()) );
-                }
-            }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException | ParseException ex) {
-            Logger.getLogger(ProjectFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private JPanel createChartPanel() {
-        String chartTitle = "Forecasting";
-        String xAxisLabel = "version";
-        String yAxisLabel = "TD";
-
-        XYDataset dataset = createDataset();
-
-        JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, 
-                xAxisLabel, yAxisLabel, dataset);
-
-        customizeChart(chart);
-
-        return new ChartPanel(chart);
-    }
-
-    private XYDataset createDataset() {    // this method creates the data as time seris 
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        XYSeries series1 = new XYSeries("Past");
-        XYSeries series2 = new XYSeries("Forecasting");
-        
-        for(int key: pastVersionValues.keySet()){
-            series1.add(key, pastVersionValues.get(key));
-        }
-        
-        for(int key: newVersionValues.keySet()){
-            series2.add(key, newVersionValues.get(key));
-        }
-        
-        dataset.addSeries(series1);
-        dataset.addSeries(series2);
-        
-        return dataset;
-    }
-
-    private void customizeChart(JFreeChart chart) {   // here we make some customization
-        XYPlot plot = chart.getXYPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-
-        // sets paint color for each series
-        renderer.setSeriesPaint(0, Color.RED);
-        renderer.setSeriesPaint(1, Color.GREEN);
-
-        // sets thickness for series (using strokes)
-        renderer.setSeriesStroke(0, new BasicStroke(4.0f));
-        renderer.setSeriesStroke(1, new BasicStroke(3.0f));
-
-        // sets paint color for plot outlines
-        plot.setOutlinePaint(Color.BLUE);
-        plot.setOutlineStroke(new BasicStroke(2.0f));
-
-        // sets renderer for lines
-        plot.setRenderer(renderer);
-
-        // sets plot background
-        plot.setBackgroundPaint(Color.DARK_GRAY);
-
-        // sets paint color for the grid lines
-        plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlinePaint(Color.BLACK);
-
-        plot.setDomainGridlinesVisible(true);
-        plot.setDomainGridlinePaint(Color.BLACK);
-
-    }
-
-    
-    private JPanel createBubblePanel() {
-        JFreeChart jfreechart = ChartFactory.createBubbleChart(
-            "Files/Modules",
-            "Expected Complexity Change",
-            "Change Proneness",
-            createDatasetBubble(),
-            PlotOrientation.HORIZONTAL,
-            true, true, false);
-         
-        XYPlot xyplot = ( XYPlot )jfreechart.getPlot( );                 
-        xyplot.setForegroundAlpha( 0.65F );                 
-        XYItemRenderer xyitemrenderer = xyplot.getRenderer( );
-        xyitemrenderer.setSeriesPaint( 0 , Color.blue );                 
-        NumberAxis numberaxis = ( NumberAxis )xyplot.getDomainAxis( );                 
-        numberaxis.setLowerMargin( 0.2 );                 
-        numberaxis.setUpperMargin( 0.5 );                 
-        NumberAxis numberaxis1 = ( NumberAxis )xyplot.getRangeAxis( );                 
-        numberaxis1.setLowerMargin( 0.8 );                 
-        numberaxis1.setUpperMargin( 0.9 );
-        
-        XYBubbleRenderer renderer=(XYBubbleRenderer)xyplot.getRenderer();
-        BubbleXYItemLabelGenerator generator=new BubbleXYItemLabelGenerator("{0}",
-                new DecimalFormat("0"), new DecimalFormat("0"), new DecimalFormat("0"));
-        renderer.setDefaultItemLabelGenerator(generator);
-        renderer.setDefaultItemLabelsVisible(true);
-        
-        
-        ChartPanel chartpanel = new ChartPanel( jfreechart );
-        chartpanel.setDomainZoomable( true );                 
-        chartpanel.setRangeZoomable( true );
-        return chartpanel;
-    }
-
-    private XYZDataset createDatasetBubble() {
-        //normalize diameter
-    	double max= forecastingFile.get(0);
-    	double min= forecastingFile.get(0);
-    	for(Double d:forecastingFile) {
-    		if(d>max)
-    			max=d;
-    		if(d<min)
-    			min=d;
-    	}
-    	for(int i=0; i<forecastingFile.size(); i++) {
-    		double value= forecastingFile.get(i);
-    		forecastingFile.set(i, (0.02-0.002)/(max-min)*(value-min)+0.002);
-    	}
-        
-        //create dataset
-        DefaultXYZDataset defaultxyzdataset = new DefaultXYZDataset();
-        for(int i=0; i<changeProneness.size(); i++){
-        	defaultxyzdataset.addSeries(fileNames.get(i), new double[][] {
-        		{expectedComplexityChange.get(i)},
-        		{changeProneness.get(i)},
-        		{forecastingFile.get(i)}
-        	});
-        }
-
-        return defaultxyzdataset;
-    }
-    
-    private void getFromDBFiles(int horizon, int files){
-        try {
-            URL url = new URL("http://160.40.52.130:5001/TDForecaster/FileForecasting?horizon="+ horizon
-                    +"&project=metalwalls_measures&project_files="+ files +"&regressor=lasso&ground_truth=no");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            int responsecode = conn.getResponseCode();
-            if(responsecode != 200) {
-            	System.err.println("http://160.40.52.130:5001/TDForecaster/FileForecasting?horizon="+ horizon
-                    +"&project=metalwalls_measures&project_files="+ files +"&regressor=lasso&ground_truth=no");
-            }
-            else{
-                Scanner sc = new Scanner(url.openStream());
-                String inline="";
-                while(sc.hasNext()){
-                    inline+=sc.nextLine();
-                }
-                sc.close();
-                JSONParser parse = new JSONParser();
-                JSONObject jobj = (JSONObject)parse.parse(inline);
-                
-                //metrics
-                JSONObject jobj2= (JSONObject) jobj.get("results");
-                JSONArray jsonarr_2 = (JSONArray) jobj2.get("change_metrics");
-                for(int i=0; i<jsonarr_2.size(); i++){
-                    JSONObject jsonobj_2 = (JSONObject)jsonarr_2.get(i);
-                    String name= (String)jsonobj_2.keySet().iterator().next();
-                    fileNames.add(name);
-                    JSONObject jsonobj_3= (JSONObject) jsonobj_2.get(name);
-                    changeProneness.add( Double.parseDouble(jsonobj_3.get("change_proneness_(CP)").toString()) );
-                    expectedComplexityChange.add( Double.parseDouble(
-                                jsonobj_3.get("expected_complexity_change_(ED-COMP)").toString()) );
-                }
-                
-                //forecasting
-                JSONArray jsonarr_1 = (JSONArray) jobj2.get("forecasts");
-                for(int i=0; i<jsonarr_1.size(); i++){
-                    JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
-                    JSONArray jsonarr_3= (JSONArray) jsonobj_1.get((String)jsonobj_1.keySet().iterator().next());
-                    JSONObject jsonobj_2= (JSONObject)jsonarr_3.get(jsonarr_3.size()-1);
-                    forecastingFile.add( Double.parseDouble(jsonobj_2.get("value").toString()) );
-                }
-            }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException | ParseException ex) {
-            Logger.getLogger(ProjectFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 }

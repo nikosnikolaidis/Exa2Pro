@@ -5,7 +5,7 @@
  */
 package panels_frames;
 
-import exa2pro.LineChart;
+import exa2pro.LineChartEvolution;
 import exa2pro.Project;
 
 /**
@@ -110,7 +110,7 @@ public class JPanelProgress extends javax.swing.JPanel {
 
     //add Chart
     private void addChart(String selectedMetric){
-        LineChart chart = new LineChart(project.getCredentials(),selectedMetric,"Chart",selectedMetric+" per Version");
+        LineChartEvolution chart = new LineChartEvolution(project.getCredentials(),selectedMetric,"Chart",selectedMetric+" per Version");
         //chart.pack( );
 
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);

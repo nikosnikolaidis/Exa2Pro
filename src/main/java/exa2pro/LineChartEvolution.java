@@ -6,20 +6,18 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.data.category.DefaultCategoryDataset;
 import parsers.CodeFile;
 
 
-public class LineChart extends ApplicationFrame {
+public class LineChartEvolution extends ApplicationFrame {
 
     ProjectCredentials projectC;
     public ChartPanel chartPanel;
     private String metric;
 
-    public LineChart(ProjectCredentials pC, String metric, String applicationTitle, String chartTitle) {
+    public LineChartEvolution(ProjectCredentials pC, String metric, String applicationTitle, String chartTitle) {
         super(applicationTitle);
         this.projectC = pC;
         this.metric=metric;
