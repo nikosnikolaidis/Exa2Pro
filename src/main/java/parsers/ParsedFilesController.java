@@ -155,7 +155,7 @@ public class ParsedFilesController {
                         if(areSameStartsStopsConditions(language,start,stop,fileLines)){
                             if(!fast){
                                 //save opportunity
-                                opportunitiesListMethod.add(start +" " +stop+ " "+ methodName);
+                                opportunitiesListMethod.add(start +" " +stop+ " "+ methodName.replaceFirst("\\(.*\\)", "")+"() ");
                                 //print
                                 System.out.println("---"+cnt++ + "  " + opp.getStartLineCluster() +" to "+ opp.getEndLineCluster());
                             }
@@ -173,21 +173,21 @@ public class ParsedFilesController {
                 double initialMethodCohesion;
                 
                 if(!fast){
-                //get method line start and stop
-                methodLineStart= 0;
-                methodLineStop= method.getMethodEnd();
-                Iterator it2 = methodsLocDecl.entrySet().iterator();
-                while (it2.hasNext()) {
-                    Map.Entry pair = (Map.Entry)it2.next();
-                    if( pair.getKey().equals(methodName.split("\\(", 2)[0]) ){
-                        methodLineStart= (int) pair.getValue();
-                        break;
+                    //get method line start and stop
+                    methodLineStart= 0;
+                    methodLineStop= method.getMethodEnd();
+                    Iterator it2 = methodsLocDecl.entrySet().iterator();
+                    while (it2.hasNext()) {
+                        Map.Entry pair = (Map.Entry)it2.next();
+                        if( pair.getKey().equals(methodName.split("\\(", 2)[0]) ){
+                            methodLineStart= (int) pair.getValue();
+                            break;
+                        }
                     }
-                }
-                System.out.println("----------Method: "+methodName+"    "+methodLineStart+"-"+methodLineStop);
-                
-                //original method
-                initialMethodCohesion= calculateOriginalMethodCohesion(file, language, fileLines);
+                    System.out.println("----------Method: "+methodName+"    "+methodLineStart+"-"+methodLineStop);
+
+                    //original method
+                    initialMethodCohesion= calculateOriginalMethodCohesion(file, language, fileLines);
                 }
                 else{
                     initialMethodCohesion=1;

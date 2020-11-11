@@ -358,11 +358,6 @@ public class fortranFile extends CodeFile{
             }
             
             
-            //export csv for attributes and invocations
-//            if(module){
-//                new CSVWriteForClustering(this);
-//            }
-            
 //                System.out.println("do");
 //                for(int i=0; i<arrayDoStart.size(); i++){
 //                    System.out.println("start: "+arrayDoStart.get(i)+ " end: "+ arrayDoEnd.get(i));
@@ -380,6 +375,18 @@ public class fortranFile extends CodeFile{
         } catch (IOException ex) {
             Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * export csv for attributes and invocations
+     */
+    @Override
+    public boolean exportCSVofAtribute(){
+        if(module){
+            new CSVWriteForClustering(this);
+            return true;
+        }
+        return false;
     }
     
      /**

@@ -40,6 +40,9 @@ public class Report  implements Serializable{
     private String linesOfCodeForAllLanguages;
     private int totalComplexity;
     private int newLinesOfCode=0;
+    private double totalTDInterest=0;
+    private double TDPrincipalSourceCodeDebt;
+    private double TDPrincipalDesignDebt;
     
     public Report(Project project){
         this.project=project;
@@ -53,6 +56,23 @@ public class Report  implements Serializable{
             }
         }
         return false;
+    }
+    
+    /**
+     * calculate TD Interest in report
+     */
+    public void startCalculationTDInterest(){
+        TDInterest interest= new TDInterest(project);
+        totalTDInterest= interest.getTotal();
+    }
+    
+    /**
+     * calculate TD Principal
+     */
+    public void startCalculationTDPrincipal(){
+        TDPrincipal principal =new TDPrincipal(totalDebt_Index, project);
+        TDPrincipalSourceCodeDebt= principal.getSourceCodeDebt();
+        TDPrincipalDesignDebt= principal.getDesignDebt();
     }
     
     /**
@@ -445,5 +465,14 @@ public class Report  implements Serializable{
     }
     public HashMap<String, Integer> getTdOfEachFile() {
         return tdOfEachFile;
+    }
+    public double getTotalTDInterest() {
+        return totalTDInterest;
+    }
+    public double getTDPrincipalSourceCodeDebt() {
+        return TDPrincipalSourceCodeDebt;
+    }
+    public double getTDPrincipalDesignDebt() {
+        return TDPrincipalDesignDebt;
     }
 }

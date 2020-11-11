@@ -6,14 +6,22 @@
 package panels_frames;
 
 import exa2pro.Project;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import static java.util.stream.Collectors.toMap;
 import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import parsers.CodeFile;
 
 /**
@@ -192,6 +200,11 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel10.setText("(CBF) Over Coupled Files/Modules");
 
+        jListFilesFanOut.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jListFilesFanOutMousePressed(evt);
+            }
+        });
         jScrollPane2.setViewportView(jListFilesFanOut);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -222,6 +235,11 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jLabel13.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel13.setText("(LOC) Large Files/Modules");
 
+        jListMethodsLOC.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jListMethodsLOCMousePressed(evt);
+            }
+        });
         jScrollPane5.setViewportView(jListMethodsLOC);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -252,6 +270,11 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jLabel14.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel14.setText("(LCOP) Large Files/Modules");
 
+        jListFilesLCOP.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jListFilesLCOPMousePressed(evt);
+            }
+        });
         jScrollPane6.setViewportView(jListFilesLCOP);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -317,6 +340,11 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel11.setText("(CC) Complex Procedures");
 
+        jListMethodsComplex.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jListMethodsComplexMousePressed(evt);
+            }
+        });
         jScrollPane3.setViewportView(jListMethodsComplex);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -403,6 +431,97 @@ public class JPanelRefactorings extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jListFilesIncoherentMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListFilesIncoherentMousePressed
+        String fileName= jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[0]+"."+
+        		jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[1];
+        extractMethodOpp(fileName);
+    }//GEN-LAST:event_jListFilesIncoherentMousePressed
+
+    private void jListMethodsComplexMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListMethodsComplexMousePressed
+        String fileName= jListMethodsComplex.getSelectedValue().split(" ")[1].split("\\.")[0]+"."+
+        		jListMethodsComplex.getSelectedValue().split(" ")[1].split("\\.")[1];
+        extractMethodOpp(fileName);
+    }//GEN-LAST:event_jListMethodsComplexMousePressed
+
+    private void jListFilesFanOutMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListFilesFanOutMousePressed
+        String fileName= jListFilesFanOut.getSelectedValue().split(" ")[1];
+        int fanout= Integer.parseInt(jListFilesFanOut.getSelectedValue().split(" ")[0]);
+        for(CodeFile cf:project.getprojectFiles()){
+            if(cf.file.getName().equals(fileName) && cf.fanOut==fanout){
+                extractFileOpp(cf);
+            }
+        }
+    }//GEN-LAST:event_jListFilesFanOutMousePressed
+
+    private void jListMethodsLOCMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListMethodsLOCMousePressed
+        String fileName= jListMethodsLOC.getSelectedValue().split(" ")[1];
+        int loc= Integer.parseInt(jListMethodsLOC.getSelectedValue().split(" ")[0]);
+        for(CodeFile cf:project.getprojectFiles()){
+            if(cf.file.getName().equals(fileName) && cf.totalLines==loc){
+                extractFileOpp(cf);
+            }
+        }
+    }//GEN-LAST:event_jListMethodsLOCMousePressed
+
+    private void jListFilesLCOPMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListFilesLCOPMousePressed
+        String fileName= jListFilesLCOP.getSelectedValue().split(" ")[1];
+        int lcop= Integer.parseInt(jListFilesLCOP.getSelectedValue().split(" ")[0]);
+        for(CodeFile cf:project.getprojectFiles()){
+            if(cf.file.getName().equals(fileName) && cf.lcop==lcop){
+                extractFileOpp(cf);
+            }
+        }
+    }//GEN-LAST:event_jListFilesLCOPMousePressed
+
+    private void extractFileOpp(CodeFile file){
+        JFrame parent = new JFrame();
+        JOptionPane optionPane = new JOptionPane();
+        JSlider slider = new JSlider();
+        Hashtable labelTable = new Hashtable();
+        labelTable.put(10, new JLabel("0.1") );
+        labelTable.put(40, new JLabel("0.4") );
+        labelTable.put(70, new JLabel("0.7") );
+        labelTable.put(99, new JLabel("0.99") );
+        slider.setLabelTable(labelTable);
+        slider.setMajorTickSpacing(30);
+        slider.setMinimum(10);
+        slider.setMaximum(99);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.setValue(40);
+        ChangeListener changeListener = new ChangeListener() {
+          public void stateChanged(ChangeEvent changeEvent) {
+            JSlider theSlider = (JSlider) changeEvent.getSource();
+            if (!theSlider.getValueIsAdjusting()) {
+              optionPane.setMessage(new Object[] { "Select a threshold: "+ (theSlider.getValue()*1.0/100), slider });
+            }
+          }
+        };
+        slider.addChangeListener(changeListener);
+        
+        optionPane.setMessage(new Object[] { "Select a threshold: "+ (slider.getValue()*1.0/100), slider });
+        optionPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
+        optionPane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
+        JDialog dialog = optionPane.createDialog(parent, "Clustering");
+        dialog.setVisible(true);
+        
+        if(optionPane.getValue()!=null && JOptionPane.OK_OPTION == (int)optionPane.getValue()){
+           file.parse();
+            if (file.exportCSVofAtribute()){
+                DefaultListModel<String> defaultListModelOpp = new DefaultListModel<>();
+                //start clustering script
+                System.out.println("Threshold: " + (slider.getValue()*1.0/100));
+                ArrayList<String> clusters= file.runClustering(slider.getValue()*1.0/100);
+                int i=1;
+                for(String st: clusters){
+                    defaultListModelOpp.addElement((i++)+" -> "+st);
+                }
+                jPanel6.setVisible(true);
+                jListOpportunities.setModel(defaultListModelOpp);
+            }
+        }
+    }
+    
+    private void extractMethodOpp(String fileName){
         DefaultListModel<String> defaultListModelOpp = new DefaultListModel<>();
         
         boolean fast;
@@ -416,25 +535,25 @@ public class JPanelRefactorings extends javax.swing.JPanel {
             fast=false;
         } 
         
-        String fileName= jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[0]+"."+
-        		jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[1];
-        for(CodeFile cf:project.getprojectFiles()){
-           if(fileName.equals(cf.file.getName())){
-               cf.parse();
-               //cf.calculateCohesion();
-               cf.calculateOpportunities(fast);
-               
-               cf.opportunities.forEach((opp) -> {
-                   defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():"));
-               });
-               //if(!defaultListModelOpp.isEmpty())
-                   jPanel6.setVisible(true);
-               //jListOpportunities.setFixedCellWidth(100);
-               jListOpportunities.setModel(defaultListModelOpp);
-           }
-       }
-    }//GEN-LAST:event_jListFilesIncoherentMousePressed
+        if(dialogResult != JOptionPane.CLOSED_OPTION) {
+            for(CodeFile cf:project.getprojectFiles()){
+               if(fileName.equals(cf.file.getName())){
+                   cf.parse();
+                   //cf.calculateCohesion();
+                   cf.calculateOpportunities(fast);
 
+                   cf.opportunities.forEach((opp) -> {
+                       defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():"));
+                   });
+                   //if(!defaultListModelOpp.isEmpty())
+                       jPanel6.setVisible(true);
+                   //jListOpportunities.setFixedCellWidth(100);
+                   jListOpportunities.setModel(defaultListModelOpp);
+               }
+           }
+        }
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

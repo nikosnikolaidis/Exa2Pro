@@ -5,33 +5,12 @@
  */
 package panels_frames;
 
-import exa2pro.Exa2Pro;
 import exa2pro.PieChart;
 import exa2pro.Project;
-import exa2pro.Report;
 import java.awt.Color;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static java.util.stream.Collectors.toMap;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import parsers.CodeFile;
 
 /**
@@ -60,262 +39,12 @@ public class ProjectFrame extends javax.swing.JFrame {
         
         populateJLabels();
         addPieChart();
-        
-        
-            ///calculate Interest///
-            /*double totalInterest=0.0;
-            HashMap<String, Integer> tdOfFiles=project.getprojectReport().getTdOfEachFile();
-            //for each file
-            if(!project.getprojectReport().getTdOfEachFile().isEmpty())
-            for (CodeFile file : project.getprojectFiles()) {
-                HashMap<String,Double> similarityOfFiles=new HashMap<>();
-                int sumCC=0;
-                for(String key:file.methodsLOC.keySet()){
-                    sumCC+= file.methodsCC.get(key);
-                }
-                int size=file.methodsLOC.size();
-                if(size==0)
-                    size=1;
-                double avCC= (sumCC*1.0)/size;
-                System.out.println("--");
-//                System.out.println("   LOC:"+file.totalLines+ " CC:"+avCC+
-//                		" FO:"+file.fanOut+" LCOL:"+file.cohesion+ " NOP:"+file.methodsLOC.size()
-//                		+" TD:"+tdOfFiles.get(file.file.getName()));
-                //calculate the similarity with all the rest
-//                System.out.println("=======");
-                for (CodeFile file2 : project.getprojectFiles()) {
-                    if( !file.file.getAbsolutePath().equals(file2.file.getAbsolutePath()) ){
-//                    	if(file.file.getName().equals("prep_annealing.f") 
-//                    					&& file2.file.getName().equals("x2p_copy.hpp")) {
-//                    		System.out.println("!**");
-//                    	}
-                        int sumCC2=0;
-                        for(String key2:file2.methodsLOC.keySet()){
-                            sumCC2+= file2.methodsCC.get(key2);
-                        }
-                        int size2=file2.methodsLOC.size();
-                        if(size2==0)
-                            size2=1;
-                        double avCC2= (sumCC2*1.0)/size2;
-                        
-                        
-                        double tempCC= avCC;
-                        if(tempCC==0)
-                        	tempCC=1;
-                        double tempLCOL= file.cohesion;
-                        if(tempLCOL==0)
-                        	tempLCOL=1;
-                        int tempNOP= file.methodsLOC.size();
-                        if(tempNOP==0)
-                        	tempNOP=1;
-                        int tempTD= tdOfFiles.get(file.file.getName());
-                        if(tempTD==0)
-                        		tempTD=1;
-                        
-                        double similarity= ( Math.abs(file.totalLines-file2.totalLines)*1.0/file.totalLines +
-                                Math.abs(avCC-avCC2)*1.0/tempCC +
-                                //Math.abs(file.cohesion-file2.cohesion)*1.0/tempLCOL+
-                                //Math.abs(file.methodsLOC.size()-file2.methodsLOC.size())*1.0/tempNOP +
-                                Math.abs(tdOfFiles.get(file.file.getName())-tdOfFiles.get(file2.file.getName()))*1.0/tempTD
-                                )/3;
-                        similarityOfFiles.put(file2.file.getAbsolutePath(), 1-similarity);
-
-//                        System.out.println("LOC:"+file2.totalLines+ " CC:"+avCC2+
-//                        		" FO:"+file2.fanOut+" LCOL:"+file2.cohesion+ " NOP:"+file2.methodsLOC.size()
-//                        		+ " TD:"+tdOfFiles.get(file2.file.getName()));
-//                        System.out.println(1-similarity);
-                    }
-                }
-                
-                //keep top 3
-                Map<String, Double> sortedSimilarity= similarityOfFiles.entrySet().stream()
-                    .sorted(Collections.reverseOrder(HashMap.Entry.comparingByValue()))
-                    .collect(
-                        toMap(HashMap.Entry::getKey, HashMap.Entry::getValue, (e1, e2) -> e2,
-                            LinkedHashMap::new));
-                List<Entry<String, Double>> list = 
-                            new ArrayList<Entry<String, Double>>(sortedSimilarity.entrySet());
-                
-                ArrayList<CodeFile> filesForCompare= new ArrayList<>();
-                for (CodeFile fileTemp : project.getprojectFiles()) {
-                    if(list.get(0).getKey().equals(fileTemp.file.getAbsolutePath()) && list.get(0).getValue()>=0.5) {
-                        filesForCompare.add(fileTemp);
-                        break;
-                    }
-                }
-                for(CodeFile fileTemp: project.getprojectFiles()) {
-                	if( (list.get(1).getKey().equals(fileTemp.file.getAbsolutePath()) ||
-                            list.get(2).getKey().equals(fileTemp.file.getAbsolutePath()) ) && list.get(0).getValue()>=0.5 )
-                		filesForCompare.add(fileTemp);
-                }
-                if(filesForCompare.isEmpty()) {
-                	for (CodeFile fileTemp : project.getprojectFiles()) {
-                        if(list.get(0).getKey().equals(fileTemp.file.getAbsolutePath()) ) {
-                            filesForCompare.add(fileTemp);
-                            break;
-                        }
-                    }
-                }
-                	
-                
-                //print this file
-                System.out.println("   LOC:"+file.totalLines+ " CC:"+avCC+
-                		" FO:"+file.fanOut+" LCOL:"+file.cohesion+ " NOP:"+file.methodsLOC.size()
-                		+" TD:"+tdOfFiles.get(file.file.getName()));
-                // and print top 3
-                for(int i=0; i<filesForCompare.size(); i++) {
-	                for (CodeFile file2 : project.getprojectFiles()) {
-	                	if(file2.file.getAbsoluteFile().toString().equals( list.get(i).getKey().toString() )) {
-	                		int sumCC2=0;
-	                        for(String key2:file2.methodsLOC.keySet()){
-	                            sumCC2+= file2.methodsCC.get(key2);
-	                        }
-	                        int size2=file2.methodsLOC.size();
-	                        if(size2==0)
-	                            size2=1;
-	                        double avCC2= (sumCC2*1.0)/size2;
-	                        
-	                		System.out.println("LOC:"+file2.totalLines+ " CC:"+avCC2+
-	                        		" FO:"+file2.fanOut+" LCOL:"+file2.cohesion+ " NOP:"+file2.methodsLOC.size()
-	                        		+ " TD:"+tdOfFiles.get(file2.file.getName()));
-	                		System.out.println(list.get(i).getValue());
-	                		break;
-	                	}
-	                }
-                }
-                
-                //get optimal metrics
-                int sumCCopt=0;
-                for(String key:filesForCompare.get(0).methodsLOC.keySet()){
-                    sumCCopt+= filesForCompare.get(0).methodsCC.get(key);
-                }
-                int sizeOpt=filesForCompare.get(0).methodsLOC.size();
-                if(sizeOpt==0)
-                    sizeOpt=1;
-                double avCCopt= sumCCopt*1.0/sizeOpt;
-                
-                double optimalLOC= filesForCompare.get(0).totalLines;
-                double optimalCC= avCCopt;
-                int optimalFO= filesForCompare.get(0).fanOut;
-                double optimalLCOL= filesForCompare.get(0).cohesion;
-                double optimalLCOP= filesForCompare.get(0).lcop;
-//                System.out.println("LOC:"+filesForCompare.get(0).totalLines+ " CC:"+avCCopt+
-//                		" FO:"+filesForCompare.get(0).fanOut+" LCOL:"+filesForCompare.get(0).cohesion);
-                
-                for (int i=1; i<filesForCompare.size(); i++) {
-                    if(filesForCompare.get(i).fanOut < optimalFO)
-                        optimalFO=filesForCompare.get(i).fanOut;
-                    if( (filesForCompare.get(i).cohesion!=0 && filesForCompare.get(i).cohesion < optimalLCOL)
-                    		|| optimalLCOL==0)
-                        optimalLCOL=filesForCompare.get(i).cohesion;
-                    if(filesForCompare.get(i).totalLines!=0 && filesForCompare.get(i).totalLines<optimalLOC)
-                    	optimalLOC=filesForCompare.get(i).totalLines;
-                    sumCCopt=0;
-                    for(String key:filesForCompare.get(i).methodsLOC.keySet()){
-                        sumCCopt+= filesForCompare.get(i).methodsCC.get(key);
-                    }
-                    sizeOpt=filesForCompare.get(i).methodsLOC.size();
-                    if(sizeOpt==0)
-                        sizeOpt=1;
-                    avCCopt= sumCCopt*1.0/sizeOpt;
-                    if(avCCopt < optimalCC)
-                        optimalCC=avCCopt;
-                    if( (filesForCompare.get(i).lcop!=-1 && filesForCompare.get(i).lcop < optimalLCOP)
-                    		|| optimalLCOP==-1)
-                    	optimalLCOP= filesForCompare.get(i).lcop;
-//                    System.out.println("LOC:"+filesForCompare.get(i).totalLines+ " CC:"+avCCopt+
-//                    		" FO:"+filesForCompare.get(i).fanOut+" LCOL:"+filesForCompare.get(i).cohesion);
-                }
-                
-                int investFO=0;
-                if(file.fanOut==0 && optimalFO==0)
-                	investFO=1;
-                int investCC=0;
-                if(avCC==0 && optimalCC==0)
-                	investCC=1;
-                int investLCOP=0;
-                if(file.lcop==0 && optimalLCOP==0)
-                	investLCOP=1;
-                
-                //normalize
-                if(optimalLOC==0)
-                	optimalLOC=1.0;
-                if(optimalCC==0)
-                	optimalCC=1.0;
-                if(optimalFO==0)
-                	optimalFO=1;
-                if(optimalLCOL==0)
-                	optimalLCOL=file.cohesion;
-                if(optimalLCOP==0)
-                	optimalLCOP=1;
-                
-                //get new lines average
-                int sumNewLines= 0;
-                int sumFiles=0;
-                for(Project proj: project.getCredentials().getProjects()){
-                    sumNewLines+= proj.getprojectReport().getNewLinesOfCode();
-                    sumFiles+= proj.getprojectFiles().size();
-                }
-                if(project.getCredentials().getProjects().size()>1){
-                    int avgNewLines= sumNewLines/(project.getCredentials().getProjects().size()-1);
-                    int avgFiles= sumFiles/(project.getCredentials().getProjects().size()-1);
-                    avgNewLines= avgNewLines/avgFiles;
-
-                        //calculate the interest per LOC
-                        double sumInterestPerLOC=0;
-//	                    double interestLCOL= (file.cohesion-optimalLCOL)*1.0/optimalLCOL;
-//	                    if(file.cohesion!=0)
-//	                    	sumInterestPerLOC+= interestLCOL;
-                        if(file.lcop!=-1 && optimalLCOP!=-1) {
-                        	if(investLCOP==1)
-                        		sumInterestPerLOC+= (investLCOP-optimalLCOP)*1.0/optimalLCOP;
-                        	else
-                        		sumInterestPerLOC+= (file.lcop-optimalLCOP)*1.0/optimalLCOP;
-                        }
-                        
-	                    if(investFO==1)
-	                    	sumInterestPerLOC+= (investFO-optimalFO)*1.0/optimalFO;
-	                    else
-	                    	sumInterestPerLOC+= (file.fanOut-optimalFO)*1.0/optimalFO;
-	                    
-	                    sumInterestPerLOC+= (file.totalLines-optimalLOC)*1.0/optimalLOC;
-	                    
-                        if(investCC==1)
-                        	sumInterestPerLOC+= (investCC-optimalCC)*1.0/optimalCC;
-                        else
-                        	sumInterestPerLOC+=(avCC-optimalCC)*1.0/optimalCC;
-	                    
-	                    double avgInterestPerLOC= (sumInterestPerLOC)/3;
-	                    if(file.lcop!=-1 && optimalLCOP!=-1) {
-	                    	avgInterestPerLOC= (sumInterestPerLOC)/4;
-	                    }
-
-                        //calculate the interest in AVG LOC
-                        double interestInAvgLOC= avgInterestPerLOC*avgNewLines;
-                        interestInAvgLOC= avgInterestPerLOC*5.77; //metalwalls: 2.829; //co2capture: 5.77;
-                        
-                        //calculate the interest in hours
-                        double interestInHours= interestInAvgLOC/25;
-                        //calculate the interest in dollars
-                        double interestInEuros= interestInHours*39.44;
-
-                        totalInterest+= interestInEuros;
-                        System.out.println(interestInEuros);
-                }
-                
-                
-            }
-            
-            
-            
-            
-            System.out.println("Total Interest: " +totalInterest);*/
     }
     
     private void addPieChart(){
         HashMap<String, Double> temp= PieChart.calculateThresholds();
         jPanel6.removeAll();
-        PieChart chart = new PieChart(project,"Pie","FanOut"," of Files", temp.get("FanOut"));
+        PieChart chart = new PieChart(project,"Pie","CBF"," of Files", temp.get("FanOut"));
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanelChartLayout);
         jPanelChartLayout.setHorizontalGroup(
@@ -413,12 +142,19 @@ public class ProjectFrame extends javax.swing.JFrame {
     
     //Populate all JLabels
     private void populateJLabels() {
+        DecimalFormat round = new DecimalFormat("#,###.#");
         jLabelProjectName.setText(project.getCredentials().getProjectName());
         jLabelTotallLines.setText(project.getprojectReport().getTotalLinesOfCode()+"");
         jTextArea1.setText(project.getprojectReport().getLinesOfCodeForAllLanguages());
         jLabelDateAnalysis.setText(project.getprojectReport().getDate()+"");
         jLabelCodeSmells.setText(project.getprojectReport().getTotalCodeSmells()+"");
         jLabelTechnicalDebt.setText(project.getprojectReport().getTotalDebt());
+        if(project.getprojectReport().getTotalTDInterest()!=0)
+            jLabelTDInterest.setText(round.format(project.getprojectReport().getTotalTDInterest()) + " €");
+        else
+            jLabelTDInterest.setText("-");
+        jLabelSourceCodeDebt.setText(round.format(project.getprojectReport().getTDPrincipalSourceCodeDebt()) + " €");
+        jLabelDesignDebt.setText(round.format(project.getprojectReport().getTDPrincipalDesignDebt()) + " €");
         
         //print the metrics of system
         double sumLOC=0;
@@ -516,6 +252,12 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabelTDInterest = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabelSourceCodeDebt = new javax.swing.JLabel();
+        jLabelDesignDebt = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Exa2Pro");
@@ -711,7 +453,7 @@ public class ProjectFrame extends javax.swing.JFrame {
                     .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 13)); // NOI18N
         jLabel6.setText("System Measures");
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
@@ -772,7 +514,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 205, Short.MAX_VALUE)
+            .addGap(0, 197, Short.MAX_VALUE)
         );
 
         jPanel10.add(jPanel7);
@@ -785,7 +527,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 205, Short.MAX_VALUE)
+            .addGap(0, 197, Short.MAX_VALUE)
         );
 
         jPanel10.add(jPanel8);
@@ -798,7 +540,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 205, Short.MAX_VALUE)
+            .addGap(0, 197, Short.MAX_VALUE)
         );
 
         jPanel10.add(jPanel9);
@@ -811,10 +553,25 @@ public class ProjectFrame extends javax.swing.JFrame {
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 205, Short.MAX_VALUE)
+            .addGap(0, 197, Short.MAX_VALUE)
         );
 
         jPanel10.add(jPanel11);
+
+        jLabel20.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel20.setText("TD Interest");
+
+        jLabelTDInterest.setText("jLabel13");
+
+        jLabel21.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel21.setText("Source Code Debt");
+
+        jLabelSourceCodeDebt.setText("jLabel13");
+
+        jLabelDesignDebt.setText("jLabel13");
+
+        jLabel23.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel23.setText("Design Debt");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -824,58 +581,80 @@ public class ProjectFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabelCodeSmells, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(50, 50, 50)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabelTechnicalDebt))
-                        .addGap(60, 60, 60)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabelCC))
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabelLOC))
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabelFO))
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabelLCOL))
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelLCOP)
-                            .addComponent(jLabel13))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabelTechnicalDebt)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabelCodeSmells))
+                        .addGap(41, 41, 41)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabelCC)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabelTDInterest))
+                        .addGap(38, 38, 38)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel21)
+                                    .addComponent(jLabelSourceCodeDebt))
+                                .addGap(38, 38, 38)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel23)
+                                    .addComponent(jLabelDesignDebt)))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelLOC)
+                                    .addComponent(jLabel10))
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabelFO))
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabelLCOL))
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelLCOP)
+                                    .addComponent(jLabel13))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel7)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabelCodeSmells))
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel8)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabelTechnicalDebt)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel20)
+                        .addGap(0, 0, 0)
+                        .addComponent(jLabelTDInterest))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(0, 0, 0)
+                        .addComponent(jLabelTechnicalDebt))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel21)
+                        .addGap(0, 0, 0)
+                        .addComponent(jLabelSourceCodeDebt))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel23)
+                        .addGap(0, 0, 0)
+                        .addComponent(jLabelDesignDebt)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(14, 14, 14))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
@@ -883,16 +662,17 @@ public class ProjectFrame extends javax.swing.JFrame {
                             .addComponent(jLabel11)
                             .addComponent(jLabel12)
                             .addComponent(jLabel13))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 0, 0)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabelCC)
                             .addComponent(jLabelLOC)
                             .addComponent(jLabelFO)
                             .addComponent(jLabelLCOL)
-                            .addComponent(jLabelLCOP))))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                            .addComponent(jLabelLCOP)
+                            .addComponent(jLabelCodeSmells))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         javax.swing.GroupLayout jPanelOverviewLayout = new javax.swing.GroupLayout(jPanelOverview);
@@ -937,7 +717,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE))
+                .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -1086,7 +866,10 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1097,11 +880,14 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelCC;
     private javax.swing.JLabel jLabelCodeSmells;
     private javax.swing.JLabel jLabelDateAnalysis;
+    private javax.swing.JLabel jLabelDesignDebt;
     private javax.swing.JLabel jLabelFO;
     private javax.swing.JLabel jLabelLCOL;
     private javax.swing.JLabel jLabelLCOP;
     private javax.swing.JLabel jLabelLOC;
     private javax.swing.JLabel jLabelProjectName;
+    private javax.swing.JLabel jLabelSourceCodeDebt;
+    private javax.swing.JLabel jLabelTDInterest;
     private javax.swing.JLabel jLabelTechnicalDebt;
     private javax.swing.JLabel jLabelTotallLines;
     private javax.swing.JPanel jPanel1;

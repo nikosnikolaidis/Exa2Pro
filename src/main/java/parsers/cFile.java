@@ -1,6 +1,7 @@
 
 package parsers;
 
+import csvControlers.CSVWriteForClustering;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -243,6 +244,15 @@ public class cFile extends CodeFile{
         } catch (IOException ex) {
             Logger.getLogger(cParserSemiLatest.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * export csv for attributes and invocations
+     */
+    @Override
+    public boolean exportCSVofAtribute(){
+         new CSVWriteForClustering(this);
+         return true;
     }
     
     /**

@@ -241,6 +241,9 @@ public class Analysis {
             
             report.getIssuesFromSonarQube();
             report.getTDLinesOfFilesFromSonarQube();
+            
+            report.startCalculationTDInterest();
+            report.startCalculationTDPrincipal();
         } catch (InterruptedException | IOException ex) {
             Logger.getLogger(Analysis.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -306,6 +309,8 @@ public class Analysis {
             
             report.getIssuesFromSonarQube();
             report.getTDLinesOfFilesFromSonarQube();
+            
+            report.startCalculationTDInterest();
         } catch (Exception e) {
             e.printStackTrace();
         }
