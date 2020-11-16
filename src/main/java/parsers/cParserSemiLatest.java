@@ -169,7 +169,8 @@ public class cParserSemiLatest {
 			cleanParsedLines();
 
 			//utils.Utilities.writeCSV("./" + file.getName() + "_parsed.txt", this.parsedLines, false);	//auto xrisimopoiitai gia analiseis, kai se auto enonontai ta mikra IF, an treksei o katallilos kwdikas
-			BufferedWriter writer= new BufferedWriter(new FileWriter(file.getName()+"_parsed.txt", true));
+			BufferedWriter writer= new BufferedWriter(new FileWriter(file.getName()+"_parsed.txt", false));
+                        writer.write("");
 			for(String st: this.parsedLines) {
                             writer.append(st+ System.lineSeparator());
 			}

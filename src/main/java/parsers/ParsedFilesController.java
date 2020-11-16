@@ -64,8 +64,8 @@ public class ParsedFilesController {
     }
     
     
-    public ArrayList<String> calculateOpportunities(boolean fast ,File file, String language,
-                    HashMap<String, Integer> methodsLocDecl) throws FileNotFoundException {
+    public ArrayList<String> calculateOpportunities(boolean fast ,File file, String methodNameOpp,
+            String language, HashMap<String, Integer> methodsLocDecl) throws FileNotFoundException {
         ArrayList<String> opportunitiesList=new ArrayList<>();
         
         //get files lines
@@ -104,15 +104,16 @@ public class ParsedFilesController {
         JavaClass clazz = classResults.get(classResults.size()-1);
         for (int index = 0; index < clazz.getMethods().size(); index++) {
             boolean needsRefactoring = clazz.getMethods().get(index).needsRefactoring(selected_metric);	
+            String methodName = clazz.getMethods().get(index).getName();
+            Method method = clazz.getMethods().getMethodByName(methodName);
             
-            if(needsRefactoring) {
+            if(needsRefactoring && methodNameOpp.equals(method.getName().split("\\(")[0].split(" ")
+            		[method.getName().split("\\(")[0].split(" ").length-1] ) ) {
                 ArrayList<String> opportunitiesListMethod=new ArrayList<>();
             	String className = file.getName().replaceFirst("./", "");
-            	String methodName = clazz.getMethods().get(index).getName();
             	
             	MethodOppExtractor extractor = new MethodOppExtractor(file, clazz.getMethods().get(index).getName(), extractor_settings, classResults.get(classResults.size()-1));
 
-            	Method method = clazz.getMethods().getMethodByName(methodName);
             	ArrayList<Opportunity> opportunities = method.getOpportunityList().getOptimals();
             	
                 System.out.println(method.getName()+"  "+method.getMethodEnd());
@@ -153,7 +154,7 @@ public class ParsedFilesController {
                         
                         //Before add check same start and stop conditions
                         if(areSameStartsStopsConditions(language,start,stop,fileLines)){
-                            if(!fast){
+                            if(fast){
                                 //save opportunity
                                 opportunitiesListMethod.add(start +" " +stop+ " "+ methodName.replaceFirst("\\(.*\\)", "")+"() ");
                                 //print
@@ -172,7 +173,7 @@ public class ParsedFilesController {
                 
                 double initialMethodCohesion;
                 
-                if(!fast){
+                if(fast){
                     //get method line start and stop
                     methodLineStart= 0;
                     methodLineStop= method.getMethodEnd();
@@ -213,7 +214,7 @@ public class ParsedFilesController {
                         if(add){
                             countAdded++;
                             added=str;
-                            if(!fast){
+                            if(fast){
                                 //new method
                                 double newMethodCohesion = calculateNewMethodCohesion(file, startL, stopL, fileLines);
                                 //extracted method
@@ -246,7 +247,7 @@ public class ParsedFilesController {
                                 }
                             }
                             if(add){
-                                if(!fast){
+                                if(fast){
                                     //new method
                                     double newMethodCohesion = calculateNewMethodCohesion(file, startL, stopL, fileLines);
                                     //extracted method

@@ -312,7 +312,7 @@ public class cFile extends CodeFile{
     }
     
     @Override
-    public void calculateOpportunities(boolean fast){
+    public void calculateOpportunities(boolean fast, String methodName){
         //Deletes previous if exist
         File fileDelPrev = new File("./" + file.getName() + "_parsed.txt");
         if(fileDelPrev.exists())
@@ -332,7 +332,7 @@ public class cFile extends CodeFile{
         
         try {
             ParsedFilesController paFC=new ParsedFilesController();
-            this.opportunities = paFC.calculateOpportunities(fast, file, "c", methodsLocDeclNew);
+            this.opportunities = paFC.calculateOpportunities(fast, file, methodName, "c", methodsLocDeclNew);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(fortranFile.class.getName()).log(Level.SEVERE, null, ex);
         }

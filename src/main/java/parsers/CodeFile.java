@@ -49,7 +49,7 @@ public abstract class CodeFile implements Serializable{
     
     public abstract void parse();
     public abstract void calculateCohesion();
-    public abstract void calculateOpportunities(boolean fast);
+    public abstract void calculateOpportunities(boolean fast, String methodName);
     public abstract boolean exportCSVofAtribute();
     
     public ArrayList<String> runClustering(double threshold){

@@ -143,11 +143,11 @@ public class JPanelRefactorings extends javax.swing.JPanel {
             Object value = entry.getValue();
             if(value instanceof Integer) {
             	if((Integer)value >= thresholds.get(metric))
-            		result.put(prefix + '.' + key.toString(), value);
+            		result.put(prefix + '.' + key.toString().split(" ")[key.toString().split(" ").length-1], value);
             }
             else {
             	if((Double)value >= thresholds.get(metric))
-            		result.put(prefix + '.' + key.toString(), value);
+            		result.put(prefix + '.' + key.toString().split(" ")[key.toString().split(" ").length-1], value);
             }
         }
         return result;
@@ -433,13 +433,15 @@ public class JPanelRefactorings extends javax.swing.JPanel {
     private void jListFilesIncoherentMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListFilesIncoherentMousePressed
         String fileName= jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[0]+"."+
         		jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[1];
-        extractMethodOpp(fileName);
+        String methodName= jListFilesIncoherent.getSelectedValue().split(" ")[1].split("\\.")[2];
+        extractMethodOpp(fileName, methodName);
     }//GEN-LAST:event_jListFilesIncoherentMousePressed
 
     private void jListMethodsComplexMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListMethodsComplexMousePressed
         String fileName= jListMethodsComplex.getSelectedValue().split(" ")[1].split("\\.")[0]+"."+
         		jListMethodsComplex.getSelectedValue().split(" ")[1].split("\\.")[1];
-        extractMethodOpp(fileName);
+        String methodName= jListMethodsComplex.getSelectedValue().split(" ")[1].split("\\.")[2];
+        extractMethodOpp(fileName, methodName);
     }//GEN-LAST:event_jListMethodsComplexMousePressed
 
     private void jListFilesFanOutMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListFilesFanOutMousePressed
@@ -521,7 +523,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         }
     }
     
-    private void extractMethodOpp(String fileName){
+    private void extractMethodOpp(String fileName, String methodName){
         DefaultListModel<String> defaultListModelOpp = new DefaultListModel<>();
         
         boolean fast;
@@ -540,7 +542,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                if(fileName.equals(cf.file.getName())){
                    cf.parse();
                    //cf.calculateCohesion();
-                   cf.calculateOpportunities(fast);
+                   cf.calculateOpportunities(fast, methodName);
 
                    cf.opportunities.forEach((opp) -> {
                        defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():"));
