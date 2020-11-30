@@ -215,6 +215,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         jPanelButtonForecasting = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
+        jPanelButtonAdmit = new javax.swing.JPanel();
+        jLabel24 = new javax.swing.JLabel();
         jPanelButtonMore = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jPanelParent = new javax.swing.JPanel();
@@ -347,6 +349,19 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonForecasting.add(jLabel19);
 
         jPanel3.add(jPanelButtonForecasting);
+
+        jPanelButtonAdmit.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelButtonAdmit.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelButtonAdmit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanelButtonAdmitMouseClicked(evt);
+            }
+        });
+
+        jLabel24.setText("Admit");
+        jPanelButtonAdmit.add(jLabel24);
+
+        jPanel3.add(jPanelButtonAdmit);
 
         jPanelButtonMore.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonMore.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -656,12 +671,13 @@ public class ProjectFrame extends javax.swing.JFrame {
                         .addComponent(jLabel7)
                         .addGap(14, 14, 14))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel13))
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel9)
+                                .addComponent(jLabel11)
+                                .addComponent(jLabel12)
+                                .addComponent(jLabel13)))
                         .addGap(0, 0, 0)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabelCC)
@@ -670,7 +686,6 @@ public class ProjectFrame extends javax.swing.JFrame {
                             .addComponent(jLabelLCOL)
                             .addComponent(jLabelLCOP)
                             .addComponent(jLabelCodeSmells))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
@@ -801,6 +816,17 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelParent.revalidate();
     }//GEN-LAST:event_jPanelButtonForecastingMouseClicked
 
+    private void jPanelButtonAdmitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelButtonAdmitMouseClicked
+        reverseBorders();
+        jPanelButtonAdmit.setBackground(new Color(240, 240, 240));
+        jPanelButtonAdmit.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        
+        jPanelParent.removeAll();
+        jPanelParent.add(new JPanelAdmit(project));
+        jPanelParent.repaint();
+        jPanelParent.revalidate();
+    }//GEN-LAST:event_jPanelButtonAdmitMouseClicked
+
     private void reverseBorders(){
         jPanelButtonIssues.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonIssues.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -814,6 +840,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         jPanelButtonMetrics.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanelButtonForecasting.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonForecasting.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelButtonAdmit.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelButtonAdmit.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanelButtonMore.setBackground(new java.awt.Color(255, 255, 255));
         jPanelButtonMore.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
     }
@@ -870,6 +898,7 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -900,6 +929,7 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JPanel jPanelButtonAdmit;
     private javax.swing.JPanel jPanelButtonForecasting;
     private javax.swing.JPanel jPanelButtonIssues;
     private javax.swing.JPanel jPanelButtonMetrics;
