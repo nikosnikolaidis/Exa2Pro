@@ -205,22 +205,24 @@ public class Report  implements Serializable{
         int page= (totalCodeSmells-1)/500 + 1;
         
         //if there are more than limit of API 10,000 split 
-        if(page>10000){
-            page= (getIssuesNumbers("&resolved=false&severities=INFO")-1)/500 + 1;
-            if(page>0){
+        if(totalCodeSmells>10000){
+        	int issuesN= getIssuesNumbers("&resolved=false&severities=INFO");
+            page= (issuesN-1)/500 + 1;
+            if(issuesN>0){
                 for(int i=1; i<=page; i++){
                     getIssuesFromPage(1,"&resolved=false&severities=INFO");
                 }
             }
             
-            page= (getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER")-1)/500 + 1;
-            if(page>0 && page<10000){
+            issuesN= getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER");
+            page= (issuesN-1)/500 + 1;
+            if(issuesN>0 && issuesN<10000){
                 for(int i=1; i<=page; i++){
                     getIssuesFromPage(i,"&resolved=false&severities=MINOR,MAJOR,CRITICAL,BLOCKER");
                 }
             }
             // if again more than 10,000, then split again
-            else if(page>1000){
+            else if(issuesN>1000){
                 page= (getIssuesNumbers("&resolved=false&severities=MINOR,MAJOR")-1)/500 + 1;
                 for(int i=1; i<=page; i++){
                     getIssuesFromPage(1,"&resolved=false&severities=MINOR,MAJOR");

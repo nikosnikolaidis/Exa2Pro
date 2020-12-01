@@ -220,7 +220,7 @@ public class cFile extends CodeFile{
             for(String str: allInvocations){
                 for(String str2: methodsLOC.keySet()){
                     String meth= str2.split(" ")[str2.split(" ").length-1];
-                    if(str.split(";")[0].equals(meth)){
+                    if(str.split(";")[0].equals(meth) && str.split(";").length>1){
                         invocations.add(str);
                         break;
                     }
