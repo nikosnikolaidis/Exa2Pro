@@ -104,7 +104,7 @@ public class cFile extends CodeFile{
                         if(!methodsLocDecl.isEmpty()){
                             String[] lineVar= replaceWithSpaces(line).replaceAll("\\(", " ").split(" ");
                             for(String str: lineVar){
-                                if( attributes.contains(str.trim()) ){
+                                if( attributes.contains(str.trim()) && methodName.split(" ").length>1){
                                     attributesInMethods.add(str.trim()+" "+methodName);
                                 }
                             }
@@ -251,8 +251,11 @@ public class cFile extends CodeFile{
      */
     @Override
     public boolean exportCSVofAtribute(){
-         new CSVWriteForClustering(this);
-         return true;
+        if(!attributesInMethods.isEmpty()){
+            new CSVWriteForClustering(this);
+            return true;
+        }
+        return false;
     }
     
     /**

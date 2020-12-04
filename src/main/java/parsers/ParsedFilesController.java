@@ -287,12 +287,14 @@ public class ParsedFilesController {
         int countCstop=0;
         if(language.equals("f90") || language.equals("f77")){
             for(int k=start; k<=stop; k++){
-                if( (language.equals("f90") && hasIFStartF90(fileLines,k-1))
-                        || (language.equals("f77") && hasIFStartF77(fileLines,k-1))
-                        || fileLines.get(k-1).toLowerCase().trim().startsWith("do"))
-                    countCstart++;
-                if(fileLines.get(k-1).toLowerCase().trim().startsWith("end") && !fileLines.get(k-1).toLowerCase().contains("select"))
-                    countCstop++;
+                if(fileLines.size()>k-1) {
+                    if( (language.equals("f90") && hasIFStartF90(fileLines,k-1))
+                            || (language.equals("f77") && hasIFStartF77(fileLines,k-1))
+                            || fileLines.get(k-1).toLowerCase().trim().startsWith("do"))
+                        countCstart++;
+                    if(fileLines.get(k-1).toLowerCase().trim().startsWith("end") && !fileLines.get(k-1).toLowerCase().contains("select"))
+                        countCstop++;
+                }
             }
         }
         else{
@@ -446,23 +448,25 @@ public class ParsedFilesController {
      * @param line the number of line to check
     */
     public boolean hasIFStartF90(ArrayList<String> fileLines, int line){
-        if(fileLines.get(line).trim().toLowerCase().startsWith("if")){
-            if(fileLines.get(line).trim().toLowerCase().endsWith("then")){
-                return true;
-            }
-            else if(fileLines.get(line).trim().toLowerCase().endsWith("&")){
-                hasIFStartF90(fileLines, line+1);
-            }
-        }
-        else{
-            if(fileLines.get(line).trim().toLowerCase().endsWith("then")){
-                return true;
-            }
-            else if(fileLines.get(line).trim().toLowerCase().endsWith("&")){
-                hasIFStartF90(fileLines, line+1);
+        if(fileLines.size()>line) {
+            if(fileLines.get(line).trim().toLowerCase().startsWith("if")){
+                if(fileLines.get(line).trim().toLowerCase().endsWith("then")){
+                    return true;
+                }
+                else if(fileLines.get(line).trim().toLowerCase().endsWith("&")){
+                    hasIFStartF90(fileLines, line+1);
+                }
             }
             else{
-                return false;
+                if(fileLines.get(line).trim().toLowerCase().endsWith("then")){
+                    return true;
+                }
+                else if(fileLines.get(line).trim().toLowerCase().endsWith("&")){
+                    hasIFStartF90(fileLines, line+1);
+                }
+                else{
+                    return false;
+                }
             }
         }
         return false;

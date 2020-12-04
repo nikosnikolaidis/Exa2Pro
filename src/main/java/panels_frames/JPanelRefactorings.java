@@ -6,6 +6,7 @@
 package panels_frames;
 
 import exa2pro.Project;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +39,6 @@ public class JPanelRefactorings extends javax.swing.JPanel {
     public JPanelRefactorings(Project project) {
         this.project=project;
         initComponents();
-        jPanel6.setVisible(false);
         
         populateMethodsLists();
     }
@@ -186,9 +186,10 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         jListMethodsComplex = new javax.swing.JList<>();
         jPanel6 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jPanelMethodExtr = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListOpportunities = new javax.swing.JList<>();
+        jLabel1 = new javax.swing.JLabel();
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 2, 10)); // NOI18N
         jLabel2.setText("Select a file and wait while calculating possible refactorings");
@@ -372,31 +373,42 @@ public class JPanelRefactorings extends javax.swing.JPanel {
 
         jPanel5.add(jPanel3);
 
-        jLabel1.setText("Opportunity refactorings");
-
         jListOpportunities.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
         jScrollPane1.setViewportView(jListOpportunities);
+
+        jLabel1.setText("Opportunity refactorings");
+
+        javax.swing.GroupLayout jPanelMethodExtrLayout = new javax.swing.GroupLayout(jPanelMethodExtr);
+        jPanelMethodExtr.setLayout(jPanelMethodExtrLayout);
+        jPanelMethodExtrLayout.setHorizontalGroup(
+            jPanelMethodExtrLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMethodExtrLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanelMethodExtrLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanelMethodExtrLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(5, 5, 5))
+        );
+        jPanelMethodExtrLayout.setVerticalGroup(
+            jPanelMethodExtrLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMethodExtrLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+            .addComponent(jPanelMethodExtr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
-                .addGap(6, 6, 6))
+            .addComponent(jPanelMethodExtr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -424,7 +436,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(5, 5, 5)
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -507,18 +519,40 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         dialog.setVisible(true);
         
         if(optionPane.getValue()!=null && JOptionPane.OK_OPTION == (int)optionPane.getValue()){
-           file.parse();
+            //delete previous .csv files
+            File directory = new File(System.getProperty("user.dir")+"/clustering");
+            File[] fList = directory.listFiles();
+            for (File temp : fList) {
+                if (temp.isFile() && !temp.getName().endsWith(".py")){
+                    temp.delete();
+                }
+            }
+             
+            //parse and start scrips
+            //file.parse();
             if (file.exportCSVofAtribute()){
                 DefaultListModel<String> defaultListModelOpp = new DefaultListModel<>();
                 //start clustering script
                 System.out.println("Threshold: " + (slider.getValue()*1.0/100));
                 ArrayList<String> clusters= file.runClustering(slider.getValue()*1.0/100);
-                int i=1;
-                for(String st: clusters){
-                    defaultListModelOpp.addElement((i++)+" -> "+st);
-                }
-                jPanel6.setVisible(true);
-                jListOpportunities.setModel(defaultListModelOpp);
+                
+                //Add Extract File Panel
+                jPanel6.removeAll();
+                PanelRefactoringExtractFileOpp p=new PanelRefactoringExtractFileOpp(clusters);
+                
+                javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+                jPanel6.setLayout(jPanel6Layout);
+                jPanel6Layout.setHorizontalGroup(
+                    jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                );
+                jPanel6Layout.setVerticalGroup(
+                    jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                );
+                
+                jPanel6.repaint();
+                jPanel6.revalidate();
             }
         }
     }
@@ -540,16 +574,30 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         if(dialogResult != JOptionPane.CLOSED_OPTION) {
             for(CodeFile cf:project.getprojectFiles()){
                if(fileName.equals(cf.file.getName())){
-                   cf.parse();
-                   //cf.calculateCohesion();
-                   cf.calculateOpportunities(fast, methodName);
+                    cf.parse();
+                    //cf.calculateCohesion();
+                    cf.calculateOpportunities(fast, methodName);
 
-                   cf.opportunities.forEach((opp) -> {
-                       defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():"));
-                   });
-                   //if(!defaultListModelOpp.isEmpty())
-                       jPanel6.setVisible(true);
-                   //jListOpportunities.setFixedCellWidth(100);
+                    cf.opportunities.forEach((opp) -> {
+                        defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():"));
+                    });
+                   
+                    //Add Method Extract panel
+                    jPanel6.removeAll();
+                    javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+                    jPanel6.setLayout(jPanel6Layout);
+                    jPanel6Layout.setHorizontalGroup(
+                        jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanelMethodExtr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    );
+                    jPanel6Layout.setVerticalGroup(
+                        jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanelMethodExtr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    );
+
+                    jPanel6.repaint();
+                    jPanel6.revalidate();
+                    
                    jListOpportunities.setModel(defaultListModelOpp);
                }
            }
@@ -579,6 +627,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanelMethodExtr;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

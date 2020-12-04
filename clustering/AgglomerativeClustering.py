@@ -77,7 +77,7 @@ def print_results(final_df):
     for i in range(clusters_no):
         for index, row in final_df.iterrows():
             if i == row['Cluster']:
-                print(f'{index} ', end='')
+                print(f'{index};', end='')
         print()
 
 ############################################################################################################################################
