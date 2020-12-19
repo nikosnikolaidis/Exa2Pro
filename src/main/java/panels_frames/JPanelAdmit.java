@@ -77,8 +77,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jButtonCreateModel = new javax.swing.JButton();
         jPanelCreateCustom = new javax.swing.JPanel();
         jButtonCreateCustomModel = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTableCustomParameters = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jComboBoxCustomType = new javax.swing.JComboBox<>();
@@ -87,12 +85,15 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         jComboBoxCustomEquation = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jTextFieldCustomParamName = new javax.swing.JTextField();
-        jComboBoxCustomParamType = new javax.swing.JComboBox<>();
-        jTextFieldCustomParamWoV = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        jTextFieldVar = new javax.swing.JTextField();
         jButtonCustomParamAdd = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jComboBoxSymbol = new javax.swing.JComboBox<>();
+        jButtonCustomSymbAdd = new javax.swing.JButton();
+        jButtonDelete = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jPanelProvideV = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jButtonAnalyze = new javax.swing.JButton();
@@ -362,24 +363,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jButtonCreateCustomModel.setText("Create");
         jButtonCreateCustomModel.setToolTipText("");
 
-        jTableCustomParameters.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Parameter Name", "Parameter Type", "Weight or Value"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane4.setViewportView(jTableCustomParameters);
-
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Create a Custom Model");
 
@@ -393,63 +376,123 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
         jComboBoxCustomEquation.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Linear", "Product" }));
 
-        jLabel10.setText("Parameter Name");
+        jLabel10.setText("Equation builder:");
 
-        jLabel11.setText("Parameter Type");
-
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel12.setText("Weight or Value (if const)");
-        jLabel12.setToolTipText("");
-
-        jComboBoxCustomParamType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Operand", "Constant", "Parameter" }));
+        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jButtonCustomParamAdd.setText("Add");
+        jButtonCustomParamAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCustomParamAddActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextFieldVar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(jButtonCustomParamAdd)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldVar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonCustomParamAdd))
+                .addGap(3, 3, 3))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jComboBoxSymbol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "+", "-", "*", "/", "(", ")" }));
+
+        jButtonCustomSymbAdd.setText("Add");
+        jButtonCustomSymbAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCustomSymbAddActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBoxSymbol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonCustomSymbAdd)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBoxSymbol, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonCustomSymbAdd))
+                .addGap(3, 3, 3))
+        );
+
+        jButtonDelete.setText("Delete");
+        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteActionPerformed(evt);
+            }
+        });
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(3);
+        jScrollPane4.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanelCreateCustomLayout = new javax.swing.GroupLayout(jPanelCreateCustom);
         jPanelCreateCustom.setLayout(jPanelCreateCustomLayout);
         jPanelCreateCustomLayout.setHorizontalGroup(
             jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
                 .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBoxCustomEquation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
-                        .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCreateCustomLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
-                                .addComponent(jLabel12)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButtonDelete)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextFieldCustomParamWoV))
+                                .addComponent(jButtonCreateCustomModel))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelCreateCustomLayout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBoxCustomType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
                                 .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jLabel10))
-                                .addGap(23, 23, 23)
-                                .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jComboBoxCustomParamType, 0, 88, Short.MAX_VALUE)
-                                    .addComponent(jTextFieldCustomParamName))))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonCustomParamAdd)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCreateCustomLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonCreateCustomModel))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelCreateCustomLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxCustomType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jLabel10)
+                                    .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jComboBoxCustomEquation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanelCreateCustomLayout.setVerticalGroup(
@@ -466,23 +509,18 @@ public class JPanelAdmit extends javax.swing.JPanel {
                     .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(jComboBoxCustomEquation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
                 .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(jTextFieldCustomParamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxCustomParamType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldCustomParamWoV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12)
-                    .addComponent(jButtonCustomParamAdd))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonCreateCustomModel)
+                    .addComponent(jButtonCreateCustomModel)
+                    .addComponent(jButtonDelete))
                 .addContainerGap())
         );
 
@@ -743,6 +781,43 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelResults.setVisible(true);
     }//GEN-LAST:event_jButtonAnalyzeActionPerformed
 
+    private void jButtonCustomParamAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCustomParamAddActionPerformed
+        String var= jTextFieldVar.getText().replaceAll(" ", "_");
+        if(jTextArea1.getText().equals(""))
+            jTextArea1.setText(var);
+        else
+            jTextArea1.setText(jTextArea1.getText() +" "+ var);
+    }//GEN-LAST:event_jButtonCustomParamAddActionPerformed
+
+    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+        String eq= jTextArea1.getText();
+        String[] list= jTextArea1.getText().split(" ");
+        jTextArea1.setText((replaceLast(eq, list[list.length-1], "")).trim());
+    }//GEN-LAST:event_jButtonDeleteActionPerformed
+
+    private void jButtonCustomSymbAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCustomSymbAddActionPerformed
+        String sym= jComboBoxSymbol.getSelectedItem().toString();
+        jTextArea1.setText(jTextArea1.getText() +" "+ sym);
+    }//GEN-LAST:event_jButtonCustomSymbAddActionPerformed
+
+    /**
+     * replace the last substring occurrence
+     * @param string the whole string
+     * @param toReplace the substring to replace
+     * @param replacement with what to replace
+     * @return 
+     */
+    public String replaceLast(String string, String toReplace, String replacement) {
+        int pos = string.lastIndexOf(toReplace);
+        if (pos > -1) {
+            return string.substring(0, pos)
+                 + replacement
+                 + string.substring(pos + toReplace.length());
+        } else {
+            return string;
+        }
+    }
+    
     /**
      * Remove all the row data of the table
      * @param table 
@@ -763,16 +838,16 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JButton jButtonCreateDecision;
     private javax.swing.JButton jButtonCreateModel;
     private javax.swing.JButton jButtonCustomParamAdd;
+    private javax.swing.JButton jButtonCustomSymbAdd;
+    private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonNewDecision;
     private javax.swing.JButton jButtonTune;
     private javax.swing.JComboBox<String> jComboBoxCustomEquation;
-    private javax.swing.JComboBox<String> jComboBoxCustomParamType;
     private javax.swing.JComboBox<String> jComboBoxCustomType;
     private javax.swing.JComboBox<String> jComboBoxParameters;
+    private javax.swing.JComboBox<String> jComboBoxSymbol;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -791,6 +866,8 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelTotalCosts;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanelCreateCustom;
     private javax.swing.JPanel jPanelModels;
     private javax.swing.JPanel jPanelModelsInputs;
@@ -806,18 +883,17 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTable jTableAllModels;
-    private javax.swing.JTable jTableCustomParameters;
     private javax.swing.JTable jTableDecisions;
     private javax.swing.JTable jTableModels;
     private javax.swing.JTable jTableResultBenefitModel;
     private javax.swing.JTable jTableResultCostModel;
     private javax.swing.JTable jTableTotalBC;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextDate;
     private javax.swing.JTextField jTextFieldCustomName;
-    private javax.swing.JTextField jTextFieldCustomParamName;
-    private javax.swing.JTextField jTextFieldCustomParamWoV;
     private javax.swing.JTextField jTextFieldMaxV;
     private javax.swing.JTextField jTextFieldMinV;
+    private javax.swing.JTextField jTextFieldVar;
     private javax.swing.JTextField jTextName;
     private javax.swing.JTextField jTextOwner;
     // End of variables declaration//GEN-END:variables

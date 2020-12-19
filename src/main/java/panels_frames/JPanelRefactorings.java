@@ -579,7 +579,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                     cf.calculateOpportunities(fast, methodName);
 
                     cf.opportunities.forEach((opp) -> {
-                        defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():"));
+                        defaultListModelOpp.addElement(opp.split(" ", 2)[0]+"-"+opp.split(" ", 2)[1].replace("()", "():")+"  ");
                     });
                    
                     //Add Method Extract panel
