@@ -5,9 +5,23 @@
  */
 package panels_frames;
 
+import admit.AdmitProject;
+import admit.Decision;
+import admit.Equation;
+import admit.ModelParameter;
+import exa2pro.LineChartAdmit;
 import exa2pro.Project;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -17,6 +31,8 @@ import javax.swing.table.DefaultTableModel;
 public class JPanelAdmit extends javax.swing.JPanel {
 
     Project project;
+    AdmitProject admitProject;
+    ArrayList<ModelParameter> allModels = new ArrayList<>();
     private List<PanelAdmitModelValueInput> modelsPanels= new ArrayList<>();
     
     /**
@@ -24,10 +40,17 @@ public class JPanelAdmit extends javax.swing.JPanel {
      */
     public JPanelAdmit(Project project) {
         this.project = project;
+        admitProject = project.getCredentials().getAdmitProject();
+
         initComponents();
+
+        jTableAllModels.setSelectionModel(new ForcedListSelectionModel());
+        jTableDecisions.setSelectionModel(new ForcedListSelectionModel());
+        jTableModels.setSelectionModel(new ForcedListSelectionModel());
         
-        //toDO
-        //populate decisions table
+        
+        getAllModels();
+        addRowsInDecisionTable();
         
         jPanelNewDecision.setVisible(false);
         jPanelModels.setVisible(false);
@@ -36,10 +59,61 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelResults.setVisible(false);
         
         //costomizations
-        jTableResultCostModel.getColumnModel().getColumn(1).setPreferredWidth(50);
-        jTableResultCostModel.getColumnModel().getColumn(1).setMaxWidth(70);
-        jTableResultBenefitModel.getColumnModel().getColumn(1).setPreferredWidth(50);
-        jTableResultBenefitModel.getColumnModel().getColumn(1).setMaxWidth(70);
+        jTableModels.getColumnModel().getColumn(0).setMaxWidth(50);
+        jTableModels.getColumnModel().getColumn(1).setMaxWidth(200);
+        jTableAllModels.getColumnModel().getColumn(0).setMaxWidth(50);
+        jTableAllModels.getColumnModel().getColumn(1).setMaxWidth(200);
+        jTableResultCostModel.getColumnModel().getColumn(1).setPreferredWidth(60);
+        jTableResultCostModel.getColumnModel().getColumn(1).setMaxWidth(80);
+        jTableResultBenefitModel.getColumnModel().getColumn(1).setPreferredWidth(60);
+        jTableResultBenefitModel.getColumnModel().getColumn(1).setMaxWidth(80);
+    }
+    
+    private void getAllModels(){
+        allModels.clear();
+        try (BufferedReader br = new BufferedReader(new FileReader("myModels.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+            	if(!line.equals("")) {
+	                String[] lineT= line.split(";");
+	                String name= lineT[0];
+	                String type= lineT[1];
+	                String equation= lineT[2];
+	                allModels.add(new ModelParameter(name, type, new Equation(equation)));
+            	}
+            }
+        } catch (IOException ex) {
+            System.out.println("JPanelAdmit.getAllModels");
+        }
+    }
+    private void saveNewModel(ModelParameter model){
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("myModels.txt"));
+            for(ModelParameter m:allModels) {
+            	writer.append(m.getName() +";"+ m.getType() +";"+ m.getEquation()+ System.lineSeparator());
+            }
+            writer.append(model.getName() +";"+ model.getType() +";"+ model.getEquation()+ System.lineSeparator());
+            writer.close();
+        } catch (IOException ex) {
+            System.out.println("JPanelAdmit.saveNewModel");
+        }
+    }
+    
+    private void addRowsInDecisionTable(){
+        DefaultTableModel model = (DefaultTableModel) jTableDecisions.getModel();
+        removeAllRowsTable(jTableAllModels);
+        admitProject.getDecisions().forEach((d) -> {
+            model.addRow(new Object[]{d.getName(), d.getDate()});
+        });
+    }
+    
+    private void addRowsInAllModelTable(String modelType){
+        DefaultTableModel model = (DefaultTableModel) jTableAllModels.getModel();
+        removeAllRowsTable(jTableAllModels);
+        allModels.forEach((m) -> {
+            if(modelType.equals(m.getType()))
+                model.addRow(new Object[]{m.getType(), m.getName(), m.getEquation().toString()});
+        });
     }
 
     /**
@@ -64,8 +138,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jTextName = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jTextOwner = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jTextDate = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -82,8 +154,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jComboBoxCustomType = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
         jTextFieldCustomName = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jComboBoxCustomEquation = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jTextFieldVar = new javax.swing.JTextField();
@@ -93,7 +163,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jButtonCustomSymbAdd = new javax.swing.JButton();
         jButtonDelete = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextAreaEq = new javax.swing.JTextArea();
         jPanelProvideV = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jButtonAnalyze = new javax.swing.JButton();
@@ -101,10 +171,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelModelsInputs = new javax.swing.JPanel();
         jPanelResults = new javax.swing.JPanel();
         jLabel36 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTableResultCostModel = new javax.swing.JTable();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTableResultBenefitModel = new javax.swing.JTable();
         jLabel45 = new javax.swing.JLabel();
         jLabelTotalBenefits = new javax.swing.JLabel();
         jLabelTotalCosts = new javax.swing.JLabel();
@@ -117,6 +183,12 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jButtonTune = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         jTableTotalBC = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTableResultBenefitModel = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTableResultCostModel = new javax.swing.JTable();
+        jPanelChart = new javax.swing.JPanel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -136,6 +208,16 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        jTableModels.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jTableModelsMouseMoved(evt);
+            }
+        });
+        jTableModels.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableModelsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTableModels);
 
         jTableDecisions.setModel(new javax.swing.table.DefaultTableModel(
@@ -143,11 +225,11 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Name", "Owner", "Date"
+                "Name", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -155,6 +237,11 @@ public class JPanelAdmit extends javax.swing.JPanel {
             }
         });
         jTableDecisions.setToolTipText("");
+        jTableDecisions.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableDecisionsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTableDecisions);
 
         jButtonNewDecision.setText("Create New Decision");
@@ -198,11 +285,11 @@ public class JPanelAdmit extends javax.swing.JPanel {
                         .addComponent(jButtonAddBenefit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonAnalysis))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButtonNewDecision)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -218,7 +305,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
                     .addComponent(jButtonAddBenefit)
                     .addComponent(jButtonAnalysis))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -226,14 +313,17 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
         jLabel2.setText("Name of Decision");
 
-        jLabel3.setText("Owner");
-
         jLabel4.setText("Date");
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel5.setText("Create Decision");
 
         jButtonCreateDecision.setText("Create");
+        jButtonCreateDecision.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCreateDecisionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -242,22 +332,20 @@ public class JPanelAdmit extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel5)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonCreateDecision))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3)
                             .addComponent(jLabel4))
                         .addGap(28, 28, 28)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextName)
-                            .addComponent(jTextOwner)
-                            .addComponent(jTextDate))))
+                            .addComponent(jTextDate)
+                            .addComponent(jTextName))))
                 .addGap(19, 19, 19))
         );
         jPanel2Layout.setVerticalGroup(
@@ -269,15 +357,11 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jTextName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextOwner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jTextDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addComponent(jButtonCreateDecision)
                 .addContainerGap())
         );
@@ -296,7 +380,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
             .addGroup(jPanelNewDecisionLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(290, Short.MAX_VALUE))
+                .addContainerGap(380, Short.MAX_VALUE))
         );
 
         add(jPanelNewDecision);
@@ -318,6 +402,16 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        jTableAllModels.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jTableAllModelsMouseMoved(evt);
+            }
+        });
+        jTableAllModels.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableAllModelsMouseClicked(evt);
             }
         });
         jScrollPane3.setViewportView(jTableAllModels);
@@ -352,7 +446,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonCreateModel)
                 .addContainerGap())
@@ -362,6 +456,11 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
         jButtonCreateCustomModel.setText("Create");
         jButtonCreateCustomModel.setToolTipText("");
+        jButtonCreateCustomModel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCreateCustomModelActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Create a Custom Model");
@@ -371,10 +470,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jComboBoxCustomType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cost", "Benefit" }));
 
         jLabel8.setText("Model Name");
-
-        jLabel9.setText("Type of Equation");
-
-        jComboBoxCustomEquation.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Linear", "Product" }));
 
         jLabel10.setText("Equation builder:");
 
@@ -440,19 +535,19 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 .addGap(3, 3, 3))
         );
 
-        jButtonDelete.setText("Delete");
+        jButtonDelete.setText("Delete Last");
         jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDeleteActionPerformed(evt);
             }
         });
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(3);
-        jScrollPane4.setViewportView(jTextArea1);
+        jTextAreaEq.setEditable(false);
+        jTextAreaEq.setColumns(20);
+        jTextAreaEq.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jTextAreaEq.setLineWrap(true);
+        jTextAreaEq.setRows(3);
+        jScrollPane4.setViewportView(jTextAreaEq);
 
         javax.swing.GroupLayout jPanelCreateCustomLayout = new javax.swing.GroupLayout(jPanelCreateCustom);
         jPanelCreateCustom.setLayout(jPanelCreateCustomLayout);
@@ -465,12 +560,10 @@ public class JPanelAdmit extends javax.swing.JPanel {
                         .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButtonDelete)
-                                .addGap(18, 18, 18)
                                 .addComponent(jButtonCreateCustomModel))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelCreateCustomLayout.createSequentialGroup()
                                 .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jComboBoxCustomType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -487,12 +580,11 @@ public class JPanelAdmit extends javax.swing.JPanel {
                                     .addGroup(jPanelCreateCustomLayout.createSequentialGroup()
                                         .addComponent(jLabel8)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel9)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jComboBoxCustomEquation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                        .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 35, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCreateCustomLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonDelete)))
                 .addContainerGap())
         );
         jPanelCreateCustomLayout.setVerticalGroup(
@@ -506,9 +598,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9)
-                    .addComponent(jComboBoxCustomEquation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -517,10 +607,10 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
-                .addGroup(jPanelCreateCustomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonCreateCustomModel)
-                    .addComponent(jButtonDelete))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonDelete)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 200, Short.MAX_VALUE)
+                .addComponent(jButtonCreateCustomModel)
                 .addContainerGap())
         );
 
@@ -536,7 +626,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
             }
         });
 
-        jPanelModelsInputs.setLayout(new java.awt.GridLayout(0, 2));
+        jPanelModelsInputs.setLayout(new java.awt.GridLayout(0, 1));
         jScrollPane8.setViewportView(jPanelModelsInputs);
 
         javax.swing.GroupLayout jPanelProvideVLayout = new javax.swing.GroupLayout(jPanelProvideV);
@@ -546,12 +636,12 @@ public class JPanelAdmit extends javax.swing.JPanel {
             .addGroup(jPanelProvideVLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelProvideVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane8)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
                     .addGroup(jPanelProvideVLayout.createSequentialGroup()
                         .addGroup(jPanelProvideVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
                             .addComponent(jButtonAnalyze))
-                        .addGap(0, 359, Short.MAX_VALUE)))
+                        .addGap(0, 275, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanelProvideVLayout.setVerticalGroup(
@@ -560,7 +650,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 .addGap(22, 22, 22)
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonAnalyze)
                 .addContainerGap())
@@ -571,23 +661,52 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jLabel36.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel36.setText("Provide the values for the models' parameters");
 
-        jTableResultCostModel.setModel(new javax.swing.table.DefaultTableModel(
+        jLabel45.setText("Select Parameter to Tune the Model:");
+
+        jLabelTotalBenefits.setText("Total Benefits: 0.00$");
+
+        jLabelTotalCosts.setText("Total Costs: 0.00$");
+
+        jLabelProfitLoss.setText("Profit/Loss: 0.00$");
+
+        jComboBoxParameters.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-" }));
+
+        jTextFieldMinV.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldMinV.setText("0");
+
+        jTextFieldMaxV.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldMaxV.setText("0");
+
+        jLabel37.setText("Min value");
+
+        jLabel38.setText("Max value");
+
+        jButtonTune.setText("Tune Model");
+        jButtonTune.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTuneActionPerformed(evt);
+            }
+        });
+
+        jTableTotalBC.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Cost Model", "Value"
+                "", "Total Benefit", "Total Cost", "Profit/Loss"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane5.setViewportView(jTableResultCostModel);
+        jScrollPane7.setViewportView(jTableTotalBC);
+
+        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.LINE_AXIS));
 
         jTableResultBenefitModel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -607,55 +726,38 @@ public class JPanelAdmit extends javax.swing.JPanel {
         });
         jScrollPane6.setViewportView(jTableResultBenefitModel);
 
-        jLabel45.setText("Select Parameter to Tune the Model:");
+        jPanel5.add(jScrollPane6);
 
-        jLabelTotalBenefits.setText("Total Benefits: 0.00$");
-
-        jLabelTotalCosts.setText("Total Costs: -0.00$");
-
-        jLabelProfitLoss.setText("Profit/Loss: 0.00$");
-
-        jComboBoxParameters.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-", "Customer Support Hourly Rate", "Hours saved while performing Customers Support", "Expected Increase", "Market Share", "Market Size", "Price", "Customers that Upgraded", "Upgrade Cost", "Cost per LoC", "Lines of Code to be transferred", "CC Increase", "LoC Increase", "LoC updated evry year", "Percentage classes updated every year", "Instructor Hourly Rate", "Training Sessions in Hours" }));
-
-        jTextFieldMinV.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextFieldMinV.setText("0");
-
-        jTextFieldMaxV.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextFieldMaxV.setText("0");
-
-        jLabel37.setText("Min value");
-
-        jLabel38.setText("Max value");
-
-        jButtonTune.setText("Tune Model");
-
-        jTableTotalBC.setModel(new javax.swing.table.DefaultTableModel(
+        jTableResultCostModel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", null, null, null},
-                {"", null, null, null},
-                {"", null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "", "Total Benefit", "Total Cost", "Profit/Loss"
+                "Cost Model", "Value"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane7.setViewportView(jTableTotalBC);
+        jScrollPane5.setViewportView(jTableResultCostModel);
+
+        jPanel5.add(jScrollPane5);
+
+        javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
+        jPanelChart.setLayout(jPanelChartLayout);
+        jPanelChartLayout.setHorizontalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanelChartLayout.setVerticalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanelResultsLayout = new javax.swing.GroupLayout(jPanelResults);
         jPanelResults.setLayout(jPanelResultsLayout);
@@ -664,33 +766,35 @@ public class JPanelAdmit extends javax.swing.JPanel {
             .addGroup(jPanelResultsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel45)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanelResultsLayout.createSequentialGroup()
-                        .addComponent(jLabelTotalBenefits)
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabelTotalCosts)
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabelProfitLoss))
+                        .addGroup(jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel45)
+                            .addGroup(jPanelResultsLayout.createSequentialGroup()
+                                .addComponent(jLabelTotalCosts)
+                                .addGap(40, 40, 40)
+                                .addComponent(jLabelTotalBenefits)
+                                .addGap(40, 40, 40)
+                                .addComponent(jLabelProfitLoss))
+                            .addGroup(jPanelResultsLayout.createSequentialGroup()
+                                .addComponent(jComboBoxParameters, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel37)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldMinV, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel38)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldMaxV, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButtonTune))
+                            .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 188, Short.MAX_VALUE))
                     .addGroup(jPanelResultsLayout.createSequentialGroup()
-                        .addComponent(jComboBoxParameters, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel37)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldMinV, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel38)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldMaxV, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonTune))
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanelResultsLayout.createSequentialGroup()
-                        .addGroup(jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel36, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanelResultsLayout.setVerticalGroup(
             jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -698,15 +802,13 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 .addGap(22, 22, 22)
                 .addComponent(jLabel36)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelTotalBenefits)
                     .addComponent(jLabelTotalCosts)
-                    .addComponent(jLabelProfitLoss))
-                .addGap(18, 18, 18)
+                    .addComponent(jLabelProfitLoss)
+                    .addComponent(jLabelTotalBenefits))
+                .addGap(22, 22, 22)
                 .addComponent(jLabel45)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -716,9 +818,13 @@ public class JPanelAdmit extends javax.swing.JPanel {
                     .addComponent(jLabel38)
                     .addComponent(jTextFieldMaxV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonTune))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelResultsLayout.createSequentialGroup()
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 68, Short.MAX_VALUE))
+                    .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         add(jPanelResults);
@@ -730,6 +836,10 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelCreateCustom.setVisible(false);
         jPanelProvideV.setVisible(false);
         jPanelResults.setVisible(false);
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("dd - MM - yyyy");  
+        Date date = new Date();
+        jTextDate.setText(formatter.format(date));
     }//GEN-LAST:event_jButtonNewDecisionActionPerformed
 
     private void jButtonAddCostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddCostActionPerformed
@@ -739,8 +849,8 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelProvideV.setVisible(false);
         jPanelResults.setVisible(false);
         
-        //toDo
         //populate table with cost models
+        addRowsInAllModelTable("Cost");
     }//GEN-LAST:event_jButtonAddCostActionPerformed
 
     private void jButtonAddBenefitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddBenefitActionPerformed
@@ -750,19 +860,38 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelProvideV.setVisible(false);
         jPanelResults.setVisible(false);
         
-        //toDo
         //populate table with benefit models
+        addRowsInAllModelTable("Benefit");
     }//GEN-LAST:event_jButtonAddBenefitActionPerformed
 
     private void jButtonAnalysisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalysisActionPerformed
-        jPanelNewDecision.setVisible(false);
-        jPanelModels.setVisible(false);
-        jPanelCreateCustom.setVisible(false);
-        jPanelProvideV.setVisible(true);
-        jPanelResults.setVisible(false);
-        
-        //toDo
-        //add PanelAdmitValueInput to panel and to modelsPanels
+        if(jTableDecisions.getSelectedRow() != -1 && jTableModels.getModel().getRowCount() !=0){
+            jPanelModelsInputs.removeAll();
+            
+            jPanelNewDecision.setVisible(false);
+            jPanelModels.setVisible(false);
+            jPanelCreateCustom.setVisible(false);
+            jPanelProvideV.setVisible(true);
+            jPanelResults.setVisible(false);
+            
+            Decision decision= admitProject.findDecision(jTableDecisions.getModel().getValueAt(jTableDecisions.getSelectedRow(), 0).toString());
+            decision.removeAllModels();
+            
+            for(int i=0; i<jTableModels.getModel().getRowCount(); i++){
+                String type= jTableModels.getModel().getValueAt(i, 0).toString();
+                String name= jTableModels.getModel().getValueAt(i, 1).toString();
+                Equation equation= new Equation(jTableModels.getModel().getValueAt(i, 2).toString());
+                ModelParameter model= new ModelParameter(name, admitProject.getName(), decision.getName(), type, equation);
+                decision.addModel(model);
+                
+                PanelAdmitModelValueInput p = new PanelAdmitModelValueInput(model);
+                modelsPanels.add(p);
+                jPanelModelsInputs.add(p);
+            }
+            
+            jPanelModelsInputs.repaint();
+            jPanelModelsInputs.revalidate();
+        }
     }//GEN-LAST:event_jButtonAnalysisActionPerformed
 
     private void jButtonCreateModelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateModelActionPerformed
@@ -779,26 +908,226 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelCreateCustom.setVisible(false);
         jPanelProvideV.setVisible(false);
         jPanelResults.setVisible(true);
+        
+        //remove previous
+        removeAllRowsTable(jTableResultBenefitModel);
+        removeAllRowsTable(jTableResultCostModel);
+        //if(jComboBoxParameters.getItemCount()!=0)
+        jComboBoxParameters.removeAllItems();
+        jTextFieldMinV.setText("0");
+        jTextFieldMaxV.setText("0");
+        removeAllRowsTable(jTableTotalBC);
+        
+        //save to file
+        Project.saveToFile();
+        
+        //get variable values
+        for(PanelAdmitModelValueInput p: modelsPanels){
+            for(PanelAdmitModelEachVariable p2: p.variablesPanels){
+                p.getModelParameter().getEquation().putParameterWeight(p2.getName(), p2.getValue());
+            }
+        }
+        
+        //calculate models
+        Decision decision= admitProject.findDecision(jTableDecisions.getModel().getValueAt(jTableDecisions.getSelectedRow(), 0).toString());
+        DefaultTableModel tableCostModel = (DefaultTableModel) jTableResultCostModel.getModel();
+        DefaultTableModel tableBenefitModel = (DefaultTableModel) jTableResultBenefitModel.getModel();
+        double totalCost=0;
+        double totalBenefit=0;
+        ArrayList<String> param= new ArrayList<>();
+        for(ModelParameter model: decision.getModels()){
+            double result= model.getEquation().computeEquation();
+            if(model.getType().equals("Cost")){
+                tableCostModel.addRow(new Object[]{model.getName(), result});
+                totalCost+= result;
+            }
+            else{
+                tableBenefitModel.addRow(new Object[]{model.getName(), result});
+                totalBenefit+= result;
+            }
+            
+            //add uniqe paramrters to add to box
+            model.getEquation().getParameters().keySet().stream().filter((key) -> (!param.contains(key)))
+                    .forEachOrdered((key) -> { param.add(key); });
+        }
+        
+        //populate box for selecting parameter
+        param.forEach((key) -> {
+            jComboBoxParameters.addItem(key);
+        });
+        
+        //populate labels with totals
+        totalCost = -totalCost;
+        jLabelTotalCosts.setText("Total Costs: "+ totalCost +"$");
+        jLabelTotalBenefits.setText("Total Benefits: "+ totalBenefit +"$");
+        jLabelProfitLoss.setText("Profit/Loss: "+ (totalCost+totalBenefit) +"$");
     }//GEN-LAST:event_jButtonAnalyzeActionPerformed
 
     private void jButtonCustomParamAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCustomParamAddActionPerformed
         String var= jTextFieldVar.getText().replaceAll(" ", "_");
-        if(jTextArea1.getText().equals(""))
-            jTextArea1.setText(var);
+        if(jTextAreaEq.getText().equals(""))
+            jTextAreaEq.setText(var);
         else
-            jTextArea1.setText(jTextArea1.getText() +" "+ var);
+            jTextAreaEq.setText(jTextAreaEq.getText() +" "+ var);
     }//GEN-LAST:event_jButtonCustomParamAddActionPerformed
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
-        String eq= jTextArea1.getText();
-        String[] list= jTextArea1.getText().split(" ");
-        jTextArea1.setText((replaceLast(eq, list[list.length-1], "")).trim());
+        String eq= jTextAreaEq.getText();
+        String[] list= jTextAreaEq.getText().split(" ");
+        jTextAreaEq.setText((replaceLast(eq, list[list.length-1], "")).trim());
     }//GEN-LAST:event_jButtonDeleteActionPerformed
 
     private void jButtonCustomSymbAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCustomSymbAddActionPerformed
         String sym= jComboBoxSymbol.getSelectedItem().toString();
-        jTextArea1.setText(jTextArea1.getText() +" "+ sym);
+        jTextAreaEq.setText(jTextAreaEq.getText() +" "+ sym);
     }//GEN-LAST:event_jButtonCustomSymbAddActionPerformed
+
+    private void jButtonCreateDecisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateDecisionActionPerformed
+        String decisionName= jTextName.getText();
+        String date= jTextDate.getText();
+        Decision decision= new Decision(decisionName, admitProject, date);
+        admitProject.addDecision(decision);
+        
+        addRowsInDecisionTable();
+    }//GEN-LAST:event_jButtonCreateDecisionActionPerformed
+
+    private void jButtonCreateCustomModelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateCustomModelActionPerformed
+        String type= jComboBoxCustomType.getSelectedItem().toString();
+        String name= jTextFieldCustomName.getText();
+        String equation= jTextAreaEq.getText();
+        ModelParameter model = new ModelParameter(name, type, new Equation(equation));
+        
+        saveNewModel(model);
+        getAllModels();
+        
+        //Show all Models
+        jPanelNewDecision.setVisible(false);
+        jPanelModels.setVisible(true);
+        jPanelCreateCustom.setVisible(false);
+        jPanelProvideV.setVisible(false);
+        jPanelResults.setVisible(false);
+        addRowsInAllModelTable(type);
+    }//GEN-LAST:event_jButtonCreateCustomModelActionPerformed
+
+    private void jTableAllModelsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAllModelsMouseClicked
+        String type= jTableAllModels.getValueAt(jTableAllModels.getSelectedRow(), 0).toString();
+        String name= jTableAllModels.getValueAt(jTableAllModels.getSelectedRow(), 1).toString();
+        String eq= jTableAllModels.getValueAt(jTableAllModels.getSelectedRow(), 2).toString();
+        DefaultTableModel model = (DefaultTableModel) jTableModels.getModel();
+        
+        boolean found=false;
+        for(int i=0; i<jTableModels.getModel().getRowCount(); i++){
+            if(jTableModels.getModel().getValueAt(i, 2).toString().equals(eq) && 
+                    jTableModels.getModel().getValueAt(i, 1).toString().equals(name) && 
+                    jTableModels.getModel().getValueAt(i, 0).toString().equals(type))
+                found=true;
+        }
+        
+        if(found==false)
+            model.addRow(new Object[]{type, name, eq});
+    }//GEN-LAST:event_jTableAllModelsMouseClicked
+
+    private void jTableModelsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableModelsMouseClicked
+        DefaultTableModel model = (DefaultTableModel) jTableModels.getModel();
+        model.removeRow(jTableModels.getSelectedRow());
+    }//GEN-LAST:event_jTableModelsMouseClicked
+
+    private void jTableDecisionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableDecisionsMouseClicked
+        removeAllRowsTable(jTableModels);
+        DefaultTableModel tableModel = (DefaultTableModel) jTableModels.getModel();
+        Decision decision = admitProject.findDecision(jTableDecisions.getValueAt(jTableDecisions.getSelectedRow(), 0).toString());
+        for(ModelParameter model: decision.getModels()){
+            tableModel.addRow(new Object[]{model.getType(), model.getName(), model.getEquation().toString()});
+        }
+    }//GEN-LAST:event_jTableDecisionsMouseClicked
+
+    private void jButtonTuneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTuneActionPerformed
+        int min = Integer.parseInt(jTextFieldMinV.getText());
+        int max = Integer.parseInt(jTextFieldMaxV.getText());
+        double interval = (max - min) / 10;
+        String selectedParam = jComboBoxParameters.getSelectedItem().toString();
+        
+        Decision decision = admitProject.findDecision(jTableDecisions.getValueAt(jTableDecisions.getSelectedRow(), 0).toString());
+        decision.getModels().forEach(m -> m.clearPreviousTuning());
+        removeAllRowsTable(jTableTotalBC);
+        
+        decision.tuneCostBenefitAnalysis(min , max, selectedParam);
+        DefaultTableModel modelTable = (DefaultTableModel) jTableTotalBC.getModel();
+        
+        ArrayList<Double> values = new ArrayList<>();
+        ArrayList<Integer> totalBenefits = new ArrayList<>();
+        ArrayList<Integer> totalCosts = new ArrayList<>();
+        
+        for(int i=0; i<=10; i++){
+            double val = min + interval*i;
+            int totalCost=0;
+            int totalBenefit=0;
+            
+            for(ModelParameter model: decision.getModels()){
+                if(model.getType().equals("Cost")){
+                    if(model.getEquation().getParameters().containsKey(selectedParam))
+                        totalCost+= model.getEquation().tuneList.get(val);
+                    else
+                        totalCost+= model.getEquation().computeEquation();
+                }
+                else{
+                    if(model.getEquation().getParameters().containsKey(selectedParam))
+                        totalBenefit+= model.getEquation().tuneList.get(val);
+                    else
+                        totalBenefit+= model.getEquation().computeEquation();
+                }
+            }
+            
+            modelTable.addRow(new Object[]{val, totalBenefit, totalCost, (totalBenefit-totalCost)});
+            values.add(val);
+            totalBenefits.add(totalBenefit);
+            totalCosts.add(totalCost);
+        }
+        
+        jPanelChart.removeAll();
+        LineChartAdmit lineChart = new LineChartAdmit(values, totalBenefits, totalCosts);
+        
+        javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
+        jPanelChart.setLayout(jPanelChartLayout);
+        jPanelChartLayout.setHorizontalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout.createSequentialGroup()
+                .addGap(2, 2, 2)
+                .addComponent(lineChart.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+                .addGap(2, 2, 2))
+        );
+        jPanelChartLayout.setVerticalGroup(
+            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChartLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(lineChart.chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                .addGap(2, 2, 2))
+        );
+    }//GEN-LAST:event_jButtonTuneActionPerformed
+
+    private void jTableModelsMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableModelsMouseMoved
+        int row=jTableModels.rowAtPoint(evt.getPoint());
+	int col=jTableModels.columnAtPoint(evt.getPoint());
+	if(row>-1 && col>-1){
+            Object value=jTableModels.getValueAt(row, col);
+            if(null!=value && !"".equals(value))
+                jTableModels.setToolTipText(value.toString());  //display cell content
+            else
+                jTableModels.setToolTipText(null);  //Close prompt
+        }
+    }//GEN-LAST:event_jTableModelsMouseMoved
+
+    private void jTableAllModelsMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAllModelsMouseMoved
+        int row=jTableAllModels.rowAtPoint(evt.getPoint());
+	int col=jTableAllModels.columnAtPoint(evt.getPoint());
+	if(row>-1 && col>-1){
+            Object value=jTableAllModels.getValueAt(row, col);
+            if(null!=value && !"".equals(value))
+                jTableAllModels.setToolTipText(value.toString());   //display cell content
+            else
+                jTableAllModels.setToolTipText(null);  //Close prompt
+        }
+    }//GEN-LAST:event_jTableAllModelsMouseMoved
 
     /**
      * replace the last substring occurrence
@@ -842,7 +1171,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonNewDecision;
     private javax.swing.JButton jButtonTune;
-    private javax.swing.JComboBox<String> jComboBoxCustomEquation;
     private javax.swing.JComboBox<String> jComboBoxCustomType;
     private javax.swing.JComboBox<String> jComboBoxParameters;
     private javax.swing.JComboBox<String> jComboBoxSymbol;
@@ -850,7 +1178,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
@@ -860,7 +1187,6 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelProfitLoss;
     private javax.swing.JLabel jLabelTotalBenefits;
     private javax.swing.JLabel jLabelTotalCosts;
@@ -868,6 +1194,8 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanelChart;
     private javax.swing.JPanel jPanelCreateCustom;
     private javax.swing.JPanel jPanelModels;
     private javax.swing.JPanel jPanelModelsInputs;
@@ -888,13 +1216,24 @@ public class JPanelAdmit extends javax.swing.JPanel {
     private javax.swing.JTable jTableResultBenefitModel;
     private javax.swing.JTable jTableResultCostModel;
     private javax.swing.JTable jTableTotalBC;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextAreaEq;
     private javax.swing.JTextField jTextDate;
     private javax.swing.JTextField jTextFieldCustomName;
     private javax.swing.JTextField jTextFieldMaxV;
     private javax.swing.JTextField jTextFieldMinV;
     private javax.swing.JTextField jTextFieldVar;
     private javax.swing.JTextField jTextName;
-    private javax.swing.JTextField jTextOwner;
     // End of variables declaration//GEN-END:variables
+
+    public class ForcedListSelectionModel extends DefaultListSelectionModel {
+        public ForcedListSelectionModel () {
+            setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+        @Override
+        public void clearSelection() {
+        }
+        @Override
+        public void removeSelectionInterval(int index0, int index1) {
+        }
+    }
 }

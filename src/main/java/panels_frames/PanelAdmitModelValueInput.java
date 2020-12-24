@@ -5,6 +5,7 @@
  */
 package panels_frames;
 
+import admit.ModelParameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,28 +15,30 @@ import java.util.List;
  */
 public class PanelAdmitModelValueInput extends javax.swing.JPanel {
 
-    //private List<PanelAdmitModelEachVariable> variablesPanels= new ArrayList<>();
-    private ArrayList<String> variableNames;
-    private ArrayList<String> variableInputs;
+    public List<PanelAdmitModelEachVariable> variablesPanels= new ArrayList<>();
+    private ModelParameter model;
     
     /**
      * Creates new form PanelAdmitModelValueInput
      */
-    public PanelAdmitModelValueInput() {
+    public PanelAdmitModelValueInput(ModelParameter model) {
         initComponents();
+        this.model = model;
+        jLabelName.setText(model.getName());
         
-        //toDo add PanelAdmitModelEachVariable to panel and to variablesPanels
+        for(String st: model.getEquation().getParameters().keySet()){
+            PanelAdmitModelEachVariable p= new PanelAdmitModelEachVariable(st, model.getEquation().getParameters().get(st));
+            variablesPanels.add(p);
+            jPanel.add(p);
+        }
     }
     
     public String getName(){
         return jLabelName.getText();
     }
     
-    public ArrayList<String> getVariableNames(){
-        return variableNames;
-    }
-    public ArrayList<String> getVariableInputs(){
-        return variableInputs;
+    public ModelParameter getModelParameter(){
+        return model;
     }
 
     /**
@@ -67,7 +70,7 @@ public class PanelAdmitModelValueInput extends javax.swing.JPanel {
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelName)
-                        .addGap(0, 322, Short.MAX_VALUE)))
+                        .addGap(0, 271, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

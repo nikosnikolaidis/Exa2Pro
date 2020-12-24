@@ -5,6 +5,7 @@
  */
 package exa2pro;
 
+import admit.AdmitProject;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -17,11 +18,13 @@ public class ProjectCredentials implements Serializable{
     private String projectName;
     private String projectDirectory;
     private ArrayList<Project> projects;
+    private AdmitProject admitProject;
     
     public ProjectCredentials(String projectKey, String projectName, String projectDirectory){
         this.projectKey=projectKey;
         this.projectName=projectName;
         projects=new ArrayList<>();
+        admitProject= new AdmitProject(projectName);
         
         if(Exa2Pro.isWindows())
             this.projectDirectory=projectDirectory+"//";
@@ -48,5 +51,8 @@ public class ProjectCredentials implements Serializable{
     }
     public ArrayList<Project> getProjects() {
         return projects;
+    }
+    public AdmitProject getAdmitProject(){
+        return admitProject;
     }
 }

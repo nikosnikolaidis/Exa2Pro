@@ -14,16 +14,18 @@ public class PanelAdmitModelEachVariable extends javax.swing.JPanel {
     /**
      * Creates new form PanelAdmitModelEachVariable
      */
-    public PanelAdmitModelEachVariable() {
+    public PanelAdmitModelEachVariable(String name, double value) {
         initComponents();
+        jLabelVariable.setText(name);
+        jTextField.setText(""+value);
     }
 
-    public String getVariable(){
+    public String getName(){
         return jLabelVariable.getText();
     }
     
-    public String getInput(){
-        return jTextField.getText();
+    public double getValue(){
+        return Double.parseDouble(jTextField.getText());
     }
     
     /**
@@ -48,9 +50,11 @@ public class PanelAdmitModelEachVariable extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(5, 5, 5)
                 .addComponent(jLabelVariable)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
-                .addComponent(jTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addComponent(jTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
