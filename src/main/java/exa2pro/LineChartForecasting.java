@@ -7,7 +7,12 @@ package exa2pro;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,6 +34,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import panels_frames.ProjectFrame;
+import parsers.CodeFile;
 
 /**
  *
@@ -36,16 +42,20 @@ import panels_frames.ProjectFrame;
  */
 public class LineChartForecasting {
     public JPanel chartPanel;
+    private Project project;
+    private int horizon;
     
     HashMap<Integer,Double> pastVersionValues= new HashMap<>();
     HashMap<Integer,Double> newVersionValues= new HashMap<>();
     
-    public LineChartForecasting(int horizon){
+    public LineChartForecasting(Project project, int horizon) {
+        this.project= project;
+        this.horizon= horizon;
         String chartTitle = "Forecasting";
         String xAxisLabel = "version";
         String yAxisLabel = "TD";
 
-        XYDataset dataset = createDataset(horizon);
+        XYDataset dataset = createDataset();
 
         JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, 
                 xAxisLabel, yAxisLabel, dataset);
@@ -55,8 +65,9 @@ public class LineChartForecasting {
         chartPanel= new ChartPanel(chart);
     }
     
-    private XYDataset createDataset(int horizon) {    // this method creates the data as time seris 
-        getFromDBProject(horizon);
+    private XYDataset createDataset() {    // this method creates the data as time seris 
+        //getFromDBProject(horizon);
+        runForcasting();
         
         XYSeriesCollection dataset = new XYSeriesCollection();
         XYSeries series1 = new XYSeries("Past");
@@ -88,10 +99,6 @@ public class LineChartForecasting {
         renderer.setSeriesStroke(0, new BasicStroke(4.0f));
         renderer.setSeriesStroke(1, new BasicStroke(3.0f));
 
-        // sets paint color for plot outlines
-        plot.setOutlinePaint(Color.BLUE);
-        plot.setOutlineStroke(new BasicStroke(2.0f));
-
         // sets renderer for lines
         plot.setRenderer(renderer);
 
@@ -106,53 +113,73 @@ public class LineChartForecasting {
         plot.setDomainGridlinePaint(Color.BLACK);
     }
     
-    private void getFromDBProject(int horizon) {
+    private void runForcasting() {
         pastVersionValues.clear();
         newVersionValues.clear();
         
-        try {
-            URL url = new URL("http://160.40.52.130:5001/TDForecaster/SystemForecasting?horizon="+ horizon
-                    + "&project=metalwalls_measures&regressor=ridge&ground_truth=yes");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            int responsecode = conn.getResponseCode();
-            if(responsecode != 200) {
-            	System.err.println("http://160.40.52.130:5001/TDForecaster/SystemForecasting?horizon="+ horizon
-                    + "&project=metalwalls_measures&regressor=ridge&ground_truth=yes");
-            }
-            else{
-                Scanner sc = new Scanner(url.openStream());
-                String inline="";
-                while(sc.hasNext()){
-                    inline+=sc.nextLine();
-                }
-                sc.close();
-                JSONParser parse = new JSONParser();
-                JSONObject jobj = (JSONObject)parse.parse(inline);
+        //write csv file
+        //toDO
+        
+        //run forecasting
+        //For Windows
+        boolean hasResult= true;
+        if ( Exa2Pro.isWindows() ){
+            Process proc;
+            try {
+                //make sure packages are installed
+//                proc = Runtime.getRuntime().exec("cmd /c \"pip install pandas sklearn numpy\"");
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    System.out.println(line);
+//                }
                 
-                //forecasting values
-                JSONObject jobj2= (JSONObject) jobj.get("results");
-                JSONArray jsonarr_2 = (JSONArray) jobj2.get("forecasts");
+                //start scrip
+                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/td-forecaster" + 
+                        " && python td_forecaster_cli.py system "+ horizon +" "+ project.getCredentials().getProjectName() +" 10 ridge --ground_truth --write_file \"");
+                BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
+                String line1;
+                while ((line1 = reader1.readLine()) != null) {
+                    if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
+                        hasResult= false;
+                    System.out.println(line1);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(CodeFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        //For Linux
+        else{
+            
+        }
+        
+        //get results
+        if(hasResult==true){
+            JSONParser jsonParser = new JSONParser();
+            try (FileReader reader = new FileReader(new File(System.getProperty("user.dir")+"/td-forecaster/output/"+
+                    project.getCredentials().getProjectName()+"_forecasts.json")))
+            {
+                //Read JSON file
+                JSONObject obj = (JSONObject) jsonParser.parse(reader);
+                
+                JSONArray jsonarr_2 = (JSONArray) obj.get("forecasts");
                 for(int i=0; i<jsonarr_2.size(); i++){
                     JSONObject jsonobj_2 = (JSONObject)jsonarr_2.get(i);
                     newVersionValues.put( Integer.parseInt(jsonobj_2.get("version").toString()),
                                 Double.parseDouble(jsonobj_2.get("value").toString()) );
                 }
                 
-                //past values
-                JSONObject jobj1= (JSONObject) jobj.get("results");
-                JSONArray jsonarr_1 = (JSONArray) jobj1.get("ground_truth");
+                JSONArray jsonarr_1 = (JSONArray) obj.get("ground_truth");
                 for(int i=0; i<jsonarr_1.size(); i++){
                     JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
                     pastVersionValues.put( Integer.parseInt(jsonobj_1.get("version").toString()),
                                 Double.parseDouble(jsonobj_1.get("value").toString()) );
                 }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(LineChartForecasting.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException | ParseException ex) {
+                Logger.getLogger(LineChartForecasting.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException | ParseException ex) {
-            Logger.getLogger(ProjectFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

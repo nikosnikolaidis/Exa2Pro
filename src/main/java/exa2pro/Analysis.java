@@ -237,6 +237,9 @@ public class Analysis {
             report.setTotalCodeSmells(Integer.parseInt(report.getMetricFromSonarQube("code_smells")));
             report.setTotalLinesOfCode(Integer.parseInt(report.getMetricFromSonarQube("ncloc")));
             report.setTotalComplexity(Integer.parseInt(report.getMetricFromSonarQube("complexity")));
+            report.setDuplicated_blocks(Integer.parseInt(report.getMetricFromSonarQube("duplicated_blocks")));
+            report.setReliability_remediation_effort(Integer.parseInt(report.getMetricFromSonarQube("reliability_remediation_effort")));
+            report.setSecurity_remediation_effort(Integer.parseInt(report.getMetricFromSonarQube("security_remediation_effort")));
             report.setLinesOfCodeForAllLanguages(report.getMetricFromSonarQube("ncloc_language_distribution").replace(";", "\n"));
             
             report.getIssuesFromSonarQube();

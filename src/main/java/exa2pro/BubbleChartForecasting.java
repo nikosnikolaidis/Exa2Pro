@@ -6,7 +6,12 @@
 package exa2pro;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,6 +37,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import panels_frames.ProjectFrame;
+import parsers.CodeFile;
 
 /**
  *
@@ -39,18 +45,25 @@ import panels_frames.ProjectFrame;
  */
 public class BubbleChartForecasting {
     public JPanel chartPanel;
+    private Project project;
+    private int horizon;
+    private int files;
     
     ArrayList<String> fileNames= new ArrayList<>();
     ArrayList<Double> changeProneness= new ArrayList<>();
     ArrayList<Double> expectedComplexityChange= new ArrayList<>();
     ArrayList<Double> forecastingFile= new ArrayList<>();
     
-    public BubbleChartForecasting(int horizon, int files){
+    public BubbleChartForecasting(Project project, int horizon, int files) {
+        this.project= project;
+        this.horizon= horizon;
+        this.files= files;
+        
         JFreeChart jfreechart = ChartFactory.createBubbleChart(
             "Files/Modules",
             "Expected Complexity Change",
             "Change Proneness",
-            createDatasetBubble(horizon,files),
+            createDatasetBubble(),
             PlotOrientation.HORIZONTAL,
             true, true, false);
          
@@ -78,8 +91,8 @@ public class BubbleChartForecasting {
         this.chartPanel= chartpanel;
     }
     
-    private XYZDataset createDatasetBubble(int horizon, int files) {
-        getFromDBFiles(horizon, files);
+    private XYZDataset createDatasetBubble() {
+        runForcasting();
         
         //normalize diameter
     	double max= forecastingFile.get(0);
@@ -107,37 +120,60 @@ public class BubbleChartForecasting {
 
         return defaultxyzdataset;
     }
-    
-    private void getFromDBFiles(int horizon, int files){
+
+    private void runForcasting() {
         fileNames.clear();
         changeProneness.clear();
         expectedComplexityChange.clear();
         forecastingFile.clear();
-            
-        try {
-            URL url = new URL("http://160.40.52.130:5001/TDForecaster/FileForecasting?horizon="+ horizon
-                    +"&project=metalwalls_measures&project_files="+ files +"&regressor=lasso&ground_truth=no");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            int responsecode = conn.getResponseCode();
-            if(responsecode != 200) {
-            	System.err.println("http://160.40.52.130:5001/TDForecaster/FileForecasting?horizon="+ horizon
-                    +"&project=metalwalls_measures&project_files="+ files +"&regressor=lasso&ground_truth=no");
-            }
-            else{
-                Scanner sc = new Scanner(url.openStream());
-                String inline="";
-                while(sc.hasNext()){
-                    inline+=sc.nextLine();
+        
+        //write csv file
+        //toDO
+        
+        //run forecasting
+        //For Windows
+        boolean hasResult= true;
+        if ( Exa2Pro.isWindows() ){
+            Process proc;
+            try {
+                //make sure packages are installed
+//                proc = Runtime.getRuntime().exec("cmd /c \"pip install pandas sklearn numpy\"");
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    System.out.println(line);
+//                }
+                
+                //start scrip
+                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/td-forecaster" + 
+                        " && python td_forecaster_cli.py file "+ horizon +" "+ project.getCredentials().getProjectName() +" "+ files +" ridge --write_file \"");
+                BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
+                String line1;
+                while ((line1 = reader1.readLine()) != null) {
+                    if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
+                        hasResult= false;
+                    System.out.println(line1);
                 }
-                sc.close();
-                JSONParser parse = new JSONParser();
-                JSONObject jobj = (JSONObject)parse.parse(inline);
+            } catch (IOException ex) {
+                Logger.getLogger(CodeFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        //For Linux
+        else{
+            
+        }
+        
+        //get results
+        if(hasResult==true){
+            JSONParser jsonParser = new JSONParser();
+            try (FileReader reader = new FileReader(new File(System.getProperty("user.dir")+"/td-forecaster/output/"+
+                    project.getCredentials().getProjectName()+"_forecasts_class.json")))
+            {
+                //Read JSON file
+                JSONObject obj = (JSONObject) jsonParser.parse(reader);
                 
                 //metrics
-                JSONObject jobj2= (JSONObject) jobj.get("results");
-                JSONArray jsonarr_2 = (JSONArray) jobj2.get("change_metrics");
+                JSONArray jsonarr_2 = (JSONArray) obj.get("change_metrics");
                 for(int i=0; i<jsonarr_2.size(); i++){
                     JSONObject jsonobj_2 = (JSONObject)jsonarr_2.get(i);
                     String name= (String)jsonobj_2.keySet().iterator().next();
@@ -149,18 +185,18 @@ public class BubbleChartForecasting {
                 }
                 
                 //forecasting
-                JSONArray jsonarr_1 = (JSONArray) jobj2.get("forecasts");
+                JSONArray jsonarr_1 = (JSONArray) obj.get("forecasts");
                 for(int i=0; i<jsonarr_1.size(); i++){
                     JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
                     JSONArray jsonarr_3= (JSONArray) jsonobj_1.get((String)jsonobj_1.keySet().iterator().next());
                     JSONObject jsonobj_2= (JSONObject)jsonarr_3.get(jsonarr_3.size()-1);
                     forecastingFile.add( Double.parseDouble(jsonobj_2.get("value").toString()) );
                 }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(LineChartForecasting.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException | ParseException ex) {
+                Logger.getLogger(LineChartForecasting.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException | ParseException ex) {
-            Logger.getLogger(ProjectFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

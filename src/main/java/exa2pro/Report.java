@@ -43,6 +43,9 @@ public class Report  implements Serializable{
     private double totalTDInterest=0;
     private double TDPrincipalSourceCodeDebt;
     private double TDPrincipalDesignDebt;
+    private int duplicated_blocks;
+    private int reliability_remediation_effort;
+    private int security_remediation_effort;
     
     public Report(Project project){
         this.project=project;
@@ -442,6 +445,15 @@ public class Report  implements Serializable{
     public void setTdOfEachFile(HashMap<String, Integer> tdOfEachFile) {
         this.tdOfEachFile = tdOfEachFile;
     }
+    public int getDuplicated_blocks() {
+        return duplicated_blocks;
+    }
+    public int getReliability_remediation_effort() {
+        return reliability_remediation_effort;
+    }
+    public int getSecurity_remediation_effort() {
+        return security_remediation_effort;
+    }
 
     // Setters
     public void setTotalDebt(String totalDebt) {
@@ -476,5 +488,14 @@ public class Report  implements Serializable{
     }
     public double getTDPrincipalDesignDebt() {
         return TDPrincipalDesignDebt;
+    }
+    public void setDuplicated_blocks(int duplicated_blocks) {
+        this.duplicated_blocks = duplicated_blocks;
+    }
+    public void setReliability_remediation_effort(int reliability_remediation_effort) {
+        this.reliability_remediation_effort = reliability_remediation_effort;
+    }
+    public void setSecurity_remediation_effort(int security_remediation_effort) {
+        this.security_remediation_effort = security_remediation_effort;
     }
 }
