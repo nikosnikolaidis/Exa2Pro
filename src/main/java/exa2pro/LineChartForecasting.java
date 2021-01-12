@@ -5,6 +5,7 @@
  */
 package exa2pro;
 
+import csvControlers.CSVWriteForForecastingSystem;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -44,6 +45,7 @@ public class LineChartForecasting {
     public JPanel chartPanel;
     private Project project;
     private int horizon;
+    private boolean hasResults;
     
     HashMap<Integer,Double> pastVersionValues= new HashMap<>();
     HashMap<Integer,Double> newVersionValues= new HashMap<>();
@@ -65,8 +67,11 @@ public class LineChartForecasting {
         chartPanel= new ChartPanel(chart);
     }
     
-    private XYDataset createDataset() {    // this method creates the data as time seris 
-        //getFromDBProject(horizon);
+    /**
+     * Create the data as time series
+     * @return 
+     */
+    private XYDataset createDataset() {
         runForcasting();
         
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -87,19 +92,19 @@ public class LineChartForecasting {
         return dataset;
     }
     
-    private void customizeChart(JFreeChart chart) {   // here we make some customization
+    /**
+     * Customizations of chart
+     * @param chart 
+     */
+    private void customizeChart(JFreeChart chart) {
         XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
-        // sets paint color for each series
+        // sets color and thickness for each series
         renderer.setSeriesPaint(0, Color.RED);
         renderer.setSeriesPaint(1, Color.GREEN);
-
-        // sets thickness for series (using strokes)
         renderer.setSeriesStroke(0, new BasicStroke(4.0f));
         renderer.setSeriesStroke(1, new BasicStroke(3.0f));
-
-        // sets renderer for lines
         plot.setRenderer(renderer);
 
         // sets plot background
@@ -108,7 +113,6 @@ public class LineChartForecasting {
         // sets paint color for the grid lines
         plot.setRangeGridlinesVisible(true);
         plot.setRangeGridlinePaint(Color.BLACK);
-
         plot.setDomainGridlinesVisible(true);
         plot.setDomainGridlinePaint(Color.BLACK);
     }
@@ -118,11 +122,10 @@ public class LineChartForecasting {
         newVersionValues.clear();
         
         //write csv file
-        //toDO
+        new CSVWriteForForecastingSystem(project);
         
         //run forecasting
         //For Windows
-        boolean hasResult= true;
         if ( Exa2Pro.isWindows() ){
             Process proc;
             try {
@@ -134,14 +137,20 @@ public class LineChartForecasting {
 //                    System.out.println(line);
 //                }
                 
-                //start scrip
+                //start script
                 Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/td-forecaster" + 
                         " && python td_forecaster_cli.py system "+ horizon +" "+ project.getCredentials().getProjectName() +" 10 ridge --ground_truth --write_file \"");
+                hasResults=true;
+                BufferedReader readerError = new BufferedReader(new InputStreamReader(proc1.getErrorStream()));
+                String lineError;
+                while ((lineError = readerError.readLine()) != null) {
+                    System.out.println(lineError);
+                }
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
                 String line1;
                 while ((line1 = reader1.readLine()) != null) {
-                    if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
-                        hasResult= false;
+                	if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
+                            hasResults=false;
                     System.out.println(line1);
                 }
             } catch (IOException ex) {
@@ -154,26 +163,26 @@ public class LineChartForecasting {
         }
         
         //get results
-        if(hasResult==true){
+        if(hasResults) {
             JSONParser jsonParser = new JSONParser();
             try (FileReader reader = new FileReader(new File(System.getProperty("user.dir")+"/td-forecaster/output/"+
                     project.getCredentials().getProjectName()+"_forecasts.json")))
             {
                 //Read JSON file
                 JSONObject obj = (JSONObject) jsonParser.parse(reader);
-                
+
                 JSONArray jsonarr_2 = (JSONArray) obj.get("forecasts");
                 for(int i=0; i<jsonarr_2.size(); i++){
                     JSONObject jsonobj_2 = (JSONObject)jsonarr_2.get(i);
                     newVersionValues.put( Integer.parseInt(jsonobj_2.get("version").toString()),
                                 Double.parseDouble(jsonobj_2.get("value").toString()) );
                 }
-                
+
                 JSONArray jsonarr_1 = (JSONArray) obj.get("ground_truth");
                 for(int i=0; i<jsonarr_1.size(); i++){
                     JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
                     pastVersionValues.put( Integer.parseInt(jsonobj_1.get("version").toString()),
-                                Double.parseDouble(jsonobj_1.get("value").toString()) );
+                                 Double.parseDouble(jsonobj_1.get("value").toString()) );
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(LineChartForecasting.class.getName()).log(Level.SEVERE, null, ex);
@@ -181,5 +190,13 @@ public class LineChartForecasting {
                 Logger.getLogger(LineChartForecasting.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public boolean hasChartPanel(){
+        return hasResults;
+    }
+    
+    public JPanel getChartPanel(){
+        return chartPanel;
     }
 }

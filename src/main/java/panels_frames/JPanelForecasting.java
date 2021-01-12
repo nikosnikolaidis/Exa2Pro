@@ -8,6 +8,7 @@ package panels_frames;
 import exa2pro.BubbleChartForecasting;
 import exa2pro.LineChartForecasting;
 import exa2pro.Project;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -30,7 +31,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
         initComponents();
         
         jPanelFiles.setVisible(false);
-        lineChartForecasting = new LineChartForecasting(project, 10);
+        lineChartForecasting = new LineChartForecasting(project, 1);
         createAndAdd(false);
         
         jSliderHorizon.addChangeListener(new ChangeListener() {
@@ -51,13 +52,28 @@ public class JPanelForecasting extends javax.swing.JPanel {
     private void createAndAdd(boolean bubble) {
         JPanel p;
         if(!bubble){
-            p= lineChartForecasting.chartPanel;
-            jLabelHorizon.setText(jSliderHorizon.getValue()+"");
+            if(lineChartForecasting.hasChartPanel()){
+                p= lineChartForecasting.chartPanel;
+                jLabelHorizon.setText(jSliderHorizon.getValue()+"");
+                addChartPanel(p);
+            }
+            else{
+                JOptionPane.showMessageDialog(null,
+                    "Cannot provide reliable results for this project.\nPlease reduce forecasting horizon",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
         else{
             p= bubbleChartForecasting.chartPanel;
             jLabelFiles.setText(jSliderFiles.getValue()+"");
+            addChartPanel(p);
         }
+    }
+    
+    private void addChartPanel(JPanel p){
+        jPanel1.removeAll();
+        
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanelChartLayout);
         jPanelChartLayout.setHorizontalGroup(
@@ -104,7 +120,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
         jSliderHorizon.setMajorTickSpacing(5);
         jSliderHorizon.setMinimum(1);
         jSliderHorizon.setPaintTicks(true);
-        jSliderHorizon.setValue(10);
+        jSliderHorizon.setValue(1);
         jSliderHorizon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 jSliderHorizonMouseReleased(evt);
@@ -113,7 +129,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
 
         jLabel1.setText("Horizon:");
 
-        jLabelHorizon.setText("10");
+        jLabelHorizon.setText("1");
 
         javax.swing.GroupLayout jPanelHorizonLayout = new javax.swing.GroupLayout(jPanelHorizon);
         jPanelHorizon.setLayout(jPanelHorizonLayout);
@@ -125,7 +141,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(jLabelHorizon)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSliderHorizon, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                .addComponent(jSliderHorizon, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanelHorizonLayout.setVerticalGroup(
@@ -164,7 +180,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelFiles)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSliderFiles, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                .addComponent(jSliderFiles, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanelFilesLayout.setVerticalGroup(
@@ -243,14 +259,10 @@ public class JPanelForecasting extends javax.swing.JPanel {
 
     private void jSliderHorizonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSliderHorizonMouseReleased
         if(jButton1.getText().equals("Files/Modules")){
-            jPanel1.removeAll();
-
             lineChartForecasting= new LineChartForecasting(project, jSliderHorizon.getValue());
             createAndAdd(false);
         }
         else{
-            jPanel1.removeAll();
-            
             bubbleChartForecasting= new BubbleChartForecasting(project, jSliderHorizon.getValue(), jSliderFiles.getValue());
             createAndAdd(true);
         }
@@ -260,12 +272,11 @@ public class JPanelForecasting extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(jButton1.getText().equals("Files/Modules")){
             jButton1.setText("Project");
-            jPanel1.removeAll();
             
             //create bubble plot
             jPanelFiles.setVisible(true);
-            jSliderHorizon.setValue(10);
-            jLabelHorizon.setText("10");
+            jSliderHorizon.setValue(1);
+            jLabelHorizon.setText("1");
             jSliderFiles.setValue(10);
             jLabelFiles.setText("10");
             bubbleChartForecasting= new BubbleChartForecasting(project, jSliderHorizon.getValue(),jSliderFiles.getValue());
@@ -274,12 +285,11 @@ public class JPanelForecasting extends javax.swing.JPanel {
         }
         else{
             jButton1.setText("Files/Modules");
-            jPanel1.removeAll();
             
             //create chart
             jPanelFiles.setVisible(false);
-            jSliderHorizon.setValue(10);
-            jLabelHorizon.setText("10");
+            jSliderHorizon.setValue(1);
+            jLabelHorizon.setText("1");
             lineChartForecasting= new LineChartForecasting(project, jSliderHorizon.getValue());
             createAndAdd(false);
             repaint();
@@ -287,8 +297,6 @@ public class JPanelForecasting extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jSliderFilesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSliderFilesMouseReleased
-        jPanel1.removeAll();
-        
         bubbleChartForecasting= new BubbleChartForecasting(project, jSliderHorizon.getValue(),jSliderFiles.getValue());
         createAndAdd(true);
 	repaint();
