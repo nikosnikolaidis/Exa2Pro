@@ -32,6 +32,10 @@ public class Report  implements Serializable{
     private Project project;
     private ArrayList<Issue> issuesList= new ArrayList<>();
     private HashMap<String,Integer> tdOfEachFile= new HashMap<>();
+    private HashMap<String,Integer> duplicatedBblocksOfEachFile= new HashMap<>();
+    private HashMap<String,Integer> reliabilityEffortOfEachFile= new HashMap<>();
+    private HashMap<String,Integer> securityEffortOfEachFile= new HashMap<>();
+    private HashMap<String,Integer> codeSmellsOfEachFile= new HashMap<>();
     private Date date;
     private String totalDebt;
     private double totalDebt_Index;
@@ -111,18 +115,21 @@ public class Report  implements Serializable{
                         getNewLinesOfCodeFromSonarQube(fileName);
 
                         //get metric TD
-                        int metric= 0;
+                        int metric_sqale_index= 0;
+                        int metric_duplicated_blocks= 0;
+                        int metric_reliability_remediation_effort= 0;
+                        int metric_security_remediation_effort= 0;
+                        int metric_code_smells= 0;
                         try {
-                            URL url = new URL(Exa2Pro.sonarURL+"/api/measures/component?component="
-                                    +fileName+"&metricKeys=sqale_index");
+                            URL url = new URL(Exa2Pro.sonarURL+"/api/measures/component?component="+fileName+
+                                            "&metricKeys=sqale_index,duplicated_blocks,reliability_remediation_effort,security_remediation_effort,code_smells");
                             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                             conn.setRequestMethod("GET");
                             conn.connect();
                             int responsecode = conn.getResponseCode();
                             if(responsecode != 200)
-                                    System.err.println(responsecode+ " "+Exa2Pro.sonarURL+"/api/measures/component?component="
-                                    +fileName+"&metricKeys=sqale_index");
-            //                    throw new RuntimeException("HttpResponseCode: "+responsecode);
+                                    System.err.println(responsecode+ " "+Exa2Pro.sonarURL+"/api/measures/component?component="+fileName+
+                                            "&metricKeys=sqale_index,duplicated_blocks,reliability_remediation_effort,security_remediation_effort,code_smells");
                             else{
                                 Scanner sc = new Scanner(url.openStream());
                                 String inline="";
@@ -136,9 +143,18 @@ public class Report  implements Serializable{
                                 JSONObject jobj1= (JSONObject) jobj.get("component");
                                 JSONArray jsonarr_1 = (JSONArray) jobj1.get("measures");
 
-                                if(!jsonarr_1.isEmpty()){
-                                    JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(0);
-                                    metric= Integer.parseInt(jsonobj_1.get("value").toString());
+                                for(int i=0; i<jsonarr_1.size(); i++){
+                                    JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
+                                    if(jsonobj_1.get("metric").toString().equals("sqale_index"))
+                                        metric_sqale_index= Integer.parseInt(jsonobj_1.get("value").toString());
+                                    if(jsonobj_1.get("metric").toString().equals("duplicated_blocks"))
+                                        metric_duplicated_blocks= Integer.parseInt(jsonobj_1.get("value").toString());
+                                    if(jsonobj_1.get("metric").toString().equals("reliability_remediation_effort"))
+                                        metric_reliability_remediation_effort= Integer.parseInt(jsonobj_1.get("value").toString());
+                                    if(jsonobj_1.get("metric").toString().equals("security_remediation_effort"))
+                                        metric_security_remediation_effort= Integer.parseInt(jsonobj_1.get("value").toString());
+                                    if(jsonobj_1.get("metric").toString().equals("code_smells"))
+                                        metric_code_smells= Integer.parseInt(jsonobj_1.get("value").toString());
                                 }
                             }
                         } catch (MalformedURLException ex) {
@@ -146,8 +162,14 @@ public class Report  implements Serializable{
                         } catch (IOException | ParseException ex) {
                             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        tdOfEachFile.put(fileNameForSave, metric);
-                        System.out.println("file: "+fileNameForSave+ "  td: "+metric);
+                        tdOfEachFile.put(fileNameForSave, metric_sqale_index);
+                        duplicatedBblocksOfEachFile.put(fileNameForSave, metric_duplicated_blocks);
+                        reliabilityEffortOfEachFile.put(fileNameForSave, metric_reliability_remediation_effort);
+                        securityEffortOfEachFile.put(fileNameForSave, metric_security_remediation_effort);
+                        codeSmellsOfEachFile.put(fileNameForSave, metric_code_smells);
+                        System.out.println("file:"+fileNameForSave+ "  td:"+metric_sqale_index+"  db:"+metric_duplicated_blocks+
+                                "  rre:"+metric_reliability_remediation_effort+"  sre:"+metric_security_remediation_effort+
+                                "  cs:"+metric_code_smells);
                     }
                 }
         } catch (MalformedURLException ex) {
@@ -442,9 +464,6 @@ public class Report  implements Serializable{
     public int getNewLinesOfCode() {
         return newLinesOfCode;
     }
-    public void setTdOfEachFile(HashMap<String, Integer> tdOfEachFile) {
-        this.tdOfEachFile = tdOfEachFile;
-    }
     public int getDuplicated_blocks() {
         return duplicated_blocks;
     }
@@ -453,6 +472,30 @@ public class Report  implements Serializable{
     }
     public int getSecurity_remediation_effort() {
         return security_remediation_effort;
+    }
+    public HashMap<String, Integer> getTdOfEachFile() {
+        return tdOfEachFile;
+    }
+    public double getTotalTDInterest() {
+        return totalTDInterest;
+    }
+    public double getTDPrincipalSourceCodeDebt() {
+        return TDPrincipalSourceCodeDebt;
+    }
+    public double getTDPrincipalDesignDebt() {
+        return TDPrincipalDesignDebt;
+    }
+    public HashMap<String, Integer> getDuplicatedBblocksOfEachFile() {
+        return duplicatedBblocksOfEachFile;
+    }
+    public HashMap<String, Integer> getReliabilityEffortOfEachFile() {
+        return reliabilityEffortOfEachFile;
+    }
+    public HashMap<String, Integer> getSecurityEffortOfEachFile() {
+        return securityEffortOfEachFile;
+    }
+    public HashMap<String, Integer> getCodeSmellsOfEachFile() {
+        return codeSmellsOfEachFile;
     }
 
     // Setters
@@ -477,18 +520,6 @@ public class Report  implements Serializable{
     public void setNewLinesOfCode(int newLinesOfCode) {
         this.newLinesOfCode = newLinesOfCode;
     }
-    public HashMap<String, Integer> getTdOfEachFile() {
-        return tdOfEachFile;
-    }
-    public double getTotalTDInterest() {
-        return totalTDInterest;
-    }
-    public double getTDPrincipalSourceCodeDebt() {
-        return TDPrincipalSourceCodeDebt;
-    }
-    public double getTDPrincipalDesignDebt() {
-        return TDPrincipalDesignDebt;
-    }
     public void setDuplicated_blocks(int duplicated_blocks) {
         this.duplicated_blocks = duplicated_blocks;
     }
@@ -497,5 +528,20 @@ public class Report  implements Serializable{
     }
     public void setSecurity_remediation_effort(int security_remediation_effort) {
         this.security_remediation_effort = security_remediation_effort;
+    }
+    public void setTdOfEachFile(HashMap<String, Integer> tdOfEachFile) {
+        this.tdOfEachFile = tdOfEachFile;
+    }
+    public void setDuplicatedBblocksOfEachFile(HashMap<String, Integer> duplicatedBblocksOfEachFile) {
+        this.duplicatedBblocksOfEachFile = duplicatedBblocksOfEachFile;
+    }
+    public void setReliabilityEffortOfEachFile(HashMap<String, Integer> reliabilityEffortOfEachFile) {
+        this.reliabilityEffortOfEachFile = reliabilityEffortOfEachFile;
+    }
+    public void setSecurityEffortOfEachFile(HashMap<String, Integer> securityEffortOfEachFile) {
+        this.securityEffortOfEachFile = securityEffortOfEachFile;
+    }
+    public void setCodeSmellsOfEachFile(HashMap<String, Integer> codeSmellsOfEachFile) {
+        this.codeSmellsOfEachFile = codeSmellsOfEachFile;
     }
 }

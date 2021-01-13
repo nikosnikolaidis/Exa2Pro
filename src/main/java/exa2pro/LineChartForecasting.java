@@ -149,8 +149,8 @@ public class LineChartForecasting {
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
                 String line1;
                 while ((line1 = reader1.readLine()) != null) {
-                	if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
-                            hasResults=false;
+                    if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
+                        hasResults=false;
                     System.out.println(line1);
                 }
             } catch (IOException ex) {

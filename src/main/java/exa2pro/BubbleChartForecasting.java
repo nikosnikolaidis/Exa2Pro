@@ -5,6 +5,7 @@
  */
 package exa2pro;
 
+import csvControlers.CSVWriteForForecastingFiles;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,6 +49,7 @@ public class BubbleChartForecasting {
     private Project project;
     private int horizon;
     private int files;
+    private boolean hasResults;
     
     ArrayList<String> fileNames= new ArrayList<>();
     ArrayList<Double> changeProneness= new ArrayList<>();
@@ -94,19 +96,21 @@ public class BubbleChartForecasting {
     private XYZDataset createDatasetBubble() {
         runForcasting();
         
-        //normalize diameter
-    	double max= forecastingFile.get(0);
-    	double min= forecastingFile.get(0);
-    	for(Double d:forecastingFile) {
-    		if(d>max)
-    			max=d;
-    		if(d<min)
-    			min=d;
-    	}
-    	for(int i=0; i<forecastingFile.size(); i++) {
-    		double value= forecastingFile.get(i);
-    		forecastingFile.set(i, (0.02-0.002)/(max-min)*(value-min)+0.002);
-    	}
+        if(hasResults){
+            //normalize diameter
+            double max= forecastingFile.get(0);
+            double min= forecastingFile.get(0);
+            for(Double d:forecastingFile) {
+                    if(d>max)
+                            max=d;
+                    if(d<min)
+                            min=d;
+            }
+            for(int i=0; i<forecastingFile.size(); i++) {
+                    double value= forecastingFile.get(i);
+                    forecastingFile.set(i, (0.02-0.002)/(max-min)*(value-min)+0.002);
+            }
+        }
         
         //create dataset
         DefaultXYZDataset defaultxyzdataset = new DefaultXYZDataset();
@@ -128,11 +132,10 @@ public class BubbleChartForecasting {
         forecastingFile.clear();
         
         //write csv file
-        //toDO
+        new CSVWriteForForecastingFiles(project);
         
         //run forecasting
         //For Windows
-        boolean hasResult= true;
         if ( Exa2Pro.isWindows() ){
             Process proc;
             try {
@@ -147,11 +150,19 @@ public class BubbleChartForecasting {
                 //start scrip
                 Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/td-forecaster" + 
                         " && python td_forecaster_cli.py file "+ horizon +" "+ project.getCredentials().getProjectName() +" "+ files +" ridge --write_file \"");
+                hasResults=true;
+                BufferedReader readerError = new BufferedReader(new InputStreamReader(proc1.getErrorStream()));
+                String lineError;
+                while ((lineError = readerError.readLine()) != null) {
+//                    if(lineError.contains("ZeroDivisionError: float division by zero"))
+//                        hasResults= false;
+                    System.out.println(lineError);
+                }
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
                 String line1;
                 while ((line1 = reader1.readLine()) != null) {
                     if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
-                        hasResult= false;
+                        hasResults= false;
                     System.out.println(line1);
                 }
             } catch (IOException ex) {
@@ -164,7 +175,7 @@ public class BubbleChartForecasting {
         }
         
         //get results
-        if(hasResult==true){
+        if(hasResults==true){
             JSONParser jsonParser = new JSONParser();
             try (FileReader reader = new FileReader(new File(System.getProperty("user.dir")+"/td-forecaster/output/"+
                     project.getCredentials().getProjectName()+"_forecasts_class.json")))
@@ -198,5 +209,13 @@ public class BubbleChartForecasting {
                 Logger.getLogger(LineChartForecasting.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public boolean hasChartPanel(){
+        return hasResults;
+    }
+    
+    public JPanel getChartPanel(){
+        return chartPanel;
     }
 }

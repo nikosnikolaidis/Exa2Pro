@@ -97,23 +97,34 @@ public class TDInterest {
                         = new ArrayList<Map.Entry<String, Double>>(sortedSimilarity.entrySet());
 
                 ArrayList<CodeFile> filesForCompare = new ArrayList<>();
-                for (CodeFile fileTemp : project.getprojectFiles()) {
-                    if (list.get(0).getKey().equals(fileTemp.file.getAbsolutePath()) && list.get(0).getValue() >= 0.5) {
-                        filesForCompare.add(fileTemp);
-                        break;
-                    }
-                }
-                for (CodeFile fileTemp : project.getprojectFiles()) {
-                    if ((list.get(1).getKey().equals(fileTemp.file.getAbsolutePath())
-                            || list.get(2).getKey().equals(fileTemp.file.getAbsolutePath())) && list.get(0).getValue() >= 0.5) {
-                        filesForCompare.add(fileTemp);
-                    }
-                }
-                if (filesForCompare.isEmpty()) {
+                if(list.size()>3) {
                     for (CodeFile fileTemp : project.getprojectFiles()) {
-                        if (list.get(0).getKey().equals(fileTemp.file.getAbsolutePath())) {
+                        if (list.get(0).getKey().equals(fileTemp.file.getAbsolutePath()) && list.get(0).getValue() >= 0.5) {
                             filesForCompare.add(fileTemp);
                             break;
+                        }
+                    }
+                    for (CodeFile fileTemp : project.getprojectFiles()) {
+                        if ((list.get(1).getKey().equals(fileTemp.file.getAbsolutePath())
+                                || list.get(2).getKey().equals(fileTemp.file.getAbsolutePath())) && list.get(0).getValue() >= 0.5) {
+                            filesForCompare.add(fileTemp);
+                        }
+                    }
+                    if (filesForCompare.isEmpty()) {
+                        for (CodeFile fileTemp : project.getprojectFiles()) {
+                            if (list.get(0).getKey().equals(fileTemp.file.getAbsolutePath())) {
+                                filesForCompare.add(fileTemp);
+                                break;
+                            }
+                        }
+                    }
+                }else{
+                    for (CodeFile fileTemp : project.getprojectFiles()) {
+                        for(Map.Entry<String, Double> mapEn: list) {
+                            if (mapEn.getKey().equals(fileTemp.file.getAbsolutePath())) {
+                                filesForCompare.add(fileTemp);
+                                    break;
+                            }
                         }
                     }
                 }

@@ -65,9 +65,17 @@ public class JPanelForecasting extends javax.swing.JPanel {
             }
         }
         else{
-            p= bubbleChartForecasting.chartPanel;
-            jLabelFiles.setText(jSliderFiles.getValue()+"");
-            addChartPanel(p);
+            if(bubbleChartForecasting.hasChartPanel()){
+                p= bubbleChartForecasting.chartPanel;
+                jLabelFiles.setText(jSliderFiles.getValue()+"");
+                addChartPanel(p);
+            }
+            else{
+                JOptionPane.showMessageDialog(null,
+                    "Cannot provide reliable results for this project.\nPlease reduce forecasting horizon",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     
