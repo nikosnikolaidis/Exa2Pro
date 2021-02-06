@@ -81,7 +81,33 @@ public abstract class CodeFile implements Serializable{
         }
         //For Linux
         else{
-            
+            try {
+                //make sure packages are installed
+                ProcessBuilder pbuilder = new ProcessBuilder("bash", "-c", "pip install pandas sklearn numpy");
+                File err = new File("err.txt");
+                pbuilder.redirectError(err);
+                Process p = pbuilder.start();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+                
+                //start clustering scrips
+                ProcessBuilder pbuilder1 = new ProcessBuilder("bash", "-c", 
+                        "cd '"+System.getProperty("user.dir")+"/clustering' ; 'python AgglomerativeClustering.py "+threshold+"'");
+                File err1 = new File("err1.txt");
+                pbuilder1.redirectError(err1);
+                Process p1 = pbuilder1.start();
+                BufferedReader reader1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+                String line1;
+                while ((line1 = reader1.readLine()) != null) {
+                    System.out.println(line1);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(CodeFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
         return clusters;
     }
