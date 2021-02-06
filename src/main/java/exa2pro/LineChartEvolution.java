@@ -86,7 +86,7 @@ public class LineChartEvolution extends ApplicationFrame {
                 case "Issues":
                     num= p.getprojectReport().getTotalCodeSmells();
                     break;
-                case "Fan-Out":
+                case "CBF":
                     {
                         int sum=0;
                         sum = p.getprojectFiles().stream().map((cf) -> cf.fanOut).reduce(sum, Integer::sum);

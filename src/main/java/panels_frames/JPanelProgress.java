@@ -45,7 +45,7 @@ public class JPanelProgress extends javax.swing.JPanel {
         jLabeProgress.setText("Progress");
 
         jListMetrics.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "TD", "Issues", "Fan-Out", "LCOL", "LCOP", "CC", "LOC" };
+            String[] strings = { "TD", "Issues", "CBF", "LCOL", "LCOP", "CC", "LOC" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });

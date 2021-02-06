@@ -24,10 +24,10 @@ class F90MetricsTest {
 		F90_controllability_assessment = new fortranFile(new File("src/test/java/f90/controllability_assessment.F90"), true);
 		F90_controllability_assessment.parse();
 
-		F90_a = new fortranFile(new File("src/test/java/f90/a.F90"), true);
+		F90_a = new fortranFile(new File("src/test/java/f90/a.f90"), true);
 		F90_a.parse();
 
-		F90_n1 = new fortranFile(new File("src/test/java/f90/n1.F90"), true);
+		F90_n1 = new fortranFile(new File("src/test/java/f90/n1.f90"), true);
 		F90_n1.parse();
 	}
 

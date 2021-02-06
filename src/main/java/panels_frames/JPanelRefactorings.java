@@ -536,23 +536,31 @@ public class JPanelRefactorings extends javax.swing.JPanel {
                 System.out.println("Threshold: " + (slider.getValue()*1.0/100));
                 ArrayList<String> clusters= file.runClustering(slider.getValue()*1.0/100);
                 
-                //Add Extract File Panel
-                jPanel6.removeAll();
-                PanelRefactoringExtractFileOpp p=new PanelRefactoringExtractFileOpp(clusters);
-                
-                javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-                jPanel6.setLayout(jPanel6Layout);
-                jPanel6Layout.setHorizontalGroup(
-                    jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                );
-                jPanel6Layout.setVerticalGroup(
-                    jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                );
-                
-                jPanel6.repaint();
-                jPanel6.revalidate();
+                if(clusters.size()>0){
+                    //Add Extract File Panel
+                    jPanel6.removeAll();
+                    PanelRefactoringExtractFileOpp p=new PanelRefactoringExtractFileOpp(clusters);
+
+                    javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+                    jPanel6.setLayout(jPanel6Layout);
+                    jPanel6Layout.setHorizontalGroup(
+                        jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    );
+                    jPanel6Layout.setVerticalGroup(
+                        jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(p, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    );
+
+                    jPanel6.repaint();
+                    jPanel6.revalidate();
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "Not able to get refactoring opportunities for this file/module");
+                }
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Not able to get refactoring opportunities for this file/module");
             }
         }
     }
