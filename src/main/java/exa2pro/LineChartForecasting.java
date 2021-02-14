@@ -14,11 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -34,7 +30,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import panels_frames.ProjectFrame;
 import parsers.CodeFile;
 
 /**
@@ -129,17 +124,10 @@ public class LineChartForecasting {
         if ( Exa2Pro.isWindows() ){
             Process proc;
             try {
-                //make sure packages are installed
-//                proc = Runtime.getRuntime().exec("cmd /c \"pip install pandas sklearn numpy\"");
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    System.out.println(line);
-//                }
-                
                 //start script
                 Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/td-forecaster" + 
-                        " && python td_forecaster_cli.py system "+ horizon +" "+ project.getCredentials().getProjectName() +" 10 ridge --ground_truth --write_file \"");
+                            " && "+ Exa2Pro.pythonRun +" td_forecaster_cli.py system "+ horizon +" "+
+                            project.getCredentials().getProjectName() +" 10 ridge --ground_truth --write_file \"");
                 hasResults=true;
                 BufferedReader readerError = new BufferedReader(new InputStreamReader(proc1.getErrorStream()));
                 String lineError;
@@ -159,7 +147,26 @@ public class LineChartForecasting {
         }
         //For Linux
         else{
-            
+            try {
+                //start clustering scrips
+                ProcessBuilder pbuilder1 = new ProcessBuilder(new String[]{Exa2Pro.pythonRun, 
+                    System.getProperty("user.dir")+"/td-forecaster/td_forecaster_cli.py", "system", horizon+"",
+                    project.getCredentials().getProjectName(), "10", "ridge", "--ground_truth", "--write_file"});
+                hasResults=true;
+                File err1 = new File("err1.txt");
+                pbuilder1.redirectError(err1);
+                pbuilder1.directory(new File(System.getProperty("user.dir")+"/td-forecaster"));
+                Process p1 = pbuilder1.start();
+                BufferedReader reader1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+                String line1;
+                while ((line1 = reader1.readLine()) != null) {
+                    if(line1.contains("cannot provide reliable results for this project. Please reduce forecasting horizon."))
+                        hasResults=false;
+                    System.out.println(line1);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(CodeFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
         //get results

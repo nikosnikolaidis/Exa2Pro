@@ -12,7 +12,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import make_scorer
-from sklearn.utils.testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
 from utils import mean_absolute_percentage_error, root_mean_squared_error, series_to_supervised
 
@@ -118,7 +117,6 @@ def cross_validation_best(pipes, x_array, y_array):
 #===============================================================================
 # create_regressor ()
 #===============================================================================
-@ignore_warnings(category=ConvergenceWarning)
 def create_regressor(reg_type, x_array, y_array):
     """
     Create and train a regressor based on given X and Y values. Regressor type

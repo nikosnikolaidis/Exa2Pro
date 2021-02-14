@@ -56,19 +56,10 @@ public abstract class CodeFile implements Serializable{
         ArrayList<String> clusters= new ArrayList<>();
         //For Windows
         if ( Exa2Pro.isWindows() ){
-            Process proc;
             try {
-                //make sure packages are installed
-                proc = Runtime.getRuntime().exec("cmd /c \"pip install pandas sklearn numpy\"");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-                
                 //start clustering scrips
                 Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/clustering" + 
-                        " && python AgglomerativeClustering.py "+ threshold +"\"");
+                        " && "+ Exa2Pro.pythonRun +" AgglomerativeClustering.py "+ threshold +"\"");
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
                 String line1;
                 while ((line1 = reader1.readLine()) != null) {
@@ -82,32 +73,21 @@ public abstract class CodeFile implements Serializable{
         //For Linux
         else{
             try {
-                //make sure packages are installed
-                ProcessBuilder pbuilder = new ProcessBuilder("bash", "-c", "pip install pandas sklearn numpy");
-                File err = new File("err.txt");
-                pbuilder.redirectError(err);
-                Process p = pbuilder.start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-                
                 //start clustering scrips
-                ProcessBuilder pbuilder1 = new ProcessBuilder("bash", "-c", 
-                        "cd '"+System.getProperty("user.dir")+"/clustering' ; 'python AgglomerativeClustering.py "+threshold+"'");
+                ProcessBuilder pbuilder1 = new ProcessBuilder(new String[]{Exa2Pro.pythonRun, System.getProperty("user.dir")+"/clustering/AgglomerativeClustering.py", threshold+""});
                 File err1 = new File("err1.txt");
+                pbuilder1.directory(new File(System.getProperty("user.dir")+"/clustering"));
                 pbuilder1.redirectError(err1);
                 Process p1 = pbuilder1.start();
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
                 String line1;
                 while ((line1 = reader1.readLine()) != null) {
+                    clusters.add(line1);
                     System.out.println(line1);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(CodeFile.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
         return clusters;
     }

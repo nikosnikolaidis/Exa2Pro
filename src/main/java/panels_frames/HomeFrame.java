@@ -5,10 +5,15 @@
  */
 package panels_frames;
 
-import exa2pro.Analysis;
 import exa2pro.Exa2Pro;
 import exa2pro.Project;
 import exa2pro.ProjectCredentials;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -25,6 +30,7 @@ public class HomeFrame extends javax.swing.JFrame {
      */
     public HomeFrame() {
         initComponents();
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/exa2pro.trans.png")));
         
         populateProjectList();
     }
@@ -80,6 +86,11 @@ public class HomeFrame extends javax.swing.JFrame {
         jButtonChangeRuleEffort = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jTextFieldSonarPath = new javax.swing.JTextField();
+        jTextFieldPython = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jTextFieldPythonReq = new javax.swing.JTextField();
+        jButtonRunReq = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
         jPanelAddNew = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -93,7 +104,6 @@ public class HomeFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(950, 635));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/exa2pro.trans.png"))); // NOI18N
         jPanel2.add(jLabel1);
 
         jButtonProjects.setText("Projects");
@@ -183,6 +193,20 @@ public class HomeFrame extends javax.swing.JFrame {
 
         jLabel10.setText("Sonar Qube Path:");
 
+        jLabel11.setText("Run Python code:");
+
+        jTextFieldPythonReq.setText("pip install pandas sklearn numpy sklearn.utils");
+        jTextFieldPythonReq.setToolTipText("");
+
+        jButtonRunReq.setText("Run");
+        jButtonRunReq.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRunReqActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("Change pip if needed:");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -209,12 +233,22 @@ public class HomeFrame extends javax.swing.JFrame {
                                 .addGap(46, 46, 46))
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel10)
-                                .addGap(43, 43, 43)))
+                                .addGap(43, 43, 43))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButtonChangeRuleEffort)
                             .addComponent(jTextFieldSonarPath)
                             .addComponent(jTextFieldICodePath)
-                            .addComponent(jTextFieldSonarURL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jTextFieldSonarURL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldPython)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                                .addComponent(jTextFieldPythonReq)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonRunReq))))
                     .addComponent(jLabel9))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -235,7 +269,16 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jTextFieldSonarPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldPython, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldPythonReq, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonRunReq)
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jButtonChangeRuleEffort))
@@ -388,6 +431,7 @@ public class HomeFrame extends javax.swing.JFrame {
         jTextFieldSonarURL.setText(Exa2Pro.sonarURL);
         jTextFieldICodePath.setText(Exa2Pro.iCodePath);
         jTextFieldSonarPath.setText(Exa2Pro.sonarPath);
+        jTextFieldPython.setText(Exa2Pro.pythonRun);
     }//GEN-LAST:event_jButtonSettingsActionPerformed
 
     private void jButtonAddNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddNewActionPerformed
@@ -461,7 +505,7 @@ public class HomeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jListProjectsMousePressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Exa2Pro.saveSettingsToFile(jTextFieldSonarURL.getText(),jTextFieldICodePath.getText(),jTextFieldSonarPath.getText());
+        Exa2Pro.saveSettingsToFile(jTextFieldSonarURL.getText(),jTextFieldICodePath.getText(),jTextFieldSonarPath.getText(),jTextFieldPython.getText());
         Exa2Pro.getSettingFromFile();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -471,6 +515,39 @@ public class HomeFrame extends javax.swing.JFrame {
         parentPanel.repaint();
         parentPanel.revalidate();
     }//GEN-LAST:event_jButtonChangeRuleEffortActionPerformed
+
+    private void jButtonRunReqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRunReqActionPerformed
+        //make sure python packages are installed
+        if ( Exa2Pro.isWindows() ){
+            Process proc;
+            try {
+                proc = Runtime.getRuntime().exec("cmd /c \""+ jTextFieldPythonReq.getText() +"\"");
+        
+                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(HomeFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else{
+            try {
+                ProcessBuilder pbuilder = new ProcessBuilder("bash", "-c", jTextFieldPythonReq.getText());
+                File err = new File("err.txt");
+                pbuilder.redirectError(err);
+                Process p = pbuilder.start();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(HomeFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButtonRunReqActionPerformed
 
     /**
      * @param args the command line arguments
@@ -514,10 +591,13 @@ public class HomeFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButtonChangeRuleEffort;
     private javax.swing.JButton jButtonDirectory;
     private javax.swing.JButton jButtonProjects;
+    private javax.swing.JButton jButtonRunReq;
     private javax.swing.JButton jButtonSaveProject;
     private javax.swing.JButton jButtonSettings;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -541,6 +621,8 @@ public class HomeFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldICodePath;
     private javax.swing.JTextField jTextFieldProjectDirectory;
     private javax.swing.JTextField jTextFieldProjectName;
+    private javax.swing.JTextField jTextFieldPython;
+    private javax.swing.JTextField jTextFieldPythonReq;
     private javax.swing.JTextField jTextFieldSonarPath;
     private javax.swing.JTextField jTextFieldSonarURL;
     private javax.swing.JPanel parentPanel;
@@ -554,5 +636,6 @@ public class HomeFrame extends javax.swing.JFrame {
         jTextFieldSonarURL.setText(Exa2Pro.sonarURL);
         jTextFieldICodePath.setText(Exa2Pro.iCodePath);
         jTextFieldSonarPath.setText(Exa2Pro.sonarPath);
+        jTextFieldPython.setText(Exa2Pro.pythonRun);
     }
 }

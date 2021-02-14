@@ -20,7 +20,10 @@ def read_data():
         except Exception as e:
             print('No CSV files provided!')
             exit(-1)
-        procedures = pd.read_csv(f'{PATH}\\{filename}', sep=',', encoding='utf-8')
+        if sys.platform.startswith('win'):
+            procedures = pd.read_csv(f'{PATH}\\{filename}', sep=',', encoding='utf-8')
+        else:
+            procedures = pd.read_csv(f'{PATH}/{filename}', sep=',', encoding='utf-8')
         procedures.columns = ['Procedure', 'Attributes', 'Invocations']
     except Exception as e:
         print(e)

@@ -34,6 +34,7 @@ public class Exa2Pro {
     public static String sonarPath;
     public static String sonarURL;
     public static String sonarScannerPath;
+    public static String pythonRun;
 
     /**
      * @param args the command line arguments
@@ -87,6 +88,8 @@ public class Exa2Pro {
                     iCodePath = line.replace("sonar.icode.path=", "");
                 } else if (line.contains("sonar.path=")){
                     sonarPath = line.replace("sonar.path=", "");
+                } else if (line.contains("python.run=")){
+                    pythonRun = line.replace("python.run=", "");
                 }
             }
             if(!urlFound)
@@ -94,6 +97,7 @@ public class Exa2Pro {
         } catch (IOException ex) {
             System.out.println("exa2pro.Exa2Pro.getSettingFromFile()");
             sonarURL="http://localhost:9000";
+            pythonRun="python";
         }
     }
 
@@ -101,14 +105,17 @@ public class Exa2Pro {
      * Save settings
      * @param url the SonarQube url
      * @param icode the icode path
+     * @param sonarP the path of sonarqube
+     * @param python the command of running python
      */
-    public static void saveSettingsToFile(String url, String icode, String sonarP) {
+    public static void saveSettingsToFile(String url, String icode, String sonarP, String python) {
         try {
             //save sonarqube url/path and icode path to my setting file
             BufferedWriter writer = new BufferedWriter(new FileWriter("mySettings.txt"));
             writer.write("sonar.host.url=" + url + System.lineSeparator());
             writer.append("sonar.path=" + sonarP + System.lineSeparator());
             writer.append("sonar.icode.path=" + icode + System.lineSeparator());
+            writer.append("python.run=" + python + System.lineSeparator());
             writer.close();
 
             //save sonarqube url to conf\sonar-scanner.properties
