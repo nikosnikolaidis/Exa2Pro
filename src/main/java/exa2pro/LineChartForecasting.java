@@ -125,7 +125,7 @@ public class LineChartForecasting {
             Process proc;
             try {
                 //start script
-                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/td-forecaster" + 
+                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + Exa2Pro.TDForecasterPath + 
                             " && "+ Exa2Pro.pythonRun +" td_forecaster_cli.py system "+ horizon +" "+
                             project.getCredentials().getProjectName() +" 10 ridge --ground_truth --write_file \"");
                 hasResults=true;
@@ -150,7 +150,7 @@ public class LineChartForecasting {
             try {
                 //start clustering scrips
                 ProcessBuilder pbuilder1 = new ProcessBuilder(new String[]{Exa2Pro.pythonRun, 
-                    System.getProperty("user.dir")+"/td-forecaster/td_forecaster_cli.py", "system", horizon+"",
+                    Exa2Pro.TDForecasterPath+ "/td_forecaster_cli.py", "system", horizon+"",
                     project.getCredentials().getProjectName(), "10", "ridge", "--ground_truth", "--write_file"});
                 hasResults=true;
                 File err1 = new File("err1.txt");

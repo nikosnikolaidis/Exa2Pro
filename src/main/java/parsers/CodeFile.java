@@ -58,7 +58,7 @@ public abstract class CodeFile implements Serializable{
         if ( Exa2Pro.isWindows() ){
             try {
                 //start clustering scrips
-                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/clustering" + 
+                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + Exa2Pro.ClusteringPath + 
                         " && "+ Exa2Pro.pythonRun +" AgglomerativeClustering.py "+ threshold +"\"");
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
                 String line1;
@@ -74,7 +74,7 @@ public abstract class CodeFile implements Serializable{
         else{
             try {
                 //start clustering scrips
-                ProcessBuilder pbuilder1 = new ProcessBuilder(new String[]{Exa2Pro.pythonRun, System.getProperty("user.dir")+"/clustering/AgglomerativeClustering.py", threshold+""});
+                ProcessBuilder pbuilder1 = new ProcessBuilder(new String[]{Exa2Pro.pythonRun, Exa2Pro.ClusteringPath+ "/AgglomerativeClustering.py", threshold+""});
                 File err1 = new File("err1.txt");
                 pbuilder1.directory(new File(System.getProperty("user.dir")+"/clustering"));
                 pbuilder1.redirectError(err1);

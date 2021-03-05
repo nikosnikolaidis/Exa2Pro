@@ -25,6 +25,8 @@ public class LineChartEvolution extends ApplicationFrame {
         String value= "Hours";
         if(daysValue() && metric.equals("TD"))
             value= "Days";
+        else if (metric.equals("Interest"))
+            value= "€";
         else
             value= "Metric";
         
@@ -83,6 +85,9 @@ public class LineChartEvolution extends ApplicationFrame {
                     }
                     break;
                 }
+                case "Interest":
+                    num= p.getprojectReport().getTotalTDInterest();
+                    break;
                 case "Issues":
                     num= p.getprojectReport().getTotalCodeSmells();
                     break;

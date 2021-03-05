@@ -135,7 +135,7 @@ public class BubbleChartForecasting {
             Process proc;
             try {
                 //start scrip
-                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + System.getProperty("user.dir")+"/td-forecaster" + 
+                Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + Exa2Pro.TDForecasterPath + 
                             " && "+ Exa2Pro.pythonRun +" td_forecaster_cli.py file "+ horizon +" "+
                             project.getCredentials().getProjectName() +" "+ files +" ridge --write_file \"");
                 hasResults=true;
@@ -162,7 +162,7 @@ public class BubbleChartForecasting {
             try {
                 //start clustering scrips
                 ProcessBuilder pbuilder1 = new ProcessBuilder(new String[]{Exa2Pro.pythonRun, 
-                        System.getProperty("user.dir")+"/td-forecaster/td_forecaster_cli.py", "file", horizon+"",
+                        Exa2Pro.TDForecasterPath+"/td_forecaster_cli.py", "file", horizon+"",
                         project.getCredentials().getProjectName(), files+"", "ridge", "--write_file"});
                 hasResults=true;
                 File err1 = new File("err1.txt");

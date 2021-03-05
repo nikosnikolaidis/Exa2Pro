@@ -34,6 +34,8 @@ public class Exa2Pro {
     public static String sonarPath;
     public static String sonarURL;
     public static String sonarScannerPath;
+    public static String TDForecasterPath;
+    public static String ClusteringPath;
     public static String pythonRun;
 
     /**
@@ -43,10 +45,16 @@ public class Exa2Pro {
         getProjetsFromFile();
         getSettingFromFile();
 
-        if(isWindows())
+        if(isWindows()){
             sonarScannerPath= System.getProperty("user.dir") + "\\sonar-scanner-4.2-windows\\bin\\sonar-scanner.bat";
-        else
+            TDForecasterPath= System.getProperty("user.dir") + "\\td-forecaster";
+            ClusteringPath= System.getProperty("user.dir") + "\\clustering";
+        }
+        else{
             sonarScannerPath= System.getProperty("user.dir")+ "/sonar-scanner-4.2-linux/bin/sonar-scanner";
+            TDForecasterPath= System.getProperty("user.dir") + "/td-forecaster";
+            ClusteringPath= System.getProperty("user.dir") + "/clustering";
+        }
         
         HomeFrame homeFrame = new HomeFrame();
         homeFrame.setVisible(true);

@@ -43,6 +43,10 @@ public class Project implements Serializable {
      * Creates a small analysis and executes it
      */
     public void projectVersionAnalysis(){
+        //delete issues of prv for memory opt
+        if(getCredentials().getProjects().size()>1)
+            getCredentials().getProjects().get(getCredentials().getProjects().size()-2).projectReport.getIssuesList().clear();
+        //analyze
         Analysis a= new Analysis(this);
         a.runCustomCreatedMetrics();
         
@@ -53,6 +57,10 @@ public class Project implements Serializable {
      * Creates a Full analysis and executes it
      */
     public void projectVersionAnalysisFull(){
+        //delete issues of prv for memory opt
+        if(getCredentials().getProjects().size()>1)
+            getCredentials().getProjects().get(getCredentials().getProjects().size()-2).projectReport.getIssuesList().clear();
+        //analyze
         Analysis a= new Analysis(this);
         a.runCustomCreatedMetrics();
         a.createPropertiesFile();
