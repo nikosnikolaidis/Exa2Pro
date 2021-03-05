@@ -155,7 +155,7 @@ public class LineChartForecasting {
                 hasResults=true;
                 File err1 = new File("err1.txt");
                 pbuilder1.redirectError(err1);
-                pbuilder1.directory(new File(System.getProperty("user.dir")+"/td-forecaster"));
+                pbuilder1.directory(new File(Exa2Pro.TDForecasterPath));
                 Process p1 = pbuilder1.start();
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
                 String line1;
@@ -172,7 +172,7 @@ public class LineChartForecasting {
         //get results
         if(hasResults) {
             JSONParser jsonParser = new JSONParser();
-            try (FileReader reader = new FileReader(new File(System.getProperty("user.dir")+"/td-forecaster/output/"+
+            try (FileReader reader = new FileReader(new File(Exa2Pro.TDForecasterPath+"/output/"+
                     project.getCredentials().getProjectName()+"_forecasts.json")))
             {
                 //Read JSON file

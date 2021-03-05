@@ -158,4 +158,17 @@ public class Exa2Pro {
         }
 
     }
+    
+    /**
+     * Delete previous .csv files
+     */
+    public static void deletePreviousClasteringCSV(){
+        File directory = new File(Exa2Pro.ClusteringPath);
+        File[] fList = directory.listFiles();
+        for (File temp : fList) {
+            if (temp.isFile() && !temp.getName().endsWith(".py")){
+                temp.delete();
+            }
+        }
+    }
 }

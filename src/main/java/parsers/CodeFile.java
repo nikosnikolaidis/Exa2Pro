@@ -76,7 +76,7 @@ public abstract class CodeFile implements Serializable{
                 //start clustering scrips
                 ProcessBuilder pbuilder1 = new ProcessBuilder(new String[]{Exa2Pro.pythonRun, Exa2Pro.ClusteringPath+ "/AgglomerativeClustering.py", threshold+""});
                 File err1 = new File("err1.txt");
-                pbuilder1.directory(new File(System.getProperty("user.dir")+"/clustering"));
+                pbuilder1.directory(new File(Exa2Pro.ClusteringPath));
                 pbuilder1.redirectError(err1);
                 Process p1 = pbuilder1.start();
                 BufferedReader reader1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));

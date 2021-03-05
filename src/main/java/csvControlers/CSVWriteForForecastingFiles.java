@@ -5,6 +5,7 @@
  */
 package csvControlers;
 
+import exa2pro.Exa2Pro;
 import exa2pro.Project;
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +67,7 @@ public class CSVWriteForForecastingFiles {
             }
         }
     
-        File csvOutputFile = new File(System.getProperty("user.dir") + "/td-forecaster/data/"
+        File csvOutputFile = new File(Exa2Pro.TDForecasterPath + "/data/"
                 + project.getCredentials().getProjectName() + "_class.csv");
         try {
             Files.deleteIfExists(csvOutputFile.toPath());
@@ -93,7 +94,7 @@ public class CSVWriteForForecastingFiles {
     }
 
     public void givenDataArray_whenConvertToCSV_thenOutputCreated(String fileName) {
-        File csvOutputFile = new File(System.getProperty("user.dir") + "/td-forecaster/data/" + fileName + "_class.csv");
+        File csvOutputFile = new File(Exa2Pro.TDForecasterPath + "/data/" + fileName + "_class.csv");
         try {
             if (csvOutputFile.createNewFile()) {
                 try (PrintWriter pw = new PrintWriter(csvOutputFile)) {

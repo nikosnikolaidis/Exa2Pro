@@ -5,6 +5,8 @@
  */
 package panels_frames;
 
+import exa2pro.Exa2Pro;
+import static exa2pro.Exa2Pro.deletePreviousClasteringCSV;
 import exa2pro.Project;
 import java.io.File;
 import java.util.ArrayList;
@@ -519,14 +521,7 @@ public class JPanelRefactorings extends javax.swing.JPanel {
         dialog.setVisible(true);
         
         if(optionPane.getValue()!=null && JOptionPane.OK_OPTION == (int)optionPane.getValue()){
-            //delete previous .csv files
-            File directory = new File(System.getProperty("user.dir")+"/clustering");
-            File[] fList = directory.listFiles();
-            for (File temp : fList) {
-                if (temp.isFile() && !temp.getName().endsWith(".py")){
-                    temp.delete();
-                }
-            }
+            deletePreviousClasteringCSV();
              
             //parse and start scrips
             //file.parse();
