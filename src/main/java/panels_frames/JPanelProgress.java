@@ -25,7 +25,7 @@ public class JPanelProgress extends javax.swing.JPanel {
         initComponents();
         
         jListMetrics.setSelectedIndex(0);
-        addChart("TD");
+        addChart("SC TD");
     }
 
     /**
@@ -45,7 +45,7 @@ public class JPanelProgress extends javax.swing.JPanel {
         jLabeProgress.setText("Progress");
 
         jListMetrics.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "TD", "Interest", "Issues", "CBF", "LCOL", "LCOP", "CC", "LOC" };
+            String[] strings = { "SC TD", "Design TD", "Interest", "Issues", "CBF", "LCOL", "LCOP", "CC", "LOC" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
@@ -95,8 +95,8 @@ public class JPanelProgress extends javax.swing.JPanel {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(jLabeProgress)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 332, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 326, Short.MAX_VALUE)))
                     .addGap(7, 7, 7)))
         );
     }// </editor-fold>//GEN-END:initComponents

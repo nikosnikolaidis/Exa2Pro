@@ -22,6 +22,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
     Project project;
     LineChartForecasting lineChartForecasting;
     BubbleChartForecasting bubbleChartForecasting;
+    public boolean hasResults=true;
     
     /**
      * Creates new form JPanelMetrics
@@ -58,6 +59,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
                 addChartPanel(p);
             }
             else{
+                hasResults=false;
                 JOptionPane.showMessageDialog(null,
                     "Cannot provide reliable results for this project.\nPlease reduce forecasting horizon",
                     "Error",
@@ -71,6 +73,7 @@ public class JPanelForecasting extends javax.swing.JPanel {
                 addChartPanel(p);
             }
             else{
+                hasResults=false;
                 JOptionPane.showMessageDialog(null,
                     "Cannot provide reliable results for this project.\nPlease reduce forecasting horizon",
                     "Error",

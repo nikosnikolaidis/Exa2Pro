@@ -23,9 +23,9 @@ public class LineChartEvolution extends ApplicationFrame {
         this.metric=metric;
         
         String value= "Hours";
-        if(daysValue() && metric.equals("TD"))
+        if(daysValue() && metric.equals("SC TD"))
             value= "Days";
-        else if (metric.equals("Interest"))
+        else if (metric.equals("Interest") || metric.equals("Design TD"))
             value= "€";
         else
             value= "Metric";
@@ -64,7 +64,7 @@ public class LineChartEvolution extends ApplicationFrame {
         for (Project p : allProject) {
             double num=0;
             switch (metric) {
-                case "TD":
+                case "SC TD":
                 {
                     String s=p.getprojectReport().getTotalDebt();
                     double st = Double.parseDouble(s.replace("min", "").replace("h", "").replace("d", ""));
@@ -85,6 +85,9 @@ public class LineChartEvolution extends ApplicationFrame {
                     }
                     break;
                 }
+                case "Design TD":
+                    num= p.getprojectReport().getTDPrincipalDesignDebt();
+                    break;
                 case "Interest":
                     num= p.getprojectReport().getTotalTDInterest();
                     break;
