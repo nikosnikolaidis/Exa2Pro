@@ -21,6 +21,7 @@ import static java.util.stream.Collectors.toMap;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JRadioButton;
+import parsers.CodeFile;
 
 /**
  *
@@ -61,7 +62,7 @@ public class JPanelIssues extends javax.swing.JPanel {
                 defaultListModel.addElement(i);
             });
             jListCodeSmells.setModel(defaultListModel);
-            jListCodeSmells.setCellRenderer(new PanelIssueList());
+            jListCodeSmells.setCellRenderer(new PanelIssueList(project));
         }
     }
     
@@ -331,11 +332,35 @@ public class JPanelIssues extends javax.swing.JPanel {
         for(String str: sortedInstances.keySet()){
             if(sortedInstances.get(str)<10)
                 break;
-            JRadioButton rb= new JRadioButton(sortedInstances.get(str)+"  "+str.split(":")[1]);
+            
+            JRadioButton rb;
+            String[] name= str.split(":")[1].split("\\.");
+            if(name[name.length-1].equalsIgnoreCase("f90") || name[name.length-1].equalsIgnoreCase("f") || name[name.length-1].equalsIgnoreCase("f77")
+                            || name[name.length-1].equalsIgnoreCase("for") || name[name.length-1].equalsIgnoreCase("fpp")
+                            || name[name.length-1].equalsIgnoreCase("ftn")){
+                CodeFile cf= project.getFortranFilesIndexed().get(Integer.parseInt(name[0]));
+                rb= new JRadioButton(sortedInstances.get(str)+"  "+cf.file.getAbsolutePath().replace(project.getCredentials().getProjectDirectory(), ""));
+            }
+            else
+                rb= new JRadioButton(sortedInstances.get(str)+"  "+str.split(":")[1]);
+            
             rb.setFont(jCheckBoxCpp.getFont());
             rb.addActionListener((ActionEvent e) -> {
                 if(rb.isSelected()){
-                    String file = rb.getText().split("  ")[1];
+                    String file= rb.getText().split("  ")[1];
+                    String[] fileTable = file.split("\\.");
+                    
+                    if(fileTable[fileTable.length-1].equalsIgnoreCase("f90") || fileTable[fileTable.length-1].equalsIgnoreCase("f") 
+                            || fileTable[fileTable.length-1].equalsIgnoreCase("f77") || fileTable[fileTable.length-1].equalsIgnoreCase("for")
+                            || fileTable[fileTable.length-1].equalsIgnoreCase("fpp") || fileTable[fileTable.length-1].equalsIgnoreCase("ftn")){
+                        
+                        for(Integer key: project.getFortranFilesIndexed().keySet()){
+                            if(project.getFortranFilesIndexed().get(key).file.getAbsolutePath().endsWith(file)){
+                                file= key + "." + project.getFortranFilesIndexed().get(key).file.getName().split("\\.")
+                                                [project.getFortranFilesIndexed().get(key).file.getName().split("\\.").length-1];
+                            }
+                        }
+                    }
                     defaultListModel.removeAllElements();
                     int k=0;
                     for(Issue i: project.getprojectReport().getIssuesList()){

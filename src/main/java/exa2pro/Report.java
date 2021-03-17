@@ -99,17 +99,24 @@ public class Report  implements Serializable{
                         //get file name
                         String parentDir= project.getCredentials().getProjectDirectory();
                         String fileNameForSave=cf.file.getName();
-                        String fileName;
+                        String fileName="";
                         if(cf instanceof fortranFile){
-                            fileName= "temp_fortran_" +cf.file.getParentFile().getName()+ "_";
+                            for(Integer key: project.getFortranFilesIndexed().keySet()){
+                                if(project.getFortranFilesIndexed().get(key).file.getAbsolutePath()
+                                            .equals(cf.file.getAbsolutePath())){
+                                    String fEnding= cf.file.getName().split("\\.")[cf.file.getName().split("\\.").length-1];
+                                    fileName= key+"."+fEnding;
+                                }
+                            }
                         }
                         else {
                             fileName= cf.file.getParent().replace(parentDir.replace("//", ""), "");
                             if(!fileName.equals("")) {
                                     fileName= fileName.replace("\\", "/").substring(1).replace(" ", "%20") + "/";
                             }
+                            fileName= fileName+cf.file.getName();
                         }
-                        fileName= project.getCredentials().getProjectName()+":"+fileName+cf.file.getName();
+                        fileName= project.getCredentials().getProjectName()+":"+fileName;
 
                         //get metric new lines
                         getNewLinesOfCodeFromSonarQube(fileName);

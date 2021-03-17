@@ -6,6 +6,7 @@
 package panels_frames;
 
 import exa2pro.Issue;
+import exa2pro.Project;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -22,10 +23,12 @@ import parsers.CodeFile;
  */
 public class PanelIssueList extends javax.swing.JPanel implements ListCellRenderer<Issue>{
 
+    private Project project;
     /**
      * Creates new form PanelProjectList
      */
-    public PanelIssueList() {
+    public PanelIssueList(Project project) {
+        this.project= project;
         initComponents();
     }
 
@@ -160,8 +163,25 @@ public class PanelIssueList extends javax.swing.JPanel implements ListCellRender
         this.jLabelSeverity.setText(value.getIssueSeverity());
         this.jLabelDebt.setText(value.getIssueDebt());
         this.jLabelType.setText(value.getIssueType());
-        this.jLabelFile.setText(value.getIssueDirectory().split(":")[1]);
+        //for file extra things because of Fortran files index
+        String[] str= value.getIssueDirectory().split(":")[1].split("\\.");
+        if(str[str.length-1].equalsIgnoreCase("f90") || str[str.length-1].equalsIgnoreCase("f") || str[str.length-1].equalsIgnoreCase("f77")
+                            || str[str.length-1].equalsIgnoreCase("for") || str[str.length-1].equalsIgnoreCase("fpp")
+                            || str[str.length-1].equalsIgnoreCase("ftn")){
+            CodeFile cf= project.getFortranFilesIndexed().get(Integer.parseInt(str[0]));
+            this.jLabelFile.setText(cf.file.getAbsolutePath().replace(project.getCredentials().getProjectDirectory(), ""));
+        }
+        else{
+            this.jLabelFile.setText(value.getIssueDirectory().split(":")[1]);
+        }
         
+        //color
+        if(isSelected){
+            this.setBorder(new LineBorder(Color.black));
+        }
+        else{
+            this.setBorder(new LineBorder(Color.white));
+        }
         if(isSelected){
             this.setBorder(new LineBorder(Color.black));
         }
