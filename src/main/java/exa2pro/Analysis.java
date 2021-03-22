@@ -5,6 +5,7 @@
  */
 package exa2pro;
 
+import static exa2pro.Exa2Pro.Dos2UnixPath;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -211,7 +212,7 @@ public class Analysis {
             
             //files to unix format
             Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + project.getCredentials().getProjectDirectory() + " && "+
-        			Exa2Pro.sonarScannerPath.replace("sonar-scanner.bat", "dos2unix.exe") + "\"");
+        			Exa2Pro.Dos2UnixPath + " *.*" + "\"");
             BufferedReader reader2 = new BufferedReader(new InputStreamReader(proc1.getErrorStream()));
             String line2;
             while ((line2 = reader2.readLine()) != null) {    

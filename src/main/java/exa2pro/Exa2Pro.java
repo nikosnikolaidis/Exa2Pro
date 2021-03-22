@@ -37,6 +37,7 @@ public class Exa2Pro {
     public static String TDForecasterPath;
     public static String ClusteringPath;
     public static String pythonRun;
+    public static String Dos2UnixPath;
 
     /**
      * @param args the command line arguments
@@ -49,6 +50,7 @@ public class Exa2Pro {
             sonarScannerPath= System.getProperty("user.dir") + "\\sonar-scanner-4.2-windows\\bin\\sonar-scanner.bat";
             TDForecasterPath= System.getProperty("user.dir") + "\\td-forecaster";
             ClusteringPath= System.getProperty("user.dir") + "\\clustering";
+            Dos2UnixPath= sonarScannerPath.replace("sonar-scanner.bat", "dos2unix.exe");
         }
         else{
             sonarScannerPath= System.getProperty("user.dir")+ "/sonar-scanner-4.2-linux/bin/sonar-scanner";
