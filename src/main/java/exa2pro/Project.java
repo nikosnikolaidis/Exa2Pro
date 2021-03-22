@@ -162,17 +162,19 @@ public class Project implements Serializable {
         File[] files = new File(credentials.getProjectDirectory()).listFiles();
         if (files != null) { //some JVMs return null for empty dirs
             for (File f : files) {
-                String fName=f.getName().split("\\.")[0];
-                String fEnding=f.getName().split("\\.")[1];
-                if(fEnding.equalsIgnoreCase("f90") || fEnding.equalsIgnoreCase("f") || fEnding.equalsIgnoreCase("f77")
-                            || fEnding.equalsIgnoreCase("for") || fEnding.equalsIgnoreCase("fpp")
-                            || fEnding.equalsIgnoreCase("ftn")){
-                    try {
-                        Files.copy(f.toPath(), fortranFilesIndexed.get(fName).file.toPath());
-                        f.delete();
-                    }
-                    catch (NoSuchFileException e) {
-                        System.out.println("java.nio.file.NoSuchFileException");
+                if(f.isFile() && f.getName().contains(".")){
+                    String fName=f.getName().split("\\.")[0];
+                    String fEnding=f.getName().split("\\.")[1];
+                    if(fEnding.equalsIgnoreCase("f90") || fEnding.equalsIgnoreCase("f") || fEnding.equalsIgnoreCase("f77")
+                                || fEnding.equalsIgnoreCase("for") || fEnding.equalsIgnoreCase("fpp")
+                                || fEnding.equalsIgnoreCase("ftn")){
+                        try {
+                            Files.copy(f.toPath(), fortranFilesIndexed.get(Integer.parseInt(fName)).file.toPath());
+                            f.delete();
+                        }
+                        catch (NoSuchFileException e) {
+                            System.out.println("java.nio.file.NoSuchFileException");
+                        }
                     }
                 }
             }

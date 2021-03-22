@@ -208,7 +208,22 @@ public class Analysis {
         try {
             //TODO
             // Add waiting animation
-
+            
+            //files to unix format
+            Process proc1 = Runtime.getRuntime().exec("cmd /c \"cd " + project.getCredentials().getProjectDirectory() + " && "+
+        			Exa2Pro.sonarScannerPath.replace("sonar-scanner.bat", "dos2unix.exe") + "\"");
+            BufferedReader reader2 = new BufferedReader(new InputStreamReader(proc1.getErrorStream()));
+            String line2;
+            while ((line2 = reader2.readLine()) != null) {    
+                System.out.println(line2);
+            }
+            BufferedReader reader1 = new BufferedReader(new InputStreamReader(proc1.getInputStream()));
+            String line1;
+            while ((line1 = reader1.readLine()) != null) {    
+                System.out.println(line1);
+            }
+            
+            //analysis
             System.out.println(System.getProperty("user.dir"));
             Process proc = Runtime.getRuntime().exec("cmd /c \"cd " + project.getCredentials().getProjectDirectory() + " && "
                     + Exa2Pro.sonarScannerPath+ "\"");
