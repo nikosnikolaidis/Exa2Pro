@@ -48,7 +48,7 @@ class SaveRestoreProjectsTest {
 	@Test
 	void test_Directory() {
             if (Exa2Pro.isWindows())
-		assertEquals("src/tests/f90//", Exa2Pro.projecCredentialstList.get(0).getProjectDirectory());
+		assertEquals("src/tests/f90\\", Exa2Pro.projecCredentialstList.get(0).getProjectDirectory());
             else
 		assertEquals("src/tests/f90", Exa2Pro.projecCredentialstList.get(0).getProjectDirectory());
 	}
