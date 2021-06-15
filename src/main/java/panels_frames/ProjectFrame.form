@@ -250,7 +250,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel24">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Admit"/>
+                    <Property name="text" type="java.lang.String" value="ADMIT"/>
                   </Properties>
                 </Component>
               </SubComponents>

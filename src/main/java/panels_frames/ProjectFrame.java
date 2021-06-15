@@ -358,7 +358,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel24.setText("Admit");
+        jLabel24.setText("ADMIT");
         jPanelButtonAdmit.add(jLabel24);
 
         jPanel3.add(jPanelButtonAdmit);

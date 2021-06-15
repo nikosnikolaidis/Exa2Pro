@@ -961,6 +961,9 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jLabelTotalCosts.setText("Total Costs: "+ totalCost +"$");
         jLabelTotalBenefits.setText("Total Benefits: "+ totalBenefit +"$");
         jLabelProfitLoss.setText("Profit/Loss: "+ (totalCost+totalBenefit) +"$");
+        
+        jPanelChart.setVisible(false);
+        jScrollPane7.setVisible(false);
     }//GEN-LAST:event_jButtonAnalyzeActionPerformed
 
     private void jButtonCustomParamAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCustomParamAddActionPerformed
@@ -1042,6 +1045,9 @@ public class JPanelAdmit extends javax.swing.JPanel {
     }//GEN-LAST:event_jTableDecisionsMouseClicked
 
     private void jButtonTuneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTuneActionPerformed
+        jPanelChart.setVisible(true);
+        jScrollPane7.setVisible(true);
+        
         int min = Integer.parseInt(jTextFieldMinV.getText());
         int max = Integer.parseInt(jTextFieldMaxV.getText());
         double interval = (max - min) / 10;
