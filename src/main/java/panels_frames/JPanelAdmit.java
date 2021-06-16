@@ -1048,8 +1048,8 @@ public class JPanelAdmit extends javax.swing.JPanel {
         jPanelChart.setVisible(true);
         jScrollPane7.setVisible(true);
         
-        int min = Integer.parseInt(jTextFieldMinV.getText());
-        int max = Integer.parseInt(jTextFieldMaxV.getText());
+        double min = Double.parseDouble(jTextFieldMinV.getText());
+        double max = Double.parseDouble(jTextFieldMaxV.getText());
         double interval = (max - min) / 10;
         String selectedParam = jComboBoxParameters.getSelectedItem().toString();
         

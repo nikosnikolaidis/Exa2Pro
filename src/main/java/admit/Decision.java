@@ -38,10 +38,10 @@ public class Decision implements Serializable{
      *
      * @return true if analysis tuned successfully, false otherwise.
      */
-    public boolean tuneCostBenefitAnalysis(int min, int max, String parameter){
+    public boolean tuneCostBenefitAnalysis(double min, double max, String parameter){
         List<Double> intervals = new ArrayList<>();
 
-        int range = max - min;
+        double range = max - min;
         double interval = range / INTERVAL_LEN;
 
         for (int i=0; i<=INTERVAL_LEN; ++i)
