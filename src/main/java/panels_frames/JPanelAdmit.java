@@ -659,7 +659,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
         add(jPanelProvideV);
 
         jLabel36.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel36.setText("Provide the values for the models' parameters");
+        jLabel36.setText("Results");
 
         jLabel45.setText("Select Parameter to Tune the Model:");
 
@@ -866,7 +866,9 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
     private void jButtonAnalysisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalysisActionPerformed
         if(jTableDecisions.getSelectedRow() != -1 && jTableModels.getModel().getRowCount() !=0){
-            jPanelModelsInputs.removeAll();
+            boolean cameFromResultsPanel= jPanelResults.isVisible();
+            if(!cameFromResultsPanel)
+            	jPanelModelsInputs.removeAll();
             
             jPanelNewDecision.setVisible(false);
             jPanelModels.setVisible(false);
@@ -874,23 +876,25 @@ public class JPanelAdmit extends javax.swing.JPanel {
             jPanelProvideV.setVisible(true);
             jPanelResults.setVisible(false);
             
-            Decision decision= admitProject.findDecision(jTableDecisions.getModel().getValueAt(jTableDecisions.getSelectedRow(), 0).toString());
-            decision.removeAllModels();
-            
-            for(int i=0; i<jTableModels.getModel().getRowCount(); i++){
-                String type= jTableModels.getModel().getValueAt(i, 0).toString();
-                String name= jTableModels.getModel().getValueAt(i, 1).toString();
-                Equation equation= new Equation(jTableModels.getModel().getValueAt(i, 2).toString());
-                ModelParameter model= new ModelParameter(name, admitProject.getName(), decision.getName(), type, equation);
-                decision.addModel(model);
-                
-                PanelAdmitModelValueInput p = new PanelAdmitModelValueInput(model);
-                modelsPanels.add(p);
-                jPanelModelsInputs.add(p);
+            if(!cameFromResultsPanel){
+                Decision decision= admitProject.findDecision(jTableDecisions.getModel().getValueAt(jTableDecisions.getSelectedRow(), 0).toString());
+                decision.removeAllModels();
+
+                for(int i=0; i<jTableModels.getModel().getRowCount(); i++){
+                    String type= jTableModels.getModel().getValueAt(i, 0).toString();
+                    String name= jTableModels.getModel().getValueAt(i, 1).toString();
+                    Equation equation= new Equation(jTableModels.getModel().getValueAt(i, 2).toString());
+                    ModelParameter model= new ModelParameter(name, admitProject.getName(), decision.getName(), type, equation);
+                    decision.addModel(model);
+
+                    PanelAdmitModelValueInput p = new PanelAdmitModelValueInput(model);
+                    modelsPanels.add(p);
+                    jPanelModelsInputs.add(p);
+                }
+
+                jPanelModelsInputs.repaint();
+                jPanelModelsInputs.revalidate();
             }
-            
-            jPanelModelsInputs.repaint();
-            jPanelModelsInputs.revalidate();
         }
     }//GEN-LAST:event_jButtonAnalysisActionPerformed
 

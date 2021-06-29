@@ -1,26 +1,18 @@
-Decreased Need for Customer Support;Benefit;Customer_Support_Hourly_Rate * Hours_saved_while_performing_Customers_Support
-Increased Market Share;Benefit;Expected Increase * Market Share * Market Size * Price
-Upgrade of Existing Licenses;Benefit;Customers_that_Upgraded * Upgrade_Cost
-Acceptance and Integration Testing;Cost;Cost_to_Develop_Test_Cases + (Test_Cases_to_be_Executed * Time_Needed_to_Execute_Test * Testers_Hourly_Rate)
-Additional Costs for Marketing;Cost;Extra_Hours_spent_in_Marketing_per_year * Marketeer_Hourly_Rate
-Code Inspection;Cost;(Number_of_Inspections_per_Month * 12) * Developers_Hourly_Rate * Number_of_Participants
-Cost to re-write code;Cost;Cost_per_LoC * Lines_of_Code_to_be_transferred
-Documentation;Cost;Analyst_Hourly_Rate * Number_of_Specifications_Required * Time_Needed_to_Develop_a_Document
-Increase Preventive Maintenance Effort;Cost;(Debugging_in_Hours * Developers_Hourly_Rate) + (Preventive_Maintenance_in_Hours * Testers_Hourly_Rate)
-TD Extra Interest;Cost;CC_Increase * LoC_Increase * LoC_updated_evry_year * Percentage_classes_updated_every_year
-Training;Cost;Instructor_Hourly_Rate * Training_Sessions_in_Hours
-Declining Market Positioning;Cost;Lost_Customers * Price
-Design Reviews;Cost;(Number_of_Reviews_per_Month * 12) * Analysts_Hourly_Rate * Number_of_Participants
-Hire Quality Personnel;Cost;New_Employees * Yearly_Cost_of_Employee
-Lost Opportunity Costs;Cost;Return_on_Best_Foregone_Option -1 * Return_on_Chosen_Option
-Metrics-Based QA;Cost;Cost_to_Retrieve_Metrics + (Number_of_Metrics * Interpretation_Time * QA_Expert_Hourly_Rate)
-Necessary Rework;Cost;Developers_Hourly_Rate * Needed_Rework_in_Hours
-Perform Meetings;Cost;(Meeting_Duration_in_Minutes / 60) * (Meetings_Per_Month * 12) * Hourly_Rate * Number_of_Participants
-Project Planning;Cost;Additional_Time_for_Planning * Manager_Hourly_Rate
-Prototyping;Cost;Developers_Hourly_Rate * Number_of_Prototypes * Time_To_Build_a_Prototype
-QA Tools;Cost;Cost_of_Acquisition + (Training_Sessions_in_Hours * Instructor_Hourly_Rate)
-Quality Audits;Cost;(Number_of_Audits_per_Month * 12) * External_Expert_Hourly_Rate * Number_of_Participants
-Regression Testing;Cost;Cost_to_Develop_Test_Cases + (Test_Cases_to_be_Executed * Time_Needed_to_Execute_Test * Testers_Hourly_Rate)
-Reuse Proprietary Software;Cost;Cost_of_Software + (Training_Sessions_in_Hours * Instructor_Hourly_Rate)
-Unit Testing;Cost;Developers_Hourly_Rate * Number_of_Tests_in_Project * Time_To_Develop_a_Unit_Test
-Use of Standards;Cost;Number_of_Standards_to_be_Applied + (Time_Needed_for_Standard_Compliance * Company_Hourly_Rate) + (Training_Sessions_in_Hours * Instructor_Hourly_Rate)
+Cost for Hiring Quality Personel;Cost;New_Employees * Cost_of_Employee
+Cost for Performing Quality Meetings;Cost;Number_of_Meetings * Number_of_Participants*Hourly_Rate * Meeting_Duration_in_Hours
+Cost of Training in EXA2PRO tooling;Cost;Creation_of_Material + (Training_Sessions_in_Hours * Instructor_Hourly_Rate)
+Cost for Project Preprocessing;Cost;Needed_Preprocessing_in_Hours * Developers_Hourly_Rate
+Cost of Training in EXA2PRO tooling;Cost;Creation_of_Material + (Training_Sessions_in_Hours * Instructor_Hourly_Rate)
+Cost for SkePU/StarPU transformation;Cost;Number_of_Iterations * Transformation_Cost_in_Hours * Developers_Hourly_Rate
+Cost for Performing Code Inspection;Cost;(Number_of_Inspections_per_Month *12) * Number_of Participants * Developers_Hourly_Rate
+Cost for Performing Testing;Cost;Number_of_Tests_in_Project * Time_To_Develop_a_Test * Developers_Hourly_Rate
+Cost for Using Quality Assurance Tools;Cost;Cost_of_Acquisition + (Training_Sessions_in_Hours * Instructor_Hourly_Rate)
+Necessary Rework (e.g.,Debugging,Quality Improvement);Cost;Needed_Rework_in_Hours * Developers_Hourly_Rate
+TD Interest;Cost;Maintainability_Decrease * Maintainability_Load * Developers_Hourly_Rate
+Saved Idle Scientists Costs;Benefit;Speed_up * Execution_Time * Number_of_Trials * Researcher_Unit_cost
+Saved Time from Identifying Performance Hotspots;Benefit;Code_Inspection_Gain_in_Hours * Developers_ Hourly_Rate
+Saved Time for Performance Portability;Benefit;Time_to_Port_in_Different_ Supercomputer * Times_of_Porting * Developers_Hourly_Rate
+Saved Idle Scientists Costs from Testing;Benefit;Speed_up * Execution_Time * Number_of_Trials_for_Testing * Researcher_Unit_cost
+Cost to Apply Quality Optimization ;Cost;Number_of_Transformations * AVG_time_to_apply_one_transformation * Developer_Hourly_Rate
+Costs for Monitoring TD and Performance;Cost;Number_of_training_hours * Instructor_Hourly_Rate
+Cost to Maintain Code;Cost;Maintainability_Decrease * Maintenance_Load * Developers_Hourly_Rate

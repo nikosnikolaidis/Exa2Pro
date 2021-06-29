@@ -763,7 +763,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="12" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Provide the values for the models&apos; parameters"/>
+            <Property name="text" type="java.lang.String" value="Results"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel45">
