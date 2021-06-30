@@ -34,6 +34,8 @@ public class JPanelAdmit extends javax.swing.JPanel {
     AdmitProject admitProject;
     ArrayList<ModelParameter> allModels = new ArrayList<>();
     private List<PanelAdmitModelValueInput> modelsPanels= new ArrayList<>();
+    boolean cameFromjPanelProvideV = false;
+    ArrayList<String[]> previousModels= new ArrayList<>();
     
     /**
      * Creates new form JPanelAdmit
@@ -265,7 +267,8 @@ public class JPanelAdmit extends javax.swing.JPanel {
             }
         });
 
-        jButtonAnalysis.setText("Perform Analysis");
+        jButtonAnalysis.setText("Provide Values");
+        jButtonAnalysis.setToolTipText("");
         jButtonAnalysis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonAnalysisActionPerformed(evt);
@@ -563,7 +566,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
                                 .addComponent(jButtonCreateCustomModel))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelCreateCustomLayout.createSequentialGroup()
                                 .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jComboBoxCustomType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -581,7 +584,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
                                         .addComponent(jLabel8)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jTextFieldCustomName, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 35, Short.MAX_VALUE))))
+                                .addGap(0, 36, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCreateCustomLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonDelete)))
@@ -636,12 +639,12 @@ public class JPanelAdmit extends javax.swing.JPanel {
             .addGroup(jPanelProvideVLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelProvideVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
                     .addGroup(jPanelProvideVLayout.createSequentialGroup()
                         .addGroup(jPanelProvideVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
                             .addComponent(jButtonAnalyze))
-                        .addGap(0, 275, Short.MAX_VALUE)))
+                        .addGap(0, 276, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanelProvideVLayout.setVerticalGroup(
@@ -789,7 +792,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(jButtonTune))
                             .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 188, Short.MAX_VALUE))
+                        .addGap(0, 189, Short.MAX_VALUE))
                     .addGroup(jPanelResultsLayout.createSequentialGroup()
                         .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -866,8 +869,21 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
     private void jButtonAnalysisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalysisActionPerformed
         if(jTableDecisions.getSelectedRow() != -1 && jTableModels.getModel().getRowCount() !=0){
-            boolean cameFromResultsPanel= jPanelResults.isVisible();
-            if(!cameFromResultsPanel)
+            //check if models are same with previous to keep values 
+            boolean same=true;
+        	if(cameFromjPanelProvideV) {
+        		for(int i=0; i<jTableModels.getModel().getRowCount(); i++){
+                    if(!previousModels.get(i)[0].equals(jTableModels.getModel().getValueAt(i, 0).toString()) &&
+                    		!previousModels.get(i)[1].equals(jTableModels.getModel().getValueAt(i, 1).toString()) &&
+                    		!previousModels.get(i)[2].equals(jTableModels.getModel().getValueAt(i, 2).toString())) {
+                    	same=false;
+                    	break;
+                    }
+                }
+            }
+            
+            boolean keepValues= jPanelResults.isVisible() || (cameFromjPanelProvideV && same);
+            if(!keepValues)
             	jPanelModelsInputs.removeAll();
             
             jPanelNewDecision.setVisible(false);
@@ -876,7 +892,7 @@ public class JPanelAdmit extends javax.swing.JPanel {
             jPanelProvideV.setVisible(true);
             jPanelResults.setVisible(false);
             
-            if(!cameFromResultsPanel){
+            if(!keepValues){
                 Decision decision= admitProject.findDecision(jTableDecisions.getModel().getValueAt(jTableDecisions.getSelectedRow(), 0).toString());
                 decision.removeAllModels();
 
@@ -894,6 +910,17 @@ public class JPanelAdmit extends javax.swing.JPanel {
 
                 jPanelModelsInputs.repaint();
                 jPanelModelsInputs.revalidate();
+            }
+            
+            //save values for session
+            cameFromjPanelProvideV = true;
+            previousModels.clear();
+            for(int i=0; i<jTableModels.getModel().getRowCount(); i++){
+            	String[] model= new String[3];
+            	model[0]= jTableModels.getModel().getValueAt(i, 0).toString();
+            	model[1]= jTableModels.getModel().getValueAt(i, 1).toString();
+            	model[2]= jTableModels.getModel().getValueAt(i, 2).toString();
+                previousModels.add(model);
             }
         }
     }//GEN-LAST:event_jButtonAnalysisActionPerformed
@@ -1030,13 +1057,17 @@ public class JPanelAdmit extends javax.swing.JPanel {
                 found=true;
         }
         
-        if(found==false)
+        if(found==false){
             model.addRow(new Object[]{type, name, eq});
+            cameFromjPanelProvideV= false;
+        }
     }//GEN-LAST:event_jTableAllModelsMouseClicked
 
     private void jTableModelsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableModelsMouseClicked
         DefaultTableModel model = (DefaultTableModel) jTableModels.getModel();
         model.removeRow(jTableModels.getSelectedRow());
+        
+        cameFromjPanelProvideV=false;
     }//GEN-LAST:event_jTableModelsMouseClicked
 
     private void jTableDecisionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableDecisionsMouseClicked
