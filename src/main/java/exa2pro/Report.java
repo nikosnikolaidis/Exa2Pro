@@ -111,8 +111,11 @@ public class Report  implements Serializable{
                         }
                         else {
                             fileName= cf.file.getParent().replace(parentDir.replace("//", ""), "");
-                            if(!fileName.equals("")) {
+                            if(!fileName.equals("") && !fileName.matches("^[a-zA-Z].*")) {
                                     fileName= fileName.replace("\\", "/").substring(1).replace(" ", "%20") + "/";
+                            }
+                            else if(fileName.matches("^[a-zA-Z].*")){
+                                fileName= fileName.replace("\\", "/").replace(" ", "%20") + "/";
                             }
                             fileName= fileName+cf.file.getName();
                         }

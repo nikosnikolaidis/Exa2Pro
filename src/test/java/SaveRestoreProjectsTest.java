@@ -56,7 +56,7 @@ class SaveRestoreProjectsTest {
 		assertEquals("src/test/java/f90", Exa2Pro.projecCredentialstList.get(0).getProjectDirectory());
 	}
 
-	@Test
+	/*@Test
 	void test_project_analysis() {
 		 ProjectCredentials pc2 = new ProjectCredentials("test", "test", "src/test/java/f90");
 		 Project p1=new Project(pc2, "1");
@@ -85,6 +85,6 @@ class SaveRestoreProjectsTest {
 		 } catch (IOException e) {
 			 System.out.println("An error occurred.");
 		 }	
-	}
+	}*/
 
 }
